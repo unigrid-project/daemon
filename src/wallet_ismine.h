@@ -1,6 +1,8 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,13 +16,15 @@ class CKeyStore;
 class CScript;
 
 /** IsMine() return codes */
-enum isminetype {
+enum isminetype
+{
     ISMINE_NO = 0,
     //! Indicates that we dont know how to create a scriptSig that would solve this if we were given the appropriate private keys
-    ISMINE_WATCH_ONLY = 1,
+    ISMINE_WATCH_UNSOLVABLE = 1,
     //! Indicates that we know how to create a scriptSig that would solve this if we were given the appropriate private keys
-    ISMINE_MULTISIG = 2,
-    ISMINE_SPENDABLE  = 4,
+    ISMINE_WATCH_SOLVABLE = 2,
+    ISMINE_WATCH_ONLY = ISMINE_WATCH_SOLVABLE | ISMINE_WATCH_UNSOLVABLE,
+    ISMINE_SPENDABLE = 4,
     ISMINE_ALL = ISMINE_WATCH_ONLY | ISMINE_SPENDABLE
 };
 /** used for bitflags of isminetype */

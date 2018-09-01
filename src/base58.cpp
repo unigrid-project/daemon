@@ -1,5 +1,8 @@
-// Copyright (c) 2014 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,13 +12,12 @@
 #include "uint256.h"
 
 #include <assert.h>
-#include <boost/variant/apply_visitor.hpp>
-#include <boost/variant/static_visitor.hpp>
-#include <sstream>
 #include <stdint.h>
 #include <string.h>
-#include <string>
 #include <vector>
+#include <string>
+#include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
 
 /** All alphanumeric characters except for "0", "I", "O", and "l" */
 static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -64,21 +66,6 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
     while (it != b256.end())
         vch.push_back(*(it++));
     return true;
-}
-
-std::string DecodeBase58(const char* psz)
-{
-    std::vector<unsigned char> vch;
-    DecodeBase58(psz, vch);
-    std::stringstream ss;
-    ss << std::hex;
-
-    for (unsigned int i = 0; i < vch.size(); i++) {
-        unsigned char* c = &vch[i];
-        ss << setw(2) << setfill('0') << (int)c[0];
-    }
-
-    return ss.str();
 }
 
 std::string EncodeBase58(const unsigned char* pbegin, const unsigned char* pend)

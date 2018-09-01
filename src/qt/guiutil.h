@@ -1,6 +1,9 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2017-2018 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_GUIUTIL_H
@@ -15,7 +18,6 @@
 #include <QProgressBar>
 #include <QString>
 #include <QTableView>
-#include <QTableWidget>
 
 #include <boost/filesystem.hpp>
 
@@ -31,22 +33,25 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the PIVX Qt UI.
+/** Utility functions used by the Bitcoin Qt UI.
  */
 namespace GUIUtil
 {
+/** Load global CSS theme */
+QString loadStyleSheet();
+
 // Create human-readable string from date
 QString dateTimeStr(const QDateTime& datetime);
 QString dateTimeStr(qint64 nTime);
 
-// Render PIVX addresses in monospace font
+// Render Bitcoin addresses in monospace font
 QFont bitcoinAddressFont();
 
 // Set up widgets for address and amounts
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent);
 void setupAmountWidget(QLineEdit* widget, QWidget* parent);
 
-// Parse "pivx:" URI into recipient object, return true on successful parsing
+// Parse "HUZU:" URI into recipient object, return true on successful parsing
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out);
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out);
 QString formatBitcoinURI(const SendCoinsRecipient& info);
@@ -65,14 +70,6 @@ QString HtmlEscape(const std::string& str, bool fMultiLine = false);
        @see  TransactionView::copyLabel, TransactionView::copyAmount, TransactionView::copyAddress
      */
 void copyEntryData(QAbstractItemView* view, int column, int role = Qt::EditRole);
-
-/** Return a field of the currently selected entry as a QString. Does nothing if nothing
-        is selected.
-       @param[in] column  Data column to extract from the model
-       @param[in] role    Data role to extract from the model
-       @see  TransactionView::copyLabel, TransactionView::copyAmount, TransactionView::copyAddress
-     */
-QString getEntryData(QAbstractItemView *view, int column, int role);
 
 void setClipboard(const QString& str);
 
@@ -112,14 +109,11 @@ bool isObscured(QWidget* w);
 // Open debug.log
 void openDebugLogfile();
 
-// Open pivx.conf
+// Open bitalley.conf
 void openConfigfile();
 
 // Open masternode.conf
 void openMNConfigfile();
-
-// Browse backup folder
-void showBackups();
 
 // Replace invalid default fonts with known good ones
 void SubstituteFonts(const QString& language);
@@ -181,21 +175,6 @@ private slots:
     void on_geometriesChanged();
 };
 
-/**
-     * Extension to QTableWidgetItem that facilitates proper ordering for "DHMS"
-     * strings (primarily used in the masternode's "active" listing).
-     */
-class DHMSTableWidgetItem : public QTableWidgetItem
-{
-public:
-    DHMSTableWidgetItem(const int64_t seconds);
-    virtual bool operator<(QTableWidgetItem const& item) const;
-
-private:
-    // Private backing value for DHMS string, used for sorting.
-    int64_t value;
-};
-
 bool GetStartOnSystemStartup();
 bool SetStartOnSystemStartup(bool fAutoStart);
 
@@ -203,12 +182,6 @@ bool SetStartOnSystemStartup(bool fAutoStart);
 void saveWindowGeometry(const QString& strSetting, QWidget* parent);
 /** Restore window size and position */
 void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSizeIn, QWidget* parent);
-
-/** Load global CSS theme */
-QString loadStyleSheet();
-
-/** Check whether a theme is not build-in */
-bool isExternal(QString theme);
 
 /* Convert QString to OS specific boost path through UTF-8 */
 boost::filesystem::path qstringToBoostPath(const QString& path);
@@ -225,21 +198,19 @@ QString formatServicesStr(quint64 mask);
 /* Format a CNodeCombinedStats.dPingTime into a user-readable string or display N/A, if 0*/
 QString formatPingTime(double dPingTime);
 
-/* Format a CNodeCombinedStats.nTimeOffset into a user-readable string. */
-QString formatTimeOffset(int64_t nTimeOffset);
-
-#if defined(Q_OS_MAC)
-    // workaround for Qt OSX Bug:
-    // https://bugreports.qt-project.org/browse/QTBUG-15631
-    // QProgressBar uses around 10% CPU even when app is in background
-    class ProgressBar : public QProgressBar
+#if defined(Q_OS_MAC) && QT_VERSION >= 0x050000
+// workaround for Qt OSX Bug:
+// https://bugreports.qt-project.org/browse/QTBUG-15631
+// QProgressBar uses around 10% CPU even when app is in background
+class ProgressBar : public QProgressBar
+{
+    bool event(QEvent* e)
     {
-        bool event(QEvent *e) {
-            return (e->type() != QEvent::StyleAnimationUpdate) ? QProgressBar::event(e) : false;
-        }
-    };
+        return (e->type() != QEvent::StyleAnimationUpdate) ? QProgressBar::event(e) : false;
+    }
+};
 #else
-    typedef QProgressBar ProgressBar;
+typedef QProgressBar ProgressBar;
 #endif
 
 } // namespace GUIUtil

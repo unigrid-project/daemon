@@ -1,7 +1,9 @@
-// Copyright (c) 2014 The Bitcoin Core developers
-// Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "primitives/transaction.h"
@@ -11,41 +13,16 @@
 
 BOOST_AUTO_TEST_SUITE(main_tests)
 
-CAmount nMoneySupplyPoWEnd = 43199500 * COIN;
-
 BOOST_AUTO_TEST_CASE(subsidy_limit_test)
 {
     CAmount nSum = 0;
-    for (int nHeight = 0; nHeight < 1; nHeight += 1) {
-        /* premine in block 1 (60,001 PIV) */
+    for (int nHeight = 0; nHeight < 14000000; nHeight += 1000) {
         CAmount nSubsidy = GetBlockValue(nHeight);
-        BOOST_CHECK(nSubsidy <= 60001 * COIN);
-        nSum += nSubsidy;
+        BOOST_CHECK(nSubsidy <= 50 * COIN);
+        nSum += nSubsidy * 1000;
+        BOOST_CHECK(MoneyRange(nSum));
     }
-
-    for (int nHeight = 1; nHeight < 86400; nHeight += 1) {
-        /* PoW Phase One */
-        CAmount nSubsidy = GetBlockValue(nHeight);
-        BOOST_CHECK(nSubsidy <= 250 * COIN);
-        nSum += nSubsidy;
-    }
-
-    for (int nHeight = 86400; nHeight < 151200; nHeight += 1) {
-        /* PoW Phase Two */
-        CAmount nSubsidy = GetBlockValue(nHeight);
-        BOOST_CHECK(nSubsidy <= 225 * COIN);
-        nSum += nSubsidy;
-    }
-
-    for (int nHeight = 151200; nHeight < 259200; nHeight += 1) {
-        /* PoW Phase Two */
-        CAmount nSubsidy = GetBlockValue(nHeight);
-        BOOST_CHECK(nSubsidy <= 45 * COIN);
-        BOOST_CHECK(MoneyRange(nSubsidy));
-        nSum += nSubsidy;
-        BOOST_CHECK(nSum > 0 && nSum <= nMoneySupplyPoWEnd);
-    }
-    BOOST_CHECK(nSum == 4109975100000000ULL);
+    BOOST_CHECK(nSum == 20999992992390000ULL);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

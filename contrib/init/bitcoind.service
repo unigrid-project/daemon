@@ -1,0 +1,22 @@
+[Unit]
+Description=Bitcoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=HUZU
+Group=HUZU
+
+Type=forking
+PIDFile=/var/lib/HUZUd/HUZUd.pid
+ExecStart=/usr/bin/HUZUd -daemon -pid=/var/lib/HUZUd/HUZUd.pid \
+-conf=/etc/HUZU/HUZUcoin.conf -datadir=/var/lib/HUZUd -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

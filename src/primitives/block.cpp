@@ -1,7 +1,9 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "primitives/block.h"
@@ -9,16 +11,14 @@
 #include "hash.h"
 #include "script/standard.h"
 #include "script/sign.h"
+#include "hashblock.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 #include "util.h"
 
 uint256 CBlockHeader::GetHash() const
 {
-    if(nVersion < 4)
-        return HashQuark(BEGIN(nVersion), END(nNonce));
-
-    return Hash(BEGIN(nVersion), END(nAccumulatorCheckpoint));
+    return Hash9(BEGIN(nVersion), END(nNonce));
 }
 
 uint256 CBlock::BuildMerkleTree(bool* fMutated) const
@@ -81,7 +81,7 @@ uint256 CBlock::BuildMerkleTree(bool* fMutated) const
     if (fMutated) {
         *fMutated = mutated;
     }
-    return (vMerkleTree.empty() ? uint256() : vMerkleTree.back());
+    return (vMerkleTree.empty() ? 0 : vMerkleTree.back());
 }
 
 std::vector<uint256> CBlock::GetMerkleBranch(int nIndex) const
@@ -103,7 +103,7 @@ std::vector<uint256> CBlock::GetMerkleBranch(int nIndex) const
 uint256 CBlock::CheckMerkleBranch(uint256 hash, const std::vector<uint256>& vMerkleBranch, int nIndex)
 {
     if (nIndex == -1)
-		return uint256();
+        return 0;
     for (std::vector<uint256>::const_iterator it(vMerkleBranch.begin()); it != vMerkleBranch.end(); ++it)
     {
         if (nIndex & 1)
@@ -136,12 +136,125 @@ std::string CBlock::ToString() const
     return s.str();
 }
 
-void CBlock::print() const
+// ppcoin: sign block
+bool CBlock::SignBlock(const CKeyStore& keystore)
 {
-    LogPrintf("%s", ToString());
+    std::vector<valtype> vSolutions;
+    txnouttype whichType;
+
+    if(!IsProofOfStake())
+    {
+        for(unsigned int i = 0; i < vtx[0].vout.size(); i++)
+        {
+            const CTxOut& txout = vtx[0].vout[i];
+
+            if (!Solver(txout.scriptPubKey, whichType, vSolutions))
+                continue;
+
+            if (whichType == TX_PUBKEY)
+            {
+                // Sign
+                CKeyID keyID;
+                keyID = CKeyID(uint160(vSolutions[0]));
+
+                CKey key;
+                if (!keystore.GetKey(keyID, key))
+                    return false;
+
+                //vector<unsigned char> vchSig;
+                if (!key.Sign(GetHash(), vchBlockSig))
+                     return false;
+
+                return true;
+            }
+        }
+    }
+    else
+    {
+        const CTxOut& txout = vtx[1].vout[1];
+
+        if (!Solver(txout.scriptPubKey, whichType, vSolutions))
+            return false;
+
+        if (whichType == TX_PUBKEYHASH)
+        {
+
+            CKeyID keyID;
+            keyID = CKeyID(uint160(vSolutions[0]));
+
+            CKey key;
+            if (!keystore.GetKey(keyID, key))
+                return false;
+
+            //vector<unsigned char> vchSig;
+            if (!key.Sign(GetHash(), vchBlockSig))
+                 return false;
+
+            return true;
+
+        }
+        else if(whichType == TX_PUBKEY)
+        {
+            CKeyID keyID;
+            keyID = CPubKey(vSolutions[0]).GetID();
+            CKey key;
+            if (!keystore.GetKey(keyID, key))
+                return false;
+
+            //vector<unsigned char> vchSig;
+            if (!key.Sign(GetHash(), vchBlockSig))
+                 return false;
+
+            return true;
+        }
+    }
+
+    LogPrintf("Sign failed\n");
+    return false;
 }
 
-bool CBlock::IsZerocoinStake() const
+bool CBlock::CheckBlockSignature() const
 {
-    return IsProofOfStake() && vtx[1].IsZerocoinSpend();
+    if (IsProofOfWork())
+        return vchBlockSig.empty();
+
+    std::vector<valtype> vSolutions;
+    txnouttype whichType;
+
+    const CTxOut& txout = vtx[1].vout[1];
+
+    if (!Solver(txout.scriptPubKey, whichType, vSolutions))
+        return false;
+
+    if (whichType == TX_PUBKEY)
+    {
+        valtype& vchPubKey = vSolutions[0];
+        CPubKey pubkey(vchPubKey);
+        if (!pubkey.IsValid())
+          return false;
+
+        if (vchBlockSig.empty())
+            return false;
+
+        return pubkey.Verify(GetHash(), vchBlockSig);
+    }
+    else if(whichType == TX_PUBKEYHASH)
+    {
+        valtype& vchPubKey = vSolutions[0];
+        CKeyID keyID;
+        keyID = CKeyID(uint160(vchPubKey));
+        CPubKey pubkey(vchPubKey);
+
+        if (!pubkey.IsValid())
+          return false;
+
+        if (vchBlockSig.empty())
+            return false;
+
+        return pubkey.Verify(GetHash(), vchBlockSig);
+
+    }
+
+    return false;
 }
+

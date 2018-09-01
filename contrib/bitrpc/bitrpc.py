@@ -11,9 +11,9 @@ rpcpass = ""
 
 
 if rpcpass == "":
-    access = ServiceProxy("http://127.0.0.1:51473")
+    access = ServiceProxy("http://127.0.0.1:8372")
 else:
-    access = ServiceProxy("http://"+rpcuser+":"+rpcpass+"@127.0.0.1:51473")
+    access = ServiceProxy("http://"+rpcuser+":"+rpcpass+"@127.0.0.1:8372")
 cmd = sys.argv[1].lower()
 
 if cmd == "backupwallet":
@@ -22,7 +22,7 @@ if cmd == "backupwallet":
         print access.backupwallet(path)
     except:
         print "\n---An error occurred---\n"
-        
+
 elif cmd == "encryptwallet":
     try:
         pwd = getpass.getpass(prompt="Enter passphrase: ")
@@ -37,7 +37,7 @@ elif cmd == "encryptwallet":
 
 elif cmd == "getaccount":
     try:
-        addr = raw_input("Enter a Bitcoin address: ")
+        addr = raw_input("Enter a HUZU address: ")
         print access.getaccount(addr)
     except:
         print "\n---An error occurred---\n"
@@ -139,7 +139,7 @@ elif cmd == "getreceivedbyaccount":
 
 elif cmd == "getreceivedbyaddress":
     try:
-        addr = raw_input("Enter a Bitcoin address (optional): ")
+        addr = raw_input("Enter a HUZU address (optional): ")
         mc = raw_input("Minimum confirmations (optional): ")
         try:
             print access.getreceivedbyaddress(addr, mc)

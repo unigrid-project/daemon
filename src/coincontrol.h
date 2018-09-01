@@ -1,14 +1,15 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2014-2016 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_COINCONTROL_H
 #define BITCOIN_COINCONTROL_H
 
 #include "primitives/transaction.h"
-#include "script/standard.h"
 
 /** Coin Control Features. */
 class CCoinControl
@@ -26,6 +27,7 @@ public:
     //! Minimum absolute fee (not per kilobyte)
     CAmount nMinimumTotalFee;
 
+
     CCoinControl()
     {
         SetNull();
@@ -35,13 +37,6 @@ public:
     {
         destChange = CNoDestination();
         setSelected.clear();
-        useSwiftTX = false;
-        useObfuScation = false;
-        fAllowOtherInputs = false;
-        fAllowWatchOnly = true;
-        nMinimumTotalFee = 0;
-        fSplitBlock = false;
-        nSplitBlock = 1;
     }
 
     bool HasSelected() const
@@ -73,17 +68,6 @@ public:
     void ListSelected(std::vector<COutPoint>& vOutpoints)
     {
         vOutpoints.assign(setSelected.begin(), setSelected.end());
-    }
-
-    unsigned int QuantitySelected()
-    {
-        return setSelected.size();
-    }
-
-    void SetSelection(std::set<COutPoint> setSelected)
-    {
-        this->setSelected.clear();
-        this->setSelected = setSelected;
     }
 
 private:

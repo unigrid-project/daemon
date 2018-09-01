@@ -1,12 +1,10 @@
-Language:        Cpp
 AccessModifierOffset: -4
-AlignAfterOpenBracket: false
 AlignEscapedNewlinesLeft: true
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: false
 AllowShortFunctionsOnASingleLine: All
-AllowShortIfStatementsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true
@@ -28,6 +26,7 @@ IndentCaseLabels: false
 IndentFunctionDeclarationAfterType: false
 IndentWidth:     4
 KeepEmptyLinesAtTheStartOfBlocks: false
+Language:        Cpp
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: None
 ObjCSpaceAfterProperty: false

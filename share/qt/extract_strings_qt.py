@@ -1,16 +1,15 @@
 #!/usr/bin/python
 '''
-Extract _("...") strings for translation and convert to Qt stringdefs so that
+Extract _("...") strings for translation and convert to Qt4 stringdefs so that
 they can be picked up by Qt linguist.
 '''
-from __future__ import division,print_function,unicode_literals
 from subprocess import Popen, PIPE
 import glob
 import operator
 import os
 import sys
 
-OUT_CPP="qt/pivxstrings.cpp"
+OUT_CPP="qt/bitcoinstrings.cpp"
 EMPTY=['""']
 
 def parse_po(text):
@@ -32,7 +31,7 @@ def parse_po(text):
                 in_msgstr = False
             # message start
             in_msgid = True
-
+            
             msgid = [line[6:]]
         elif line.startswith('msgstr '):
             in_msgid = False
@@ -53,14 +52,10 @@ files = sys.argv[1:]
 
 # xgettext -n --keyword=_ $FILES
 XGETTEXT=os.getenv('XGETTEXT', 'xgettext')
-if not XGETTEXT:
-    print('Cannot extract strings: xgettext utility is not installed or not configured.',file=sys.stderr)
-    print('Please install package "gettext" and re-run \'./configure\'.',file=sys.stderr)
-    exit(1)
 child = Popen([XGETTEXT,'--output=-','-n','--keyword=_'] + files, stdout=PIPE)
 (out, err) = child.communicate()
 
-messages = parse_po(out.decode('utf-8'))
+messages = parse_po(out) 
 
 f = open(OUT_CPP, 'w')
 f.write("""
@@ -74,10 +69,10 @@ f.write("""
 #define UNUSED
 #endif
 """)
-f.write('static const char UNUSED *pivx_strings[] = {\n')
+f.write('static const char UNUSED *bitcoin_strings[] = {\n')
 messages.sort(key=operator.itemgetter(0))
 for (msgid, msgstr) in messages:
     if msgid != EMPTY:
-        f.write('QT_TRANSLATE_NOOP("pivx-core", %s),\n' % ('\n'.join(msgid)))
+        f.write('QT_TRANSLATE_NOOP("bitcoin-core", %s),\n' % ('\n'.join(msgid)))
 f.write('};\n')
 f.close()

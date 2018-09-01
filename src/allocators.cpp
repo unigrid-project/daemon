@@ -1,5 +1,9 @@
-// Copyright (c) 2009-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "allocators.h"
@@ -19,8 +23,8 @@
 // but, in practice, memory that has been VirtualLock'd almost never gets written to
 // the pagefile except in rare circumstances where memory is extremely low.
 #else
-#include <limits.h> // for PAGESIZE
 #include <sys/mman.h>
+#include <limits.h> // for PAGESIZE
 #include <unistd.h> // for sysconf
 #endif
 

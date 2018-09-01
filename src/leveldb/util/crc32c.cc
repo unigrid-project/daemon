@@ -8,8 +8,6 @@
 #include "util/crc32c.h"
 
 #include <stdint.h>
-
-#include "port/port.h"
 #include "util/coding.h"
 
 namespace leveldb {
@@ -217,7 +215,7 @@ static const uint32_t table3_[256] = {
   0x00000000, 0xdd45aab8, 0xbf672381, 0x62228939,
   0x7b2231f3, 0xa6679b4b, 0xc4451272, 0x1900b8ca,
   0xf64463e6, 0x2b01c95e, 0x49234067, 0x9466eadf,
-  0x8d665215, 0x5023f8ad, 0x32017194, 0xef44db2c,
+  0x8d665215, 0x5023f8ad, 0x32018194, 0xef44db2c,
   0xe964b13d, 0x34211b85, 0x560392bc, 0x8b463804,
   0x924680ce, 0x4f032a76, 0x2d21a34f, 0xf06409f7,
   0x1f20d2db, 0xc2657863, 0xa047f15a, 0x7d025be2,
@@ -285,27 +283,7 @@ static inline uint32_t LE_LOAD32(const uint8_t *p) {
   return DecodeFixed32(reinterpret_cast<const char*>(p));
 }
 
-// Determine if the CPU running this program can accelerate the CRC32C
-// calculation.
-static bool CanAccelerateCRC32C() {
-  if (!port::HasAcceleratedCRC32C())
-    return false;
-
-  // Double-check that the accelerated implementation functions correctly.
-  // port::AcceleretedCRC32C returns zero when unable to accelerate.
-  static const char kTestCRCBuffer[] = "TestCRCBuffer";
-  static const char kBufSize = sizeof(kTestCRCBuffer) - 1;
-  static const uint32_t kTestCRCValue = 0xdcbc59fa;
-
-  return port::AcceleratedCRC32C(0, kTestCRCBuffer, kBufSize) == kTestCRCValue;
-}
-
 uint32_t Extend(uint32_t crc, const char* buf, size_t size) {
-  static bool accelerate = CanAccelerateCRC32C();
-  if (accelerate) {
-    return port::AcceleratedCRC32C(crc, buf, size);
-  }
-
   const uint8_t *p = reinterpret_cast<const uint8_t *>(buf);
   const uint8_t *e = p + size;
   uint32_t l = crc ^ 0xffffffffu;

@@ -1,6 +1,9 @@
-// Copyright (c) 2011-2014 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_UTILITYDIALOG_H
@@ -12,9 +15,8 @@
 class BitcoinGUI;
 class ClientModel;
 
-namespace Ui
-{
-class HelpMessageDialog;
+namespace Ui {
+    class HelpMessageDialog;
 }
 
 /** "Help message" dialog box */
@@ -23,14 +25,14 @@ class HelpMessageDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit HelpMessageDialog(QWidget* parent, bool about);
+    explicit HelpMessageDialog(QWidget *parent, bool about);
     ~HelpMessageDialog();
 
     void printToConsole();
     void showOrPrint();
 
 private:
-    Ui::HelpMessageDialog* ui;
+    Ui::HelpMessageDialog *ui;
     QString text;
 
 private slots:
@@ -44,11 +46,11 @@ class ShutdownWindow : public QWidget
     Q_OBJECT
 
 public:
-    ShutdownWindow(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    static void showShutdownWindow(BitcoinGUI* window);
+    ShutdownWindow(QWidget *parent=0, Qt::WindowFlags f=0);
+    static void showShutdownWindow(BitcoinGUI *window);
 
 protected:
-    void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // BITCOIN_QT_UTILITYDIALOG_H

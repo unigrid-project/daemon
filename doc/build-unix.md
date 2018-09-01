@@ -1,11 +1,11 @@
 UNIX BUILD NOTES
 ====================
-Some notes on how to build PIVX in Unix.
+Some notes on how to build HUZU in Unix.
 
 Note
 ---------------------
-Always use absolute paths to configure and compile pivx and the dependencies,
-for example, when specifying the path of the dependency:
+Always use absolute paths to configure and compile HUZU and the dependencies,
+for example, when specifying the the path of the dependency:
 
 	../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 
@@ -22,7 +22,7 @@ make
 make install # optional
 ```
 
-This will build pivx-qt as well if the dependencies are met.
+This will build HUZU-qt as well if the dependencies are met.
 
 Dependencies
 ---------------------
@@ -33,7 +33,6 @@ These dependencies are required:
  ------------|------------------|----------------------
  libssl      | SSL Support      | Secure communications
  libboost    | Boost            | C++ Library
- libevent    | Events           | Asynchronous event notification
 
 Optional dependencies:
 
@@ -44,7 +43,6 @@ Optional dependencies:
  qt          | GUI              | GUI toolkit (only needed when GUI enabled)
  protobuf    | Payments in GUI  | Data interchange format used for payment protocol (only needed when GUI enabled)
  libqrencode | QR codes in GUI  | Optional for generating QR codes (only needed when GUI enabled)
- univalue    | Utility          | JSON parsing and encoding (bundled version will be used unless --with-system-univalue passed to configure)
 
 For the versions used in the release, see [release-process.md](release-process.md) under *Fetch and build inputs*.
 
@@ -52,16 +50,16 @@ System requirements
 --------------------
 
 C++ compilers are memory-hungry. It is recommended to have at least 1 GB of
-memory available when compiling PIVX Core. With 512MB of memory or less
+memory available when compiling HUZU Core. With 512MB of memory or less
 compilation will take much longer due to swap thrashing.
 
 Dependency Build Instructions: Ubuntu & Debian
 ----------------------------------------------
 Build requirements:
 
-	sudo apt-get install build-essential libtool autotools-dev autoconf pkg-config libssl-dev libevent-dev automake
+	sudo apt-get install build-essential libtool autotools-dev autoconf pkg-config libssl-dev
 
-For Ubuntu 12.04 and later or Debian 7 and later libboost-all-dev has to be installed:
+for Ubuntu 12.04 and later or Debian 7 and later libboost-all-dev has to be installed:
 
 	sudo apt-get install libboost-all-dev
 
@@ -74,7 +72,18 @@ For Ubuntu 12.04 and later or Debian 7 and later libboost-all-dev has to be inst
  Ubuntu 12.04 and later have packages for libdb5.1-dev and libdb5.1++-dev,
  but using these will break binary wallet compatibility, and is not recommended.
 
-For other Debian & Ubuntu (with ppa):
+for Debian 7 (Wheezy) and later:
+ The oldstable repository contains db4.8 packages.
+ Add the following line to /etc/apt/sources.list,
+ replacing [mirror] with any official debian mirror.
+
+	deb http://[mirror]/debian/ oldstable main
+
+To enable the change run
+
+	sudo apt-get update
+
+for other Debian & Ubuntu (with ppa):
 
 	sudo apt-get install libdb4.8-dev libdb4.8++-dev
 
@@ -85,10 +94,14 @@ Optional:
 Dependencies for the GUI: Ubuntu & Debian
 -----------------------------------------
 
-If you want to build PIVX-Qt, make sure that the required packages for Qt development
-are installed. Qt 5 is necessary to build the GUI.
-If both Qt 4 and Qt 5 are installed, Qt 5 will be used.
+If you want to build HUZU-Qt, make sure that the required packages for Qt development
+are installed. Either Qt 4 or Qt 5 are necessary to build the GUI.
+If both Qt 4 and Qt 5 are installed, Qt 4 will be used. Pass `--with-gui=qt5` to configure to choose Qt5.
 To build without GUI pass `--without-gui`.
+
+To build with Qt 4 you need the following:
+
+    sudo apt-get install libqt4-dev libprotobuf-dev protobuf-compiler
 
 For Qt 5 you need the following:
 
@@ -98,12 +111,12 @@ libqrencode (optional) can be installed with:
 
     sudo apt-get install libqrencode-dev
 
-Once these are installed, they will be found by configure and a pivx-qt executable will be
+Once these are installed, they will be found by configure and a HUZU-qt executable will be
 built by default.
 
 Notes
 -----
-The release is built with GCC and then "strip pivxd" to strip the debug
+The release is built with GCC and then "strip HUZUd" to strip the debug
 symbols, which reduces the executable size by about 90%.
 
 
@@ -132,10 +145,10 @@ Berkeley DB
 It is recommended to use Berkeley DB 4.8. If you have to build it yourself:
 
 ```bash
-PIVX_ROOT=$(pwd)
+BITCOIN_ROOT=$(pwd)
 
-# Pick some path to install BDB to, here we create a directory within the pivx directory
-BDB_PREFIX="${PIVX_ROOT}/db4"
+# Pick some path to install BDB to, here we create a directory within the HUZU directory
+BDB_PREFIX="${BITCOIN_ROOT}/db4"
 mkdir -p $BDB_PREFIX
 
 # Fetch the source and verify that it is not tampered with
@@ -150,8 +163,8 @@ cd db-4.8.30.NC/build_unix/
 ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 make install
 
-# Configure PIVX Core to use our own-built instance of BDB
-cd $PIVX_ROOT
+# Configure HUZU Core to use our own-built instance of BDB
+cd $BITCOIN_ROOT
 ./configure (other args...) LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/"
 ```
 
@@ -168,7 +181,7 @@ If you need to build Boost yourself:
 
 Security
 --------
-To help make your PIVX installation more secure by making certain attacks impossible to
+To help make your HUZU installation more secure by making certain attacks impossible to
 exploit even if a vulnerability is found, binaries are hardened by default.
 This can be disabled with:
 
@@ -192,7 +205,7 @@ Hardening enables the following features:
 
     To test that you have built PIE executable, install scanelf, part of paxutils, and use:
 
-    	scanelf -e ./pivxd
+    	scanelf -e ./HUZU
 
     The output should contain:
      TYPE
@@ -200,16 +213,29 @@ Hardening enables the following features:
 
 * Non-executable Stack
     If the stack is executable then trivial stack based buffer overflow exploits are possible if
-    vulnerable buffers are found. By default, pivx should be built with a non-executable stack
+    vulnerable buffers are found. By default, HUZU should be built with a non-executable stack
     but if one of the libraries it uses asks for an executable stack or someone makes a mistake
     and uses a compiler extension which requires an executable stack, it will silently build an
     executable without the non-executable stack protection.
 
     To verify that the stack is non-executable after compiling use:
-    `scanelf -e ./pivxd`
+    `scanelf -e ./HUZU`
 
     the output should contain:
 	STK/REL/PTL
 	RW- R-- RW-
 
     The STK RW- means that the stack is readable and writeable but not executable.
+
+Disable-wallet mode
+--------------------
+When the intention is to run only a P2P node without a wallet, HUZU may be compiled in
+disable-wallet mode with:
+
+    ./configure --disable-wallet
+
+In this case there is no dependency on Berkeley DB 4.8.
+
+Mining is also possible in disable-wallet mode, but only using the `getblocktemplate` RPC
+call not `getwork`.
+

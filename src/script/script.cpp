@@ -1,10 +1,13 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017-2018 The PIVX developers
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "script.h"
+
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 
@@ -151,14 +154,10 @@ const char* GetOpName(opcodetype opcode)
     case OP_NOP9                   : return "OP_NOP9";
     case OP_NOP10                  : return "OP_NOP10";
 
-    // zerocoin
-    case OP_ZEROCOINMINT           : return "OP_ZEROCOINMINT";
-    case OP_ZEROCOINSPEND          : return "OP_ZEROCOINSPEND";
-
     case OP_INVALIDOPCODE          : return "OP_INVALIDOPCODE";
 
     // Note:
-    //  The template matching params OP_SMALLINTEGER/etc are defined in opcodetype enum
+    //  The template matching params OP_SMALLDATA/etc are defined in opcodetype enum
     //  as kind of implementation hack, they are *NOT* real opcodes.  If found in real
     //  Script, just let the default: case deal with them.
 
@@ -248,23 +247,9 @@ bool CScript::IsPayToScriptHash() const
             this->at(22) == OP_EQUAL);
 }
 
-bool CScript::IsZerocoinMint() const
+bool CScript::IsPushOnly() const
 {
-    //fast test for Zerocoin Mint CScripts
-    return (this->size() > 0 &&
-        this->at(0) == OP_ZEROCOINMINT);
-}
-
-bool CScript::IsZerocoinSpend() const
-{
-    if (this->empty())
-        return false;
-
-    return (this->at(0) == OP_ZEROCOINSPEND);
-}
-
-bool CScript::IsPushOnly(const_iterator pc) const
-{
+    const_iterator pc = begin();
     while (pc < end())
     {
         opcodetype opcode;
@@ -278,11 +263,6 @@ bool CScript::IsPushOnly(const_iterator pc) const
             return false;
     }
     return true;
-}
-
-bool CScript::IsPushOnly() const
-{
-    return this->IsPushOnly(begin());
 }
 
 std::string CScript::ToString() const
@@ -300,16 +280,10 @@ std::string CScript::ToString() const
             str += "[error]";
             return str;
         }
-        if (0 <= opcode && opcode <= OP_PUSHDATA4) {
+        if (0 <= opcode && opcode <= OP_PUSHDATA4)
             str += ValueString(vch);
-        } else {
+        else
             str += GetOpName(opcode);
-            if (opcode == OP_ZEROCOINSPEND) {
-                //Zerocoinspend has no further op codes.
-                break;
-            }
-        }
-
     }
     return str;
 }

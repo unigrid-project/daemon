@@ -1,8 +1,10 @@
-// Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #ifndef MASTERNODE_PAYMENTS_H
 #define MASTERNODE_PAYMENTS_H
 
@@ -29,8 +31,8 @@ extern CMasternodePayments masternodePayments;
 void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight);
 std::string GetRequiredPaymentsString(int nBlockHeight);
-bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMinted);
-void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, bool fZPIVStake);
+bool IsBlockValueValid(const CBlock& block, int64_t nExpectedValue);
+bool FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, int nTxNewTime);
 
 void DumpMasternodePayments();
 
@@ -283,7 +285,7 @@ public:
     int GetMinMasternodePaymentsProto();
     void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
     std::string GetRequiredPaymentsString(int nBlockHeight);
-    void FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool fZPIVStake);
+    bool FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, int nTxNewTime);
     std::string ToString() const;
     int GetOldestBlock();
     int GetNewestBlock();

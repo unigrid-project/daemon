@@ -1,5 +1,8 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2017-2018 The PIVX developers
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,7 +20,7 @@ class TransactionFilterProxy : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    explicit TransactionFilterProxy(QObject* parent = 0);
+    explicit TransactionFilterProxy(QObject *parent = 0);
 
     /** Earliest date that can be represented (far in the past) */
     static const QDateTime MIN_DATE;
@@ -25,19 +28,18 @@ public:
     static const QDateTime MAX_DATE;
     /** Type filter bit field (all types) */
     static const quint32 ALL_TYPES = 0xFFFFFFFF;
-    /** Type filter bit field (all types but Obfuscation-SPAM ... enum 0-14 are common) */
-    static const quint32 COMMON_TYPES = 0x0005FFFF;
 
-    static quint32 TYPE(int type) { return 1 << type; }
+    static quint32 TYPE(int type) { return 1<<type; }
 
-    enum WatchOnlyFilter {
+    enum WatchOnlyFilter
+    {
         WatchOnlyFilter_All,
         WatchOnlyFilter_Yes,
         WatchOnlyFilter_No
     };
 
-    void setDateRange(const QDateTime& from, const QDateTime& to);
-    void setAddressPrefix(const QString& addrPrefix);
+    void setDateRange(const QDateTime &from, const QDateTime &to);
+    void setAddressPrefix(const QString &addrPrefix);
     /**
       @note Type filter takes a bit field created with TYPE() or ALL_TYPES
      */
@@ -51,10 +53,10 @@ public:
     /** Set whether to show conflicted transactions. */
     void setShowInactive(bool showInactive);
 
-    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
 
 private:
     QDateTime dateFrom;

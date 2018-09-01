@@ -1,7 +1,10 @@
-#!/usr/bin/env python
-# Copyright (c) 2014 Wladimir J. van der Laan
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 '''
 Run this script from the root of the repository to update all translations from
 transifex.
@@ -26,11 +29,9 @@ import xml.etree.ElementTree as ET
 # Name of transifex tool
 TX = 'tx'
 # Name of source language file
-SOURCE_LANG = 'pivx_en.ts'
+SOURCE_LANG = 'bitcoin_en.ts'
 # Directory with locale files
 LOCALE_DIR = 'src/qt/locale'
-# Minimum number of messages for translation to be considered at all
-MIN_NUM_MESSAGES = 10
 
 def check_at_repository_root():
     if not os.path.exists('.git'):
@@ -39,7 +40,7 @@ def check_at_repository_root():
         exit(1)
 
 def fetch_all_translations():
-    if subprocess.call([TX, 'pull', '-f', '-a']):
+    if subprocess.call([TX, 'pull', '-f']):
         print('Error while fetching translations', file=sys.stderr)
         exit(1)
 
@@ -51,10 +52,7 @@ def find_format_specifiers(s):
         percent = s.find('%', pos)
         if percent < 0:
             break
-        try:
-            specifiers.append(s[percent+1])
-        except:
-            print('Failed to get specifier')
+        specifiers.append(s[percent+1])
         pos = percent+2
     return specifiers
 
@@ -68,14 +66,6 @@ def split_format_specifiers(specifiers):
         else:
             other.append(s)
 
-    # If both numeric format specifiers and "others" are used, assume we're dealing
-    # with a Qt-formatted message. In the case of Qt formatting (see https://doc.qt.io/qt-5/qstring.html#arg)
-    # only numeric formats are replaced at all. This means "(percentage: %1%)" is valid, without needing
-    # any kind of escaping that would be necessary for strprintf. Without this, this function
-    # would wrongly detect '%)' as a printf format specifier.
-    if numeric:
-        other = []
-
     # numeric (Qt) can be present in any order, others (strprintf) must be in specified order
     return set(numeric),other
 
@@ -83,7 +73,7 @@ def sanitize_string(s):
     '''Sanitize string for printing'''
     return s.replace('\n',' ')
 
-def check_format_specifiers(source, translation, errors, numerus):
+def check_format_specifiers(source, translation, errors):
     source_f = split_format_specifiers(find_format_specifiers(source))
     # assert that no source messages contain both Qt and strprintf format specifiers
     # if this fails, go change the source as this is hacky and confusing!
@@ -91,13 +81,10 @@ def check_format_specifiers(source, translation, errors, numerus):
     try:
         translation_f = split_format_specifiers(find_format_specifiers(translation))
     except IndexError:
-        errors.append("Parse error in translation for '%s': '%s'" % (sanitize_string(source), sanitize_string(translation)))
+        errors.append("Parse error in translation '%s'" % sanitize_string(translation))
         return False
     else:
         if source_f != translation_f:
-            if numerus and source_f == (set(), ['n']) and translation_f == (set(), []) and translation.find('%') == -1:
-                # Allow numerus translations to omit %n specifier (usually when it only has one possible value)
-                return True
             errors.append("Mismatch between '%s' and '%s'" % (sanitize_string(source), sanitize_string(translation)))
             return False
     return True
@@ -164,7 +151,7 @@ def postprocess_translations(reduce_diff_hacks=False):
                     if translation is None:
                         continue
                     errors = []
-                    valid = check_format_specifiers(source, translation, errors, numerus)
+                    valid = check_format_specifiers(source, translation, errors)
 
                     for error in errors:
                         print('%s: %s' % (filename, error))
@@ -181,15 +168,6 @@ def postprocess_translations(reduce_diff_hacks=False):
                 # Remove entire message if it is an unfinished translation
                 if translation_node.get('type') == 'unfinished':
                     context.remove(message)
-
-        # check if document is (virtually) empty, and remove it if so
-        num_messages = 0
-        for context in root.findall('context'):
-            for message in context.findall('message'):
-                num_messages += 1
-        if num_messages < MIN_NUM_MESSAGES:
-            print('Removing %s, as it contains only %i messages' % (filepath, num_messages))
-            continue
 
         # write fixed-up tree
         # if diff reduction requested, replace some XML to 'sanitize' to qt formatting
@@ -208,3 +186,4 @@ if __name__ == '__main__':
     check_at_repository_root()
     fetch_all_translations()
     postprocess_translations()
+

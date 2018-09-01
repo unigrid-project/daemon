@@ -1,5 +1,9 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_TRANSACTIONDESC_H
@@ -15,12 +19,12 @@ class CWalletTx;
 
 /** Provide a human-readable extended HTML description of a transaction.
  */
-class TransactionDesc : public QObject
+class TransactionDesc: public QObject
 {
     Q_OBJECT
 
 public:
-    static QString toHTML(CWallet* wallet, CWalletTx& wtx, TransactionRecord* rec, int unit);
+    static QString toHTML(CWallet *wallet, CWalletTx &wtx, TransactionRecord *rec, int unit);
 
 private:
     TransactionDesc() {}

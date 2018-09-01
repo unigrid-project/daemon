@@ -1,5 +1,9 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_QVALIDATEDLINEEDIT_H
@@ -15,17 +19,17 @@ class QValidatedLineEdit : public QLineEdit
     Q_OBJECT
 
 public:
-    explicit QValidatedLineEdit(QWidget* parent);
+    explicit QValidatedLineEdit(QWidget *parent);
     void clear();
-    void setCheckValidator(const QValidator* v);
+    void setCheckValidator(const QValidator *v);
 
 protected:
-    void focusInEvent(QFocusEvent* evt);
-    void focusOutEvent(QFocusEvent* evt);
+    void focusInEvent(QFocusEvent *evt);
+    void focusOutEvent(QFocusEvent *evt);
 
 private:
     bool valid;
-    const QValidator* checkValidator;
+    const QValidator *checkValidator;
 
 public slots:
     void setValid(bool valid);

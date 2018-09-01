@@ -1,5 +1,8 @@
-// Copyright (c) 2015 The Bitcoin Core developers
-// Copyright (c) 2016-2017 The PIVX developers
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,9 +18,9 @@ class PlatformStyle
 {
 public:
     /** Get style associated with provided platform name, or 0 if not known */
-    static const PlatformStyle* instantiate(const QString& platformId);
+    static const PlatformStyle *instantiate(const QString &platformId);
 
-    const QString& getName() const { return name; }
+    const QString &getName() const { return name; }
 
     bool getImagesOnButtons() const { return imagesOnButtons; }
     bool getUseExtraSpacing() const { return useExtraSpacing; }
@@ -41,7 +44,7 @@ public:
     QIcon TextColorIcon(const QIcon& icon) const;
 
 private:
-    PlatformStyle(const QString& name, bool imagesOnButtons, bool colorizeIcons, bool useExtraSpacing);
+    PlatformStyle(const QString &name, bool imagesOnButtons, bool colorizeIcons, bool useExtraSpacing);
 
     QString name;
     bool imagesOnButtons;
@@ -53,3 +56,4 @@ private:
 };
 
 #endif // BITCOIN_QT_PLATFORMSTYLE_H
+

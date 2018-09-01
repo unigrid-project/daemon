@@ -5,7 +5,7 @@
  * ==========================(LICENSE BEGIN)============================
  *
  * Copyright (c) 2007-2010  Projet RNRT SAPHIR
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -13,10 +13,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -33,7 +33,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "sph_groestl.h"
+#include "crypto/sph_groestl.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -2738,7 +2738,7 @@ static void
 groestl_small_init(sph_groestl_small_context *sc, unsigned out_size)
 {
 	size_t u;
-	for (u = 0; u < 64; u ++) sc->buf[u] = 0;
+
 	sc->ptr = 0;
 #if SPH_GROESTL_64
 	for (u = 0; u < 7; u ++)
@@ -2815,13 +2815,13 @@ groestl_small_close(sph_groestl_small_context *sc,
 {
 	unsigned char *buf;
 	unsigned char pad[72];
-	size_t u=0, ptr=0, pad_len=0;
+	size_t u, ptr, pad_len;
 #if SPH_64
-	sph_u64 count=0;
+	sph_u64 count;
 #else
-	sph_u32 count_high=0, count_low=0;
+	sph_u32 count_high, count_low;
 #endif
-	unsigned z=0;
+	unsigned z;
 	DECL_STATE_SMALL
 
 	buf = sc->buf;
@@ -2875,7 +2875,6 @@ groestl_big_init(sph_groestl_big_context *sc, unsigned out_size)
 {
 	size_t u;
 
-	for (u = 0; u < 128; u ++) sc->buf[u] = 0;
 	sc->ptr = 0;
 #if SPH_GROESTL_64
 	for (u = 0; u < 15; u ++)
@@ -2952,13 +2951,13 @@ groestl_big_close(sph_groestl_big_context *sc,
 {
 	unsigned char *buf;
 	unsigned char pad[136];
-	size_t ptr=0, pad_len=0, u=0;
+	size_t ptr, pad_len, u;
 #if SPH_64
-	sph_u64 count=0;
+	sph_u64 count;
 #else
-	sph_u32 count_high=0, count_low=0;
+	sph_u32 count_high, count_low;
 #endif
-	unsigned z=0;
+	unsigned z;
 	DECL_STATE_BIG
 
 	buf = sc->buf;

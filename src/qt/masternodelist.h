@@ -1,30 +1,29 @@
-// Copyright (c) 2014-2016 The Dash Developers
-// Copyright (c) 2016-2017 The PIVX developers
-// Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #ifndef MASTERNODELIST_H
 #define MASTERNODELIST_H
 
-#include "masternode.h"
-#include "platformstyle.h"
+#include "primitives/transaction.h"
 #include "sync.h"
 #include "util.h"
+#include "guiutil.h"
 
 #include <QMenu>
 #include <QTimer>
 #include <QWidget>
+#include <QDialog>
+#include <QHeaderView>
+#include <QItemSelection>
+#include <QKeyEvent>
+#include <QPoint>
+#include <QVariant>
 
-#define MY_MASTERNODELIST_UPDATE_SECONDS 60
-#define MASTERNODELIST_UPDATE_SECONDS 15
-#define MASTERNODELIST_FILTER_COOLDOWN_SECONDS 3
+#define MY_MASTERNODELIST_UPDATE_SECONDS                 60
+#define MASTERNODELIST_UPDATE_SECONDS                    15
+#define MASTERNODELIST_FILTER_COOLDOWN_SECONDS            3
 
-namespace Ui
-{
-class MasternodeList;
+namespace Ui {
+    class MasternodeList;
 }
 
-class ClientModel;
 class WalletModel;
 
 QT_BEGIN_NAMESPACE
@@ -37,38 +36,46 @@ class MasternodeList : public QWidget
     Q_OBJECT
 
 public:
-    explicit MasternodeList(QWidget* parent = 0);
+    explicit MasternodeList(QWidget *parent = 0);
     ~MasternodeList();
 
-    void setClientModel(ClientModel* clientModel);
-    void setWalletModel(WalletModel* walletModel);
+    void setModel(WalletModel *model);
     void StartAlias(std::string strAlias);
+    void RemoveAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
 
 private:
-    QMenu* contextMenu;
+    QMenu *contextMenu;
     int64_t nTimeFilterUpdated;
     bool fFilterUpdated;
 
 public Q_SLOTS:
-    void updateMyMasternodeInfo(QString strAlias, QString strAddr, CMasternode* pmn);
+    void updateMyMasternodeInfo(QString strAlias, QString strAddr, const COutPoint& outpoint);
     void updateMyNodeList(bool fForce = false);
+    void updateNodeList();
 
 Q_SIGNALS:
 
 private:
-    QTimer* timer;
-    Ui::MasternodeList* ui;
-    ClientModel* clientModel;
-    WalletModel* walletModel;
-    CCriticalSection cs_mnlistupdate;
+    QTimer *timer;
+    Ui::MasternodeList *ui;
+    WalletModel *model;
+
+    // Protects tableWidgetMasternodes
+    CCriticalSection cs_mnlist;
+
+    // Protects tableWidgetMyMasternodes
+    CCriticalSection cs_mymnlist;
+
     QString strCurrentFilter;
 
 private Q_SLOTS:
-    void showContextMenu(const QPoint&);
+    void showContextMenu(const QPoint &);
+    void on_filterLineEdit_textChanged(const QString &strFilterIn);
     void on_startButton_clicked();
     void on_startAllButton_clicked();
-    void on_startMissingButton_clicked();
+    void on_createMNButton_clicked();
+    void on_removeMNButton_clicked();
     void on_tableWidgetMyMasternodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
 };

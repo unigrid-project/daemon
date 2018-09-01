@@ -1,6 +1,9 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_COINCONTROLDIALOG_H
@@ -19,13 +22,11 @@
 
 class WalletModel;
 
-class MultisigDialog;
 class CCoinControl;
 class CTxMemPool;
 
-namespace Ui
-{
-class CoinControlDialog;
+namespace Ui {
+    class CoinControlDialog;
 }
 
 class CoinControlDialog : public QDialog
@@ -33,43 +34,40 @@ class CoinControlDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CoinControlDialog(QWidget* parent = nullptr, bool fMultisigEnabled = false);
+    explicit CoinControlDialog(QWidget *parent = 0);
     ~CoinControlDialog();
 
-    void setModel(WalletModel* model);
-    void updateDialogLabels();
+    void setModel(WalletModel *model);
 
     // static because also called from sendcoinsdialog
     static void updateLabels(WalletModel*, QDialog*);
     static QString getPriorityLabel(double dPriority, double mempoolEstimatePriority);
 
     static QList<CAmount> payAmounts;
-    static CCoinControl* coinControl;
-    static int nSplitBlockDummy;
+    static CCoinControl *coinControl;
 
 private:
-    Ui::CoinControlDialog* ui;
-    WalletModel* model;
+    Ui::CoinControlDialog *ui;
+    WalletModel *model;
     int sortColumn;
     Qt::SortOrder sortOrder;
-    bool fMultisigEnabled;
 
-    QMenu* contextMenu;
-    QTreeWidgetItem* contextMenuItem;
-    QAction* copyTransactionHashAction;
-    QAction* lockAction;
-    QAction* unlockAction;
+    QMenu *contextMenu;
+    QTreeWidgetItem *contextMenuItem;
+    QAction *copyTransactionHashAction;
+    QAction *lockAction;
+    QAction *unlockAction;
 
     QString strPad(QString, int, QString);
     void sortView(int, Qt::SortOrder);
     void updateView();
 
-    enum {
+    enum
+    {
         COLUMN_CHECKBOX,
         COLUMN_AMOUNT,
         COLUMN_LABEL,
         COLUMN_ADDRESS,
-        COLUMN_TYPE,
         COLUMN_DATE,
         COLUMN_CONFIRMATIONS,
         COLUMN_PRIORITY,
@@ -83,14 +81,17 @@ private:
     // some columns have a hidden column containing the value used for sorting
     int getMappedColumn(int column, bool fVisibleColumn = true)
     {
-        if (fVisibleColumn) {
+        if (fVisibleColumn)
+        {
             if (column == COLUMN_AMOUNT_INT64)
                 return COLUMN_AMOUNT;
             else if (column == COLUMN_PRIORITY_INT64)
                 return COLUMN_PRIORITY;
             else if (column == COLUMN_DATE_INT64)
                 return COLUMN_DATE;
-        } else {
+        }
+        else
+        {
             if (column == COLUMN_AMOUNT)
                 return COLUMN_AMOUNT_INT64;
             else if (column == COLUMN_PRIORITY)
@@ -103,7 +104,7 @@ private:
     }
 
 private slots:
-    void showMenu(const QPoint&);
+    void showMenu(const QPoint &);
     void copyAmount();
     void copyLabel();
     void copyAddress();
@@ -124,7 +125,6 @@ private slots:
     void headerSectionClicked(int);
     void buttonBoxClicked(QAbstractButton*);
     void buttonSelectAllClicked();
-    void buttonToggleLockClicked();
     void updateLabelLocked();
 };
 

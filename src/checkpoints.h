@@ -1,5 +1,8 @@
-// Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,14 +24,14 @@ namespace Checkpoints
 typedef std::map<int, uint256> MapCheckpoints;
 
 struct CCheckpointData {
-    const MapCheckpoints* mapCheckpoints;
+    const MapCheckpoints *mapCheckpoints;
     int64_t nTimeLastCheckpoint;
     int64_t nTransactionsLastCheckpoint;
     double fTransactionsPerDay;
 };
 
 //! Returns true if block passes checkpoint checks
-bool CheckBlock(int nHeight, const uint256& hash, bool fMatchesCheckpoint = false);
+bool CheckBlock(int nHeight, const uint256& hash);
 
 //! Return conservative estimate of total number of blocks, 0 if unknown
 int GetTotalBlocksEstimate();

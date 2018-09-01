@@ -1,6 +1,9 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2017-2018 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "peertablemodel.h"
@@ -16,15 +19,16 @@
 #include <QList>
 #include <QTimer>
 
-bool NodeLessThan::operator()(const CNodeCombinedStats& left, const CNodeCombinedStats& right) const
+bool NodeLessThan::operator()(const CNodeCombinedStats &left, const CNodeCombinedStats &right) const
 {
-    const CNodeStats* pLeft = &(left.nodeStats);
-    const CNodeStats* pRight = &(right.nodeStats);
+    const CNodeStats *pLeft = &(left.nodeStats);
+    const CNodeStats *pRight = &(right.nodeStats);
 
     if (order == Qt::DescendingOrder)
         std::swap(pLeft, pRight);
 
-    switch (column) {
+    switch(column)
+    {
     case PeerTableModel::Address:
         return pLeft->addrName.compare(pRight->addrName) < 0;
     case PeerTableModel::Subversion:
@@ -54,18 +58,20 @@ public:
     {
         {
             TRY_LOCK(cs_vNodes, lockNodes);
-            if (!lockNodes) {
+            if (!lockNodes)
+            {
                 // skip the refresh if we can't immediately get the lock
                 return;
             }
             cachedNodeStats.clear();
-
+#if QT_VERSION >= 0x040700
             cachedNodeStats.reserve(vNodes.size());
-            foreach (CNode* pnode, vNodes) {
+#endif
+            BOOST_FOREACH(CNode* pnode, vNodes)
+            {
                 CNodeCombinedStats stats;
                 stats.nodeStateStats.nMisbehavior = 0;
                 stats.nodeStateStats.nSyncHeight = -1;
-                stats.nodeStateStats.nCommonHeight = -1;
                 stats.fNodeStateStatsAvailable = false;
                 pnode->copyStats(stats.nodeStats);
                 cachedNodeStats.append(stats);
@@ -75,8 +81,9 @@ public:
         // Try to retrieve the CNodeStateStats for each node.
         {
             TRY_LOCK(cs_main, lockMain);
-            if (lockMain) {
-                BOOST_FOREACH (CNodeCombinedStats& stats, cachedNodeStats)
+            if (lockMain)
+            {
+                BOOST_FOREACH(CNodeCombinedStats &stats, cachedNodeStats)
                     stats.fNodeStateStatsAvailable = GetNodeStateStats(stats.nodeStats.nodeid, stats.nodeStateStats);
             }
         }
@@ -88,7 +95,7 @@ public:
         // build index map
         mapNodeRows.clear();
         int row = 0;
-        foreach (const CNodeCombinedStats& stats, cachedNodeStats)
+        BOOST_FOREACH(CNodeCombinedStats &stats, cachedNodeStats)
             mapNodeRows.insert(std::pair<NodeId, int>(stats.nodeStats.nodeid, row++));
     }
 
@@ -97,9 +104,9 @@ public:
         return cachedNodeStats.size();
     }
 
-    CNodeCombinedStats* index(int idx)
+    CNodeCombinedStats *index(int idx)
     {
-        if (idx >= 0 && idx < cachedNodeStats.size()) {
+        if(idx >= 0 && idx < cachedNodeStats.size()) {
             return &cachedNodeStats[idx];
         } else {
             return 0;
@@ -107,11 +114,12 @@ public:
     }
 };
 
-PeerTableModel::PeerTableModel(ClientModel* parent) : QAbstractTableModel(parent),
-                                                      clientModel(parent),
-                                                      timer(0)
+PeerTableModel::PeerTableModel(ClientModel *parent) :
+    QAbstractTableModel(parent),
+    clientModel(parent),
+    timer(0)
 {
-    columns << tr("Address/Hostname") << tr("Version") << tr("Ping Time");
+    columns << tr("Address/Hostname") << tr("User Agent") << tr("Ping Time");
     priv = new PeerTablePriv();
     // default to unsorted
     priv->sortColumn = -1;
@@ -135,28 +143,28 @@ void PeerTableModel::stopAutoRefresh()
     timer->stop();
 }
 
-int PeerTableModel::rowCount(const QModelIndex& parent) const
+int PeerTableModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return priv->size();
 }
 
-int PeerTableModel::columnCount(const QModelIndex& parent) const
+int PeerTableModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return columns.length();
-    ;
+    return columns.length();;
 }
 
-QVariant PeerTableModel::data(const QModelIndex& index, int role) const
+QVariant PeerTableModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if(!index.isValid())
         return QVariant();
 
-    CNodeCombinedStats* rec = static_cast<CNodeCombinedStats*>(index.internalPointer());
+    CNodeCombinedStats *rec = static_cast<CNodeCombinedStats*>(index.internalPointer());
 
     if (role == Qt::DisplayRole) {
-        switch (index.column()) {
+        switch(index.column())
+        {
         case Address:
             return QString::fromStdString(rec->nodeStats.addrName);
         case Subversion:
@@ -174,36 +182,41 @@ QVariant PeerTableModel::data(const QModelIndex& index, int role) const
 
 QVariant PeerTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Horizontal) {
-        if (role == Qt::DisplayRole && section < columns.size()) {
+    if(orientation == Qt::Horizontal)
+    {
+        if(role == Qt::DisplayRole && section < columns.size())
+        {
             return columns[section];
         }
     }
     return QVariant();
 }
 
-Qt::ItemFlags PeerTableModel::flags(const QModelIndex& index) const
+Qt::ItemFlags PeerTableModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    if(!index.isValid())
         return 0;
 
     Qt::ItemFlags retval = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     return retval;
 }
 
-QModelIndex PeerTableModel::index(int row, int column, const QModelIndex& parent) const
+QModelIndex PeerTableModel::index(int row, int column, const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    CNodeCombinedStats* data = priv->index(row);
+    CNodeCombinedStats *data = priv->index(row);
 
-    if (data) {
+    if (data)
+    {
         return createIndex(row, column, data);
-    } else {
+    }
+    else
+    {
         return QModelIndex();
     }
 }
 
-const CNodeCombinedStats* PeerTableModel::getNodeStats(int idx)
+const CNodeCombinedStats *PeerTableModel::getNodeStats(int idx)
 {
     return priv->index(idx);
 }

@@ -1,6 +1,9 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_SIGNVERIFYMESSAGEDIALOG_H
@@ -10,9 +13,8 @@
 
 class WalletModel;
 
-namespace Ui
-{
-class SignVerifyMessageDialog;
+namespace Ui {
+    class SignVerifyMessageDialog;
 }
 
 class SignVerifyMessageDialog : public QDialog
@@ -20,22 +22,22 @@ class SignVerifyMessageDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SignVerifyMessageDialog(QWidget* parent);
+    explicit SignVerifyMessageDialog(QWidget *parent);
     ~SignVerifyMessageDialog();
 
-    void setModel(WalletModel* model);
-    void setAddress_SM(const QString& address);
-    void setAddress_VM(const QString& address);
+    void setModel(WalletModel *model);
+    void setAddress_SM(const QString &address);
+    void setAddress_VM(const QString &address);
 
     void showTab_SM(bool fShow);
     void showTab_VM(bool fShow);
 
 protected:
-    bool eventFilter(QObject* object, QEvent* event);
+    bool eventFilter(QObject *object, QEvent *event);
 
 private:
-    Ui::SignVerifyMessageDialog* ui;
-    WalletModel* model;
+    Ui::SignVerifyMessageDialog *ui;
+    WalletModel *model;
 
 private slots:
     /* sign message */

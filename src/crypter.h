@@ -1,5 +1,8 @@
-// Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017-2018 The PIVX developers
+// Copyright c 2009-2010 Satoshi Nakamoto
+// Copyright c 2009-2014 The Bitcoin developers
+// Copyright c 2014-2015 The Dash developers
+// Copyright c 2015-2018 The PIVX developers
+// Copyright c 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -47,8 +50,7 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
-    {
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(vchCryptedKey);
         READWRITE(vchSalt);
         READWRITE(nDerivationMethod);
@@ -77,8 +79,8 @@ private:
     bool fKeySet;
 
 public:
-    bool SetKeyFromPassphrase(const SecureString& strKeyData, const std::vector<unsigned char>& chSalt, const unsigned int nRounds, const unsigned int nDerivationMethod);
-    bool Encrypt(const CKeyingMaterial& vchPlaintext, std::vector<unsigned char>& vchCiphertext);
+    bool SetKeyFromPassphrase(const SecureString &strKeyData, const std::vector<unsigned char>& chSalt, const unsigned int nRounds, const unsigned int nDerivationMethod);
+    bool Encrypt(const CKeyingMaterial& vchPlaintext, std::vector<unsigned char> &vchCiphertext);
     bool Decrypt(const std::vector<unsigned char>& vchCiphertext, CKeyingMaterial& vchPlaintext);
     bool SetKey(const CKeyingMaterial& chNewKey, const std::vector<unsigned char>& chNewIV);
 
@@ -109,12 +111,8 @@ public:
     }
 };
 
-bool EncryptSecret(const CKeyingMaterial& vMasterKey, const CKeyingMaterial& vchPlaintext, const uint256& nIV, std::vector<unsigned char>& vchCiphertext);
+bool EncryptSecret(const CKeyingMaterial& vMasterKey, const CKeyingMaterial &vchPlaintext, const uint256& nIV, std::vector<unsigned char> &vchCiphertext);
 bool DecryptSecret(const CKeyingMaterial& vMasterKey, const std::vector<unsigned char>& vchCiphertext, const uint256& nIV, CKeyingMaterial& vchPlaintext);
-
-bool EncryptAES256(const SecureString& sKey, const SecureString& sPlaintext, const std::string& sIV, std::string& sCiphertext);
-bool DecryptAES256(const SecureString& sKey, const std::string& sCiphertext, const std::string& sIV, SecureString& sPlaintext);
-
 
 /** Keystore which keeps the private keys encrypted.
  * It derives from the basic key store, which is used if no encryption is active.
@@ -165,9 +163,9 @@ public:
 
     bool Lock();
 
-    virtual bool AddCryptedKey(const CPubKey& vchPubKey, const std::vector<unsigned char>& vchCryptedSecret);
-    bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey);
-    bool HaveKey(const CKeyID& address) const
+    virtual bool AddCryptedKey(const CPubKey &vchPubKey, const std::vector<unsigned char> &vchCryptedSecret);
+    bool AddKeyPubKey(const CKey& key, const CPubKey &pubkey);
+    bool HaveKey(const CKeyID &address) const
     {
         {
             LOCK(cs_KeyStore);
@@ -177,31 +175,29 @@ public:
         }
         return false;
     }
-    bool GetKey(const CKeyID& address, CKey& keyOut) const;
-    bool GetPubKey(const CKeyID& address, CPubKey& vchPubKeyOut) const;
-    void GetKeys(std::set<CKeyID>& setAddress) const
+    bool GetKey(const CKeyID &address, CKey& keyOut) const;
+    bool GetPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const;
+    void GetKeys(std::set<CKeyID> &setAddress) const
     {
-        if (!IsCrypted()) {
+        if (!IsCrypted())
+        {
             CBasicKeyStore::GetKeys(setAddress);
             return;
         }
         setAddress.clear();
         CryptedKeyMap::const_iterator mi = mapCryptedKeys.begin();
-        while (mi != mapCryptedKeys.end()) {
+        while (mi != mapCryptedKeys.end())
+        {
             setAddress.insert((*mi).first);
             mi++;
         }
     }
 
-    bool GetDeterministicSeed(const uint256& hashSeed, uint256& seed);
-    bool AddDeterministicSeed(const uint256& seed);
-
-
     /**
      * Wallet status (encrypted, locked) changed.
      * Note: Called without locks held.
      */
-    boost::signals2::signal<void(CCryptoKeyStore* wallet)> NotifyStatusChanged;
+    boost::signals2::signal<void (CCryptoKeyStore* wallet)> NotifyStatusChanged;
 };
 
 #endif // BITCOIN_CRYPTER_H
