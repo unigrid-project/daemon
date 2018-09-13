@@ -1,0 +1,26 @@
+[Unit]
+Description=HUZU's distributed currency daemon
+After=network.target
+
+[Service]
+User=huzu
+Group=huzu
+
+Type=forking
+PIDFile=/var/lib/huzud/huzud.pid
+
+ExecStart=/usr/bin/huzud -daemon -pid=/var/lib/huzud/huzud.pid \
+          -conf=/etc/huzu/huzu.conf -datadir=/var/lib/huzud
+
+ExecStop=-/usr/bin/huzu-cli -conf=/etc/huzu/huzu.conf \
+         -datadir=/var/lib/huzud stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

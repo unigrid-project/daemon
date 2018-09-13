@@ -1,9 +1,7 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef MASTERNODEMAN_H
@@ -114,13 +112,14 @@ public:
 
     int CountEnabled(int protocolVersion = -1);
 
+    void CountNetworks(int protocolVersion, int& ipv4, int& ipv6, int& onion);
+
     void DsegUpdate(CNode* pnode);
 
     /// Find an entry
     CMasternode* Find(const CScript& payee);
     CMasternode* Find(const CTxIn& vin);
     CMasternode* Find(const CPubKey& pubKeyMasternode);
-    CMasternode* Find(const COutPoint& outpoint);
 
     /// Find an entry in the masternode list that is next to be paid
     CMasternode* GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTime, int& nCount);
@@ -148,9 +147,14 @@ public:
     /// Return the number of (unique) Masternodes
     int size() { return vMasternodes.size(); }
 
+    /// Return the number of Masternodes older than (default) 8000 seconds
+    int stable_size ();
+
     std::string ToString() const;
 
     void Remove(CTxIn vin);
+
+    int GetEstimatedMasternodes(int nBlock);
 
     /// Update masternode list and maps using provided CMasternodeBroadcast
     void UpdateMasternodeList(CMasternodeBroadcast mnb);

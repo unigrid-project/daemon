@@ -1,9 +1,9 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef __cplusplus
@@ -70,6 +70,16 @@ public:
 enum {
     NODE_NETWORK = (1 << 0),
 
+    // NODE_BLOOM means the node is capable and willing to handle bloom-filtered connections.
+    // Bitcoin Core nodes used to support this by default, without advertising this bit,
+    // but no longer do as of protocol version 70011 (= NO_BLOOM_VERSION)
+    NODE_BLOOM = (1 << 2),
+
+	// NODE_BLOOM_WITHOUT_MN means the node has the same features as NODE_BLOOM with the only difference
+	// that the node doens't want to receive master nodes messages. (the 1<<3 was not picked as constant because on bitcoin 0.14 is witness and we want that update here )
+
+	 NODE_BLOOM_WITHOUT_MN = (1 << 4),
+
     // Bits 24-31 are reserved for temporary experiments. Just pick a bit that
     // isn't getting used, or one not being used much, and notify the
     // bitcoin-development mailing list. Remember that service bits are just
@@ -135,6 +145,7 @@ public:
     friend bool operator<(const CInv& a, const CInv& b);
 
     bool IsKnownType() const;
+    bool IsMasterNodeType() const;
     const char* GetCommand() const;
     std::string ToString() const;
 

@@ -1,9 +1,8 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2016 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_MINER_H
@@ -28,8 +27,7 @@ CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet,
 /** Modify the extranonce in a block */
 void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 /** Check mined block */
-bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey);
-void UpdateTime(CBlockHeader* block, const CBlockIndex* pindexPrev, bool fProofOfStake);
+void UpdateTime(CBlockHeader* block, const CBlockIndex* pindexPrev);
 
 void BitcoinMiner(CWallet* pwallet, bool fProofOfStake);
 

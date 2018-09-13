@@ -1,8 +1,7 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
+// Copyright (c) 2012 Pieter Wuille
+// Copyright (c) 2012-2014 The Bitcoin developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -29,7 +28,7 @@ int CAddrInfo::GetNewBucket(const uint256& nKey, const CNetAddr& src) const
     return hash2 % ADDRMAN_NEW_BUCKET_COUNT;
 }
 
-int CAddrInfo::GetBucketPosition(const uint256 &nKey, bool fNew, int nBucket) const
+int CAddrInfo::GetBucketPosition(const uint256& nKey, bool fNew, int nBucket) const
 {
     uint64_t hash1 = (CHashWriter(SER_GETHASH, 0) << nKey << (fNew ? 'N' : 'K') << nBucket << GetKey()).GetHash().GetLow64();
     return hash1 % ADDRMAN_BUCKET_SIZE;
@@ -416,15 +415,15 @@ int CAddrMan::Check_()
 
     for (int n = 0; n < ADDRMAN_TRIED_BUCKET_COUNT; n++) {
         for (int i = 0; i < ADDRMAN_BUCKET_SIZE; i++) {
-             if (vvTried[n][i] != -1) {
-                 if (!setTried.count(vvTried[n][i]))
-                     return -11;
-                 if (mapInfo[vvTried[n][i]].GetTriedBucket(nKey) != n)
-                     return -17;
-                 if (mapInfo[vvTried[n][i]].GetBucketPosition(nKey, false, n) != i)
-                     return -18;
-                 setTried.erase(vvTried[n][i]);
-             }
+            if (vvTried[n][i] != -1) {
+                if (!setTried.count(vvTried[n][i]))
+                    return -11;
+                if (mapInfo[vvTried[n][i]].GetTriedBucket(nKey) != n)
+                    return -17;
+                if (mapInfo[vvTried[n][i]].GetBucketPosition(nKey, false, n) != i)
+                    return -18;
+                setTried.erase(vvTried[n][i]);
+            }
         }
     }
 

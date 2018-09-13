@@ -1,0 +1,11 @@
+[Protocol]
+exec=huzu-qt '%u'
+protocol=huzu
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false

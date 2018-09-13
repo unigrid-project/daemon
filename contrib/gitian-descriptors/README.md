@@ -20,14 +20,14 @@ Sanity checks:
 
 Once you've got the right hardware and software:
 
-    git clone git://github.com/bitcoin/bitcoin.git
+    git clone git://github.com/huzu-project/huzu.git
     git clone git://github.com/devrandom/gitian-builder.git
     mkdir gitian-builder/inputs
     cd gitian-builder/inputs
 
     # Create base images
     cd gitian-builder
-    bin/make-base-vm --suite precise --arch amd64
+    bin/make-base-vm --suite trusty --arch amd64
     cd ..
 
     # Get inputs (see doc/release-process.md for exact inputs needed and where to get them)
@@ -62,5 +62,5 @@ Here's a description of Gavin's setup on OSX 10.6:
 5. Still inside Ubuntu, tell gitian-builder to use LXC, then follow the "Once you've got the right hardware and software" instructions above:
 
 	export USE_LXC=1
-	git clone git://github.com/bitcoin/bitcoin.git
+	git clone git://github.com/huzu-project/huzu.git
 	... etc

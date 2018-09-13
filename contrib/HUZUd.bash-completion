@@ -1,15 +1,12 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+# bash programmable completion for huzud(1) and huzu-cli(1)
+# Copyright (c) 2012,2014 Christian von Roques <roques@mti.ag>
+# Distributed under the MIT/X11 software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-have HUZUd && {
+have huzud && {
 
-# call $HUZUd for RPC
-_HUZU_rpc() {
+# call $huzud for RPC
+_huzu_rpc() {
     # determine already specified args necessary for RPC
     local rpcargs=()
     for i in ${COMP_LINE}; do
@@ -19,23 +16,23 @@ _HUZU_rpc() {
                 ;;
         esac
     done
-    $HUZUd "${rpcargs[@]}" "$@"
+    $huzud "${rpcargs[@]}" "$@"
 }
 
-# Add HUZU accounts to COMPREPLY
-_HUZU_accounts() {
+# Add huzu accounts to COMPREPLY
+_huzu_accounts() {
     local accounts
-    accounts=$(_HUZU_rpc listaccounts | awk '/".*"/ { a=$1; gsub(/"/, "", a); print a}')
+    accounts=$(_huzu_rpc listaccounts | awk '/".*"/ { a=$1; gsub(/"/, "", a); print a}')
     COMPREPLY=( "${COMPREPLY[@]}" $( compgen -W "$accounts" -- "$cur" ) )
 }
 
-_HUZUd() {
+_huzud() {
     local cur prev words=() cword
-    local HUZUd
+    local huzud
 
-    # save and use original argument to invoke HUZUd
-    # HUZUd might not be in $PATH
-    HUZUd="$1"
+    # save and use original argument to invoke huzud
+    # huzud might not be in $PATH
+    huzud="$1"
 
     COMPREPLY=()
     _get_comp_words_by_ref -n = cur prev words cword
@@ -56,7 +53,7 @@ _HUZUd() {
     if ((cword > 3)); then
         case ${words[cword-3]} in
             addmultisigaddress)
-                _HUZU_accounts
+                _huzu_accounts
                 return 0
                 ;;
             getbalance|gettxout|importaddress|importprivkey|listreceivedbyaccount|listreceivedbyaddress|listsinceblock)
@@ -77,7 +74,7 @@ _HUZUd() {
                 return 0
                 ;;
             move|setaccount)
-                _HUZU_accounts
+                _huzu_accounts
                 return 0
                 ;;
         esac
@@ -93,13 +90,13 @@ _HUZUd() {
             return 0
             ;;
         getaccountaddress|getaddressesbyaccount|getbalance|getnewaddress|getreceivedbyaccount|listtransactions|move|sendfrom|sendmany)
-            _HUZU_accounts
+            _huzu_accounts
             return 0
             ;;
     esac
 
     case "$cur" in
-        -conf=*|-pid=*|-loadblock=*|-wallet=*|-rpcsslcertificatechainfile=*|-rpcsslprivatekeyfile=*)
+        -conf=*|-pid=*|-loadblock=*|-wallet=*)
             cur="${cur#*=}"
             _filedir
             return 0
@@ -117,12 +114,12 @@ _HUZUd() {
 
             # only parse --help if senseful
             if [[ -z "$cur" || "$cur" =~ ^- ]]; then
-                helpopts=$($HUZUd --help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
+                helpopts=$($huzud --help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
             fi
 
             # only parse help if senseful
             if [[ -z "$cur" || "$cur" =~ ^[a-z] ]]; then
-                commands=$(_HUZU_rpc help 2>/dev/null | awk '$1 ~ /^[a-z]/ { print $1; }')
+                commands=$(_huzu_rpc help 2>/dev/null | awk '$1 ~ /^[a-z]/ { print $1; }')
             fi
 
             COMPREPLY=( $( compgen -W "$helpopts $commands" -- "$cur" ) )
@@ -136,7 +133,7 @@ _HUZUd() {
     esac
 }
 
-complete -F _HUZUd HUZUd HUZU-cli
+complete -F _huzud huzud huzu-cli
 }
 
 # Local variables:

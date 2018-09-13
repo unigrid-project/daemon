@@ -1,93 +1,104 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_CHAIN_H
 #define BITCOIN_CHAIN_H
 
-#include "primitives/block.h"
 #include "pow.h"
+#include "primitives/block.h"
 #include "tinyformat.h"
 #include "uint256.h"
+#include "util.h"
+#include "libzerocoin/Denominations.h"
 
 #include <vector>
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
-struct CDiskBlockPos
-{
+struct CDiskBlockPos {
     int nFile;
     unsigned int nPos;
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
         READWRITE(VARINT(nFile));
         READWRITE(VARINT(nPos));
     }
 
-    CDiskBlockPos() {
+    CDiskBlockPos()
+    {
         SetNull();
     }
 
-    CDiskBlockPos(int nFileIn, unsigned int nPosIn) {
+    CDiskBlockPos(int nFileIn, unsigned int nPosIn)
+    {
         nFile = nFileIn;
         nPos = nPosIn;
     }
 
-    friend bool operator==(const CDiskBlockPos &a, const CDiskBlockPos &b) {
+    friend bool operator==(const CDiskBlockPos& a, const CDiskBlockPos& b)
+    {
         return (a.nFile == b.nFile && a.nPos == b.nPos);
     }
 
-    friend bool operator!=(const CDiskBlockPos &a, const CDiskBlockPos &b) {
+    friend bool operator!=(const CDiskBlockPos& a, const CDiskBlockPos& b)
+    {
         return !(a == b);
     }
 
-    void SetNull() { nFile = -1; nPos = 0; }
+    void SetNull()
+    {
+        nFile = -1;
+        nPos = 0;
+    }
     bool IsNull() const { return (nFile == -1); }
 };
 
 enum BlockStatus {
     //! Unused.
-    BLOCK_VALID_UNKNOWN      =    0,
+    BLOCK_VALID_UNKNOWN = 0,
 
     //! Parsed, version ok, hash satisfies claimed PoW, 1 <= vtx count <= max, timestamp not in future
-    BLOCK_VALID_HEADER       =    1,
+    BLOCK_VALID_HEADER = 1,
 
     //! All parent headers found, difficulty matches, timestamp >= median previous, checkpoint. Implies all parents
     //! are also at least TREE.
-    BLOCK_VALID_TREE         =    2,
+    BLOCK_VALID_TREE = 2,
 
     /**
      * Only first tx is coinbase, 2 <= coinbase input script length <= 100, transactions valid, no duplicate txids,
      * sigops, size, merkle root. Implies all parents are at least TREE but not necessarily TRANSACTIONS. When all
      * parent blocks also have TRANSACTIONS, CBlockIndex::nChainTx will be set.
      */
-    BLOCK_VALID_TRANSACTIONS =    3,
+    BLOCK_VALID_TRANSACTIONS = 3,
 
     //! Outputs do not overspend inputs, no double spends, coinbase output ok, immature coinbase spends, BIP30.
     //! Implies all parents are also at least CHAIN.
-    BLOCK_VALID_CHAIN        =    4,
+    BLOCK_VALID_CHAIN = 4,
 
     //! Scripts & signatures ok. Implies all parents are also at least SCRIPTS.
-    BLOCK_VALID_SCRIPTS      =    5,
+    BLOCK_VALID_SCRIPTS = 5,
 
     //! All validity bits.
-    BLOCK_VALID_MASK         =   BLOCK_VALID_HEADER | BLOCK_VALID_TREE | BLOCK_VALID_TRANSACTIONS |
-                                 BLOCK_VALID_CHAIN | BLOCK_VALID_SCRIPTS,
+    BLOCK_VALID_MASK = BLOCK_VALID_HEADER | BLOCK_VALID_TREE | BLOCK_VALID_TRANSACTIONS |
+                       BLOCK_VALID_CHAIN |
+                       BLOCK_VALID_SCRIPTS,
 
-    BLOCK_HAVE_DATA          =    8, //! full block available in blk*.dat
-    BLOCK_HAVE_UNDO          =   16, //! undo data available in rev*.dat
-    BLOCK_HAVE_MASK          =   BLOCK_HAVE_DATA | BLOCK_HAVE_UNDO,
+    BLOCK_HAVE_DATA = 8,  //! full block available in blk*.dat
+    BLOCK_HAVE_UNDO = 16, //! undo data available in rev*.dat
+    BLOCK_HAVE_MASK = BLOCK_HAVE_DATA | BLOCK_HAVE_UNDO,
 
-    BLOCK_FAILED_VALID       =   32, //! stage after last reached validness failed
-    BLOCK_FAILED_CHILD       =   64, //! descends from failed block
-    BLOCK_FAILED_MASK        =   BLOCK_FAILED_VALID | BLOCK_FAILED_CHILD,
+    BLOCK_FAILED_VALID = 32, //! stage after last reached validness failed
+    BLOCK_FAILED_CHILD = 64, //! descends from failed block
+    BLOCK_FAILED_MASK = BLOCK_FAILED_VALID | BLOCK_FAILED_CHILD,
 };
 
 /** The block chain is a tree shaped structure starting with the
@@ -163,10 +174,15 @@ public:
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
+    uint256 nAccumulatorCheckpoint;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     uint32_t nSequenceId;
-
+    
+    //! zerocoin specific fields
+    std::map<libzerocoin::CoinDenomination, int64_t> mapZerocoinSupply;
+    std::vector<libzerocoin::CoinDenomination> vMintDenominationsInBlock;
+    
     void SetNull()
     {
         phashBlock = NULL;
@@ -195,6 +211,12 @@ public:
         nTime = 0;
         nBits = 0;
         nNonce = 0;
+        nAccumulatorCheckpoint = 0;
+        // Start supply of each denomination with 0s
+        for (auto& denom : libzerocoin::zerocoinDenomList) {
+            mapZerocoinSupply.insert(make_pair(denom, 0));
+        }
+        vMintDenominationsInBlock.clear();
     }
 
     CBlockIndex()
@@ -211,6 +233,8 @@ public:
         nTime = block.nTime;
         nBits = block.nBits;
         nNonce = block.nNonce;
+        if(block.nVersion > 3)
+            nAccumulatorCheckpoint = block.nAccumulatorCheckpoint;
 
         //Proof of Stake
         bnChainTrust = uint256();
@@ -230,21 +254,24 @@ public:
             nStakeTime = 0;
         }
     }
+    
 
-    CDiskBlockPos GetBlockPos() const {
+    CDiskBlockPos GetBlockPos() const
+    {
         CDiskBlockPos ret;
         if (nStatus & BLOCK_HAVE_DATA) {
             ret.nFile = nFile;
-            ret.nPos  = nDataPos;
+            ret.nPos = nDataPos;
         }
         return ret;
-}
+    }
 
-    CDiskBlockPos GetUndoPos() const {
+    CDiskBlockPos GetUndoPos() const
+    {
         CDiskBlockPos ret;
         if (nStatus & BLOCK_HAVE_UNDO) {
             ret.nFile = nFile;
-            ret.nPos  = nUndoPos;
+            ret.nPos = nUndoPos;
         }
         return ret;
     }
@@ -252,14 +279,29 @@ public:
     CBlockHeader GetBlockHeader() const
     {
         CBlockHeader block;
-        block.nVersion       = nVersion;
+        block.nVersion = nVersion;
         if (pprev)
             block.hashPrevBlock = pprev->GetBlockHash();
         block.hashMerkleRoot = hashMerkleRoot;
-        block.nTime          = nTime;
-        block.nBits          = nBits;
-        block.nNonce         = nNonce;
+        block.nTime = nTime;
+        block.nBits = nBits;
+        block.nNonce = nNonce;
+        block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
         return block;
+    }
+
+    int64_t GetZerocoinSupply() const
+    {
+        int64_t nTotal = 0;
+        for (auto& denom : libzerocoin::zerocoinDenomList) {
+            nTotal += libzerocoin::ZerocoinDenominationToAmount(denom) * mapZerocoinSupply.at(denom);
+        }
+        return nTotal;
+    }
+
+    bool MintedDenomination(libzerocoin::CoinDenomination denom) const
+    {
+        return std::find(vMintDenominationsInBlock.begin(), vMintDenominationsInBlock.end(), denom) != vMintDenominationsInBlock.end();
     }
 
     uint256 GetBlockHash() const
@@ -272,7 +314,7 @@ public:
         return (int64_t)nTime;
     }
 
-    enum { nMedianTimeSpan=11 };
+    enum { nMedianTimeSpan = 11 };
 
     int64_t GetMedianTimePast() const
     {
@@ -285,10 +327,10 @@ public:
             *(--pbegin) = pindex->GetBlockTime();
 
         std::sort(pbegin, pend);
-        return pbegin[(pend - pbegin)*2/3];
+        return pbegin[(pend - pbegin) / 2];
     }
 
-        bool IsProofOfWork() const
+    bool IsProofOfWork() const
     {
         return !(nFlags & BLOCK_PROOF_OF_STAKE);
     }
@@ -306,6 +348,8 @@ public:
     unsigned int GetStakeEntropyBit() const
     {
         unsigned int nEntropyBit = ((GetBlockHash().Get64()) & 1);
+        if (GetBoolArg("-printstakemodifier", false))
+            LogPrintf("GetStakeEntropyBit: nHeight=%u hashBlock=%s nEntropyBit=%u\n", nHeight, GetBlockHash().ToString().c_str(), nEntropyBit);
 
         return nEntropyBit;
     }
@@ -330,16 +374,12 @@ public:
             nFlags |= BLOCK_STAKE_MODIFIER;
     }
 
-
     /**
      * Returns true if there are nRequired or more blocks of minVersion or above
-     * in the last Params().ToCheckBlockUpgradeMajority() blocks, starting at pstart
+     * in the last Params().ToCheckBlockUpgradeMajority() blocks, starting at pstart 
      * and going backwards.
      */
-    static bool IsSuperMajority(int minVersion, const CBlockIndex* pstart,
-                                unsigned int nRequired,
-                                unsigned int nToCheck);
-    static int CalcMajority(int minVersion, const CBlockIndex* pstart);
+    static bool IsSuperMajority(int minVersion, const CBlockIndex* pstart, unsigned int nRequired);
 
     std::string ToString() const
     {
@@ -387,19 +427,22 @@ public:
     uint256 hashPrev;
     uint256 hashNext;
 
-    CDiskBlockIndex() {
-        hashPrev = 0;
-        hashNext = 0;
+    CDiskBlockIndex()
+    {
+        hashPrev = uint256();
+        hashNext = uint256();
     }
 
-    explicit CDiskBlockIndex(CBlockIndex* pindex) : CBlockIndex(*pindex) {
-        hashPrev = (pprev ? pprev->GetBlockHash() : 0);
+    explicit CDiskBlockIndex(CBlockIndex* pindex) : CBlockIndex(*pindex)
+    {
+        hashPrev = (pprev ? pprev->GetBlockHash() : uint256());
     }
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
         if (!(nType & SER_GETHASH))
             READWRITE(VARINT(nVersion));
 
@@ -412,6 +455,7 @@ public:
             READWRITE(VARINT(nDataPos));
         if (nStatus & BLOCK_HAVE_UNDO)
             READWRITE(VARINT(nUndoPos));
+
 
         READWRITE(nMint);
         READWRITE(nMoneySupply);
@@ -434,17 +478,24 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nNonce);
+        if(this->nVersion > 3) {
+            READWRITE(nAccumulatorCheckpoint);
+            READWRITE(mapZerocoinSupply);
+            READWRITE(vMintDenominationsInBlock);
+        }
+
     }
 
     uint256 GetBlockHash() const
     {
         CBlockHeader block;
-        block.nVersion        = nVersion;
-        block.hashPrevBlock   = hashPrev;
-        block.hashMerkleRoot  = hashMerkleRoot;
-        block.nTime           = nTime;
-        block.nBits           = nBits;
-        block.nNonce          = nNonce;
+        block.nVersion = nVersion;
+        block.hashPrevBlock = hashPrev;
+        block.hashMerkleRoot = hashMerkleRoot;
+        block.nTime = nTime;
+        block.nBits = nBits;
+        block.nNonce = nNonce;
+        block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
         return block.GetHash();
     }
 
@@ -461,18 +512,21 @@ public:
 };
 
 /** An in-memory indexed chain of blocks. */
-class CChain {
+class CChain
+{
 private:
     std::vector<CBlockIndex*> vChain;
 
 public:
     /** Returns the index entry for the genesis block of this chain, or NULL if none. */
-    CBlockIndex *Genesis() const {
+    CBlockIndex* Genesis() const
+    {
         return vChain.size() > 0 ? vChain[0] : NULL;
     }
 
     /** Returns the index entry for the tip of this chain, or NULL if none. */
-    CBlockIndex *Tip(bool fProofOfStake = false) const {
+    CBlockIndex* Tip(bool fProofOfStake = false) const
+    {
         if (vChain.size() < 1)
             return NULL;
 
@@ -486,25 +540,29 @@ public:
     }
 
     /** Returns the index entry at a particular height in this chain, or NULL if no such height exists. */
-    CBlockIndex *operator[](int nHeight) const {
+    CBlockIndex* operator[](int nHeight) const
+    {
         if (nHeight < 0 || nHeight >= (int)vChain.size())
             return NULL;
         return vChain[nHeight];
     }
 
     /** Compare two chains efficiently. */
-    friend bool operator==(const CChain &a, const CChain &b) {
+    friend bool operator==(const CChain& a, const CChain& b)
+    {
         return a.vChain.size() == b.vChain.size() &&
                a.vChain[a.vChain.size() - 1] == b.vChain[b.vChain.size() - 1];
     }
 
     /** Efficiently check whether a block is present in this chain. */
-    bool Contains(const CBlockIndex *pindex) const {
+    bool Contains(const CBlockIndex* pindex) const
+    {
         return (*this)[pindex->nHeight] == pindex;
     }
 
     /** Find the successor of a block in this chain, or NULL if the given index is not found or is the tip. */
-    CBlockIndex *Next(const CBlockIndex *pindex) const {
+    CBlockIndex* Next(const CBlockIndex* pindex) const
+    {
         if (Contains(pindex))
             return (*this)[pindex->nHeight + 1];
         else
@@ -512,18 +570,19 @@ public:
     }
 
     /** Return the maximal height in the chain. Is equal to chain.Tip() ? chain.Tip()->nHeight : -1. */
-    int Height() const {
+    int Height() const
+    {
         return vChain.size() - 1;
     }
 
     /** Set/initialize a chain with a given tip. */
-    void SetTip(CBlockIndex *pindex);
+    void SetTip(CBlockIndex* pindex);
 
     /** Return a CBlockLocator that refers to a block in this chain (by default the tip). */
-    CBlockLocator GetLocator(const CBlockIndex *pindex = NULL) const;
+    CBlockLocator GetLocator(const CBlockIndex* pindex = NULL) const;
 
     /** Find the last common block between this chain and a block index entry. */
-    const CBlockIndex *FindFork(const CBlockIndex *pindex) const;
+    const CBlockIndex* FindFork(const CBlockIndex* pindex) const;
 };
 
 #endif // BITCOIN_CHAIN_H

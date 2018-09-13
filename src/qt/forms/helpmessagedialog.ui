@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>400</height>
+    <width>585</width>
+    <height>488</height>
    </rect>
   </property>
   <property name="font">
@@ -28,12 +28,19 @@
       </sizepolicy>
      </property>
      <property name="pixmap">
-      <pixmap resource="../bitcoin.qrc">:/images/about</pixmap>
+      <pixmap resource="../huzu.qrc">:/images/about</pixmap>
      </property>
     </widget>
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTextEdit" name="helpMessage">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QScrollArea" name="scrollArea">
        <property name="verticalScrollBarPolicy">
@@ -47,18 +54,21 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>659</width>
-          <height>348</height>
+          <width>479</width>
+          <height>213</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QLabel" name="helpMessageLabel">
+          <widget class="QLabel" name="aboutMessage">
            <property name="cursor">
             <cursorShape>IBeamCursor</cursorShape>
            </property>
            <property name="textFormat">
             <enum>Qt::PlainText</enum>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
            </property>
            <property name="openExternalLinks">
             <bool>true</bool>
@@ -87,7 +97,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../bitcoin.qrc"/>
+  <include location="../huzu.qrc"/>
  </resources>
  <connections>
   <connection>

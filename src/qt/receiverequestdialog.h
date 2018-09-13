@@ -1,9 +1,7 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_RECEIVEREQUESTDIALOG_H
@@ -17,8 +15,9 @@
 
 class OptionsModel;
 
-namespace Ui {
-    class ReceiveRequestDialog;
+namespace Ui
+{
+class ReceiveRequestDialog;
 }
 
 QT_BEGIN_NAMESPACE
@@ -33,7 +32,7 @@ class QRImageWidget : public QLabel
     Q_OBJECT
 
 public:
-    explicit QRImageWidget(QWidget *parent = 0);
+    explicit QRImageWidget(QWidget* parent = 0);
     QImage exportImage();
 
 public slots:
@@ -41,11 +40,11 @@ public slots:
     void copyImage();
 
 protected:
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void contextMenuEvent(QContextMenuEvent *event);
+    virtual void mousePressEvent(QMouseEvent* event);
+    virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
-    QMenu *contextMenu;
+    QMenu* contextMenu;
 };
 
 class ReceiveRequestDialog : public QDialog
@@ -53,11 +52,11 @@ class ReceiveRequestDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ReceiveRequestDialog(QWidget *parent = 0);
+    explicit ReceiveRequestDialog(QWidget* parent = 0);
     ~ReceiveRequestDialog();
 
-    void setModel(OptionsModel *model);
-    void setInfo(const SendCoinsRecipient &info);
+    void setModel(OptionsModel* model);
+    void setInfo(const SendCoinsRecipient& info);
 
 private slots:
     void on_btnCopyURI_clicked();
@@ -66,8 +65,8 @@ private slots:
     void update();
 
 private:
-    Ui::ReceiveRequestDialog *ui;
-    OptionsModel *model;
+    Ui::ReceiveRequestDialog* ui;
+    OptionsModel* model;
     SendCoinsRecipient info;
 };
 

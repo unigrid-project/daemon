@@ -1,9 +1,7 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef SRC_MASTERNODECONFIG_H_
@@ -14,7 +12,6 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/foreach.hpp>
 
 class CMasternodeConfig;
 extern CMasternodeConfig masternodeConfig;
@@ -111,7 +108,7 @@ public:
     int getCount()
     {
         int c = -1;
-        BOOST_FOREACH (CMasternodeEntry e, entries) {
+        for (CMasternodeEntry e : entries) {
             if (e.getAlias() != "") c++;
         }
         return c;

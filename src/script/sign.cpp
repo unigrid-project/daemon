@@ -1,8 +1,7 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,6 +12,7 @@
 #include "keystore.h"
 #include "script/standard.h"
 #include "uint256.h"
+#include "util.h"
 
 #include <boost/foreach.hpp>
 
@@ -62,21 +62,37 @@ bool Solver(const CKeyStore& keystore, const CScript& scriptPubKey, uint256 hash
 
     vector<valtype> vSolutions;
     if (!Solver(scriptPubKey, whichTypeRet, vSolutions))
+    {
+        LogPrintf("*** solver solver failed \n");
         return false;
+    }
 
     CKeyID keyID;
     switch (whichTypeRet)
     {
     case TX_NONSTANDARD:
     case TX_NULL_DATA:
+    {
+        LogPrintf("*** null data \n");
+        return false;
+    }
+    case TX_ZEROCOINMINT:
         return false;
     case TX_PUBKEY:
         keyID = CPubKey(vSolutions[0]).GetID();
-        return Sign1(keyID, keystore, hash, nHashType, scriptSigRet);
+        if(!Sign1(keyID, keystore, hash, nHashType, scriptSigRet))
+        {
+            LogPrintf("*** Sign1 failed \n");
+            return false;
+        }
+        return true;
     case TX_PUBKEYHASH:
         keyID = CKeyID(uint160(vSolutions[0]));
         if (!Sign1(keyID, keystore, hash, nHashType, scriptSigRet))
+        {
+            LogPrintf("*** solver failed to sign \n");
             return false;
+        }
         else
         {
             CPubKey vch;
@@ -91,6 +107,7 @@ bool Solver(const CKeyStore& keystore, const CScript& scriptPubKey, uint256 hash
         scriptSigRet << OP_0; // workaround CHECKMULTISIG bug
         return (SignN(vSolutions, keystore, hash, nHashType, scriptSigRet));
     }
+    LogPrintf("*** solver no case met \n");
     return false;
 }
 
@@ -210,6 +227,7 @@ static CScript CombineSignatures(const CScript& scriptPubKey, const CTransaction
     {
     case TX_NONSTANDARD:
     case TX_NULL_DATA:
+    case TX_ZEROCOINMINT:
         // Don't know anything about this, assume bigger one is correct:
         if (sigs1.size() >= sigs2.size())
             return PushAll(sigs1);

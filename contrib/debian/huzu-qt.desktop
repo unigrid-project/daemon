@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=HUZU
+Comment=HUZU P2P Cryptocurrency
+Comment[fr]=HUZU, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=HUZU, eşten eşe kriptografik sanal para birimi
+Exec=huzu-qt %u
+Terminal=false
+Type=Application
+Icon=huzu128
+MimeType=x-scheme-handler/huzu;
+Categories=Office;Finance;

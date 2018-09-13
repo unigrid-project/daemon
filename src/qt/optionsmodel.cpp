@@ -1,13 +1,12 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
+#include "config/huzu-config.h"
 #endif
 
 #include "optionsmodel.h"
@@ -20,8 +19,10 @@
 #include "main.h"
 #include "net.h"
 #include "txdb.h" // for -dbcache defaults
+#include "util.h"
 
 #ifdef ENABLE_WALLET
+#include "masternodeconfig.h"
 #include "wallet.h"
 #include "walletdb.h"
 #endif
@@ -30,13 +31,12 @@
 #include <QSettings>
 #include <QStringList>
 
-OptionsModel::OptionsModel(QObject *parent) :
-    QAbstractListModel(parent)
+OptionsModel::OptionsModel(QObject* parent) : QAbstractListModel(parent)
 {
     Init();
 }
 
-void OptionsModel::addOverriddenOption(const std::string &option)
+void OptionsModel::addOverriddenOption(const std::string& option)
 {
     strOverriddenByCommandLine += QString::fromStdString(option) + "=" + QString::fromStdString(mapArgs[option]) + " ";
 }
@@ -44,6 +44,7 @@ void OptionsModel::addOverriddenOption(const std::string &option)
 // Writes all missing QSettings with their default values
 void OptionsModel::Init()
 {
+    resetSettings = false;
     QSettings settings;
 
     // Ensure restart flag is unset on client startup
@@ -62,16 +63,40 @@ void OptionsModel::Init()
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", BitcoinUnits::BTC);
+        settings.setValue("nDisplayUnit", BitcoinUnits::HUZU);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))
         settings.setValue("strThirdPartyTxUrls", "");
     strThirdPartyTxUrls = settings.value("strThirdPartyTxUrls", "").toString();
 
+    if (!settings.contains("fHideZeroBalances"))
+        settings.setValue("fHideZeroBalances", true);
+    fHideZeroBalances = settings.value("fHideZeroBalances").toBool();
+
     if (!settings.contains("fCoinControlFeatures"))
         settings.setValue("fCoinControlFeatures", false);
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
+
+    if (!settings.contains("fZeromintEnable"))
+        settings.setValue("fZeromintEnable", false);
+    fEnableZeromint = settings.value("fZeromintEnable").toBool();
+    
+    if (!settings.contains("nZeromintPercentage"))
+        settings.setValue("nZeromintPercentage", 10);
+    nZeromintPercentage = settings.value("nZeromintPercentage").toLongLong();
+
+    if (!settings.contains("nPreferredDenom"))
+        settings.setValue("nPreferredDenom", 0);
+    nPreferredDenom = settings.value("nPreferredDenom", "0").toLongLong();
+
+    if (!settings.contains("nAnonymizeHuzuAmount"))
+        settings.setValue("nAnonymizeHuzuAmount", 1000);
+
+    nAnonymizeHuzuAmount = settings.value("nAnonymizeHuzuAmount").toLongLong();
+
+    if (!settings.contains("fShowMasternodesTab"))
+        settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
 
     // These are shared with the core or have a command-line parameter
     // and we want command-line parameters to overwrite the GUI settings.
@@ -92,17 +117,16 @@ void OptionsModel::Init()
     if (!SoftSetArg("-par", settings.value("nThreadsScriptVerif").toString().toStdString()))
         addOverriddenOption("-par");
 
-    // Wallet
+// Wallet
 #ifdef ENABLE_WALLET
     if (!settings.contains("bSpendZeroConfChange"))
-        settings.setValue("bSpendZeroConfChange", true);
+        settings.setValue("bSpendZeroConfChange", false);
     if (!SoftSetBoolArg("-spendzeroconfchange", settings.value("bSpendZeroConfChange").toBool()))
         addOverriddenOption("-spendzeroconfchange");
 #endif
+    if (!settings.contains("nStakeSplitThreshold"))
+        settings.setValue("nStakeSplitThreshold", 1);
 
-    // Mining
-    if (!settings.contains("nMiningIntensity"))
-        settings.setValue("bMiningIntensity", 0);
 
     // Network
     if (!settings.contains("fUseUPnP"))
@@ -122,30 +146,31 @@ void OptionsModel::Init()
     // Only try to set -proxy, if user has enabled fUseProxy
     if (settings.value("fUseProxy").toBool() && !SoftSetArg("-proxy", settings.value("addrProxy").toString().toStdString()))
         addOverriddenOption("-proxy");
-    else if(!settings.value("fUseProxy").toBool() && !GetArg("-proxy", "").empty())
+    else if (!settings.value("fUseProxy").toBool() && !GetArg("-proxy", "").empty())
         addOverriddenOption("-proxy");
 
     // Display
+    if (!settings.contains("digits"))
+        settings.setValue("digits", "2");
+    if (!settings.contains("theme"))
+        settings.setValue("theme", "");
+    if (!settings.contains("fCSSexternal"))
+        settings.setValue("fCSSexternal", false);
     if (!settings.contains("language"))
         settings.setValue("language", "");
     if (!SoftSetArg("-lang", settings.value("language").toString().toStdString()))
         addOverriddenOption("-lang");
 
+    if (settings.contains("fZeromintEnable"))
+        SoftSetBoolArg("-enablezeromint", settings.value("fZeromintEnable").toBool());
+    if (settings.contains("nZeromintPercentage"))
+        SoftSetArg("-zeromintpercentage", settings.value("nZeromintPercentage").toString().toStdString());
+    if (settings.contains("nPreferredDenom"))
+        SoftSetArg("-preferredDenom", settings.value("nPreferredDenom").toString().toStdString());
+    if (settings.contains("nAnonymizeHuzuAmount"))
+        SoftSetArg("-anonymizehuzuamount", settings.value("nAnonymizeHuzuAmount").toString().toStdString());
+
     language = settings.value("language").toString();
-
-    // Mining options
-    if (settings.contains("nMiningIntensity"))
-    {
-        int nMiningIntensity = settings.value("nMiningIntensity").toInt();
-        if (nMiningIntensity != 0)
-        {
-            SoftSetArg("-gen", "1");
-            SoftSetArg("-genproclimit", settings.value("nMiningIntensity").toString().toStdString());
-            addOverriddenOption("-gen");
-            addOverriddenOption("-genproclimit");
-        }
-    }
-
 }
 
 void OptionsModel::Reset()
@@ -154,25 +179,24 @@ void OptionsModel::Reset()
 
     // Remove all entries from our QSettings object
     settings.clear();
+    resetSettings = true; // Needed in huzu.cpp during shotdown to also remove the window positions
 
     // default setting for OptionsModel::StartAtStartup - disabled
     if (GUIUtil::GetStartOnSystemStartup())
         GUIUtil::SetStartOnSystemStartup(false);
 }
 
-int OptionsModel::rowCount(const QModelIndex & parent) const
+int OptionsModel::rowCount(const QModelIndex& parent) const
 {
     return OptionIDRowCount;
 }
 
 // read QSettings values and return them
-QVariant OptionsModel::data(const QModelIndex & index, int role) const
+QVariant OptionsModel::data(const QModelIndex& index, int role) const
 {
-    if(role == Qt::EditRole)
-    {
+    if (role == Qt::EditRole) {
         QSettings settings;
-        switch(index.row())
-        {
+        switch (index.row()) {
         case StartAtStartup:
             return GUIUtil::GetStartOnSystemStartup();
         case MinimizeToTray:
@@ -203,11 +227,22 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
 #ifdef ENABLE_WALLET
         case SpendZeroConfChange:
             return settings.value("bSpendZeroConfChange");
+        case ShowMasternodesTab:
+            return settings.value("fShowMasternodesTab");
 #endif
+        case StakeSplitThreshold:
+            if (pwalletMain)
+                return QVariant((int)pwalletMain->nStakeSplitThreshold);
+            return settings.value("nStakeSplitThreshold");
         case DisplayUnit:
+
             return nDisplayUnit;
         case ThirdPartyTxUrls:
             return strThirdPartyTxUrls;
+        case Digits:
+            return settings.value("digits");
+        case Theme:
+            return settings.value("theme");
         case Language:
             return settings.value("language");
         case CoinControlFeatures:
@@ -216,10 +251,18 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("nDatabaseCache");
         case ThreadsScriptVerif:
             return settings.value("nThreadsScriptVerif");
+        case HideZeroBalances:
+            return settings.value("fHideZeroBalances");
+        case ZeromintEnable:
+            return QVariant(fEnableZeromint);
+        case ZeromintPercentage:
+            return QVariant(nZeromintPercentage);
+        case ZeromintPrefDenom:
+            return QVariant(nPreferredDenom);
+        case AnonymizeHuzuAmount:
+            return QVariant(nAnonymizeHuzuAmount);
         case Listen:
             return settings.value("fListen");
-        case MiningIntensity:
-            return settings.value("nMiningIntensity");
         default:
             return QVariant();
         }
@@ -228,14 +271,12 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
 }
 
 // write QSettings values
-bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
     bool successful = true; /* set to false on parse error */
-    if(role == Qt::EditRole)
-    {
+    if (role == Qt::EditRole) {
         QSettings settings;
-        switch(index.row())
-        {
+        switch (index.row()) {
         case StartAtStartup:
             successful = GUIUtil::SetStartOnSystemStartup(value.toBool());
             break;
@@ -269,8 +310,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 settings.setValue("addrProxy", strNewValue);
                 setRestartRequired(true);
             }
-        }
-        break;
+        } break;
         case ProxyPort: {
             // contains current IP at index 0 and current port at index 1
             QStringList strlIpPort = settings.value("addrProxy").toString().split(":", QString::SkipEmptyParts);
@@ -281,8 +321,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 settings.setValue("addrProxy", strNewValue);
                 setRestartRequired(true);
             }
-        }
-        break;
+        } break;
 #ifdef ENABLE_WALLET
         case SpendZeroConfChange:
             if (settings.value("bSpendZeroConfChange") != value) {
@@ -290,7 +329,17 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
+        case ShowMasternodesTab:
+            if (settings.value("fShowMasternodesTab") != value) {
+                settings.setValue("fShowMasternodesTab", value);
+                setRestartRequired(true);
+            }
+            break;
 #endif
+        case StakeSplitThreshold:
+            settings.setValue("nStakeSplitThreshold", value.toInt());
+            setStakeSplitThreshold(value.toInt());
+            break;
         case DisplayUnit:
             setDisplayUnit(value);
             break;
@@ -301,11 +350,49 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
+        case Digits:
+            if (settings.value("digits") != value) {
+                settings.setValue("digits", value);
+                setRestartRequired(true);
+            }
+            break;
+        case Theme:
+            if (settings.value("theme") != value) {
+                settings.setValue("theme", value);
+                setRestartRequired(true);
+            }
+            break;
         case Language:
             if (settings.value("language") != value) {
                 settings.setValue("language", value);
                 setRestartRequired(true);
             }
+            break;
+        case ZeromintEnable:
+            fEnableZeromint = value.toBool();
+            settings.setValue("fZeromintEnable", fEnableZeromint);
+            emit zeromintEnableChanged(fEnableZeromint);
+            break;
+        case ZeromintPercentage:
+            nZeromintPercentage = value.toInt();
+            settings.setValue("nZeromintPercentage", nZeromintPercentage);
+            emit zeromintPercentageChanged(nZeromintPercentage);
+            break;
+        case ZeromintPrefDenom:
+            nPreferredDenom = value.toInt();
+            settings.setValue("nPreferredDenom", nPreferredDenom);
+            emit preferredDenomChanged(nPreferredDenom);
+            break;
+        case HideZeroBalances:
+            fHideZeroBalances = value.toBool();
+            settings.setValue("fHideZeroBalances", fHideZeroBalances);
+            emit hideZeroBalancesChanged(fHideZeroBalances);
+            break;
+
+        case AnonymizeHuzuAmount:
+            nAnonymizeHuzuAmount = value.toInt();
+            settings.setValue("nAnonymizeHuzuAmount", nAnonymizeHuzuAmount);
+            emit anonymizeHuzuAmountChanged(nAnonymizeHuzuAmount);
             break;
         case CoinControlFeatures:
             fCoinControlFeatures = value.toBool();
@@ -330,11 +417,6 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
-        case MiningIntensity:
-            if (settings.value("nMiningIntensity") != value.toInt()) {
-                settings.setValue("nMiningIntensity", value.toInt());
-                setRestartRequired(true);
-            }
         default:
             break;
         }
@@ -346,16 +428,34 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
 }
 
 /** Updates current unit in memory, settings and emits displayUnitChanged(newUnit) signal */
-void OptionsModel::setDisplayUnit(const QVariant &value)
+void OptionsModel::setDisplayUnit(const QVariant& value)
 {
-    if (!value.isNull())
-    {
+    if (!value.isNull()) {
         QSettings settings;
         nDisplayUnit = value.toInt();
         settings.setValue("nDisplayUnit", nDisplayUnit);
         emit displayUnitChanged(nDisplayUnit);
     }
 }
+
+/* Update StakeSplitThreshold's value in wallet */
+void OptionsModel::setStakeSplitThreshold(int value)
+{
+    // XXX: maybe it's worth to wrap related stuff with WALLET_ENABLE ?
+    uint64_t nStakeSplitThreshold;
+
+    nStakeSplitThreshold = value;
+    if (pwalletMain && pwalletMain->nStakeSplitThreshold != nStakeSplitThreshold) {
+        CWalletDB walletdb(pwalletMain->strWalletFile);
+        LOCK(pwalletMain->cs_wallet);
+        {
+            pwalletMain->nStakeSplitThreshold = nStakeSplitThreshold;
+            if (pwalletMain->fFileBacked)
+                walletdb.WriteStakeSplitThreshold(nStakeSplitThreshold);
+        }
+    }
+}
+
 
 bool OptionsModel::getProxySettings(QNetworkProxy& proxy) const
 {
@@ -364,12 +464,11 @@ bool OptionsModel::getProxySettings(QNetworkProxy& proxy) const
     proxyType curProxy;
     if (GetProxy(NET_IPV4, curProxy)) {
         proxy.setType(QNetworkProxy::Socks5Proxy);
-        proxy.setHostName(QString::fromStdString(curProxy.ToStringIP()));
-        proxy.setPort(curProxy.GetPort());
+        proxy.setHostName(QString::fromStdString(curProxy.proxy.ToStringIP()));
+        proxy.setPort(curProxy.proxy.GetPort());
 
         return true;
-    }
-    else
+    } else
         proxy.setType(QNetworkProxy::NoProxy);
 
     return false;

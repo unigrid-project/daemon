@@ -1,0 +1,26 @@
+# /etc/conf.d/huzud: config file for /etc/init.d/huzud
+
+# Config file location
+#BITCOIND_CONFIGFILE="/etc/huzu/huzu.conf"
+
+# What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
+#BITCOIND_PIDDIR="/var/run/huzud"
+
+# What filename to give the pidfile
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/huzud.pid"
+
+# Where to write huzud data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/huzud"
+
+# User and group to own huzud process
+#BITCOIND_USER="huzu"
+#BITCOIND_GROUP="huzu"
+
+# Path to huzud executable
+#BITCOIND_BIN="/usr/bin/huzud"
+
+# Nice value to run huzud under
+#BITCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+BITCOIND_OPTS=""

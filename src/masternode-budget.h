@@ -1,10 +1,9 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef MASTERNODE_BUDGET_H
 #define MASTERNODE_BUDGET_H
 
@@ -33,10 +32,18 @@ class CTxBudgetPayment;
 #define VOTE_YES 1
 #define VOTE_NO 2
 
+enum class TrxValidationStatus {
+    InValid,         /** Transaction verification failed */
+    Valid,           /** Transaction successfully verified */
+    DoublePayment,   /** Transaction successfully verified, but includes a double-budget-payment */
+    VoteThreshold    /** If not enough masternodes have voted on a finalized budget */
+};
+
 static const CAmount PROPOSAL_FEE_TX = (50 * COIN);
-static const CAmount BUDGET_FEE_TX = (50 * COIN);
-static const int64_t BUDGET_FEE_CONFIRMATIONS = 6;
+static const CAmount BUDGET_FEE_TX_OLD = (50 * COIN);
+static const CAmount BUDGET_FEE_TX = (5 * COIN);
 static const int64_t BUDGET_VOTE_UPDATE_MIN = 60 * 60;
+static map<uint256, int> mapPayment_History;
 
 extern std::vector<CBudgetProposalBroadcast> vecImmatureBudgetProposals;
 extern std::vector<CFinalizedBudgetBroadcast> vecImmatureFinalizedBudgets;
@@ -48,7 +55,7 @@ void DumpBudgets();
 int GetBudgetPaymentCycleBlocks();
 
 //Check the collateral transaction for the budget proposal/finalized budget
-bool IsBudgetCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash, std::string& strError, int64_t& nTime, int& nConf);
+bool IsBudgetCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash, std::string& strError, int64_t& nTime, int& nConf, bool fBudgetFinalization=false);
 
 //
 // CBudgetVote - Allow a masternode node to vote and broadcast throughout the network
@@ -232,14 +239,13 @@ public:
     bool AddProposal(CBudgetProposal& budgetProposal);
     bool AddFinalizedBudget(CFinalizedBudget& finalizedBudget);
     void SubmitFinalBudget();
-    bool HasNextFinalizedBudget();
 
     bool UpdateProposal(CBudgetVote& vote, CNode* pfrom, std::string& strError);
     bool UpdateFinalizedBudget(CFinalizedBudgetVote& vote, CNode* pfrom, std::string& strError);
     bool PropExists(uint256 nHash);
-    bool IsTransactionValid(const CTransaction& txNew, int nBlockHeight);
+    TrxValidationStatus IsTransactionValid(const CTransaction& txNew, int nBlockHeight);
     std::string GetRequiredPaymentsString(int nBlockHeight);
-    void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, int nTxNewTime);
+    void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake);
 
     void CheckOrphanVotes();
     void Clear()
@@ -339,7 +345,8 @@ public:
     int GetBlockStart() { return nBlockStart; }
     int GetBlockEnd() { return nBlockStart + (int)(vecBudgetPayments.size() - 1); }
     int GetVoteCount() { return (int)mapVotes.size(); }
-    bool IsTransactionValid(const CTransaction& txNew, int nBlockHeight);
+    bool IsPaidAlready(uint256 nProposalHash, int nBlockHeight);
+    TrxValidationStatus IsTransactionValid(const CTransaction& txNew, int nBlockHeight);
     bool GetBudgetPaymentByBlock(int64_t nBlockHeight, CTxBudgetPayment& payment)
     {
         LOCK(cs);
@@ -364,7 +371,7 @@ public:
 
     //check to see if we should vote on this
     void AutoCheck();
-    //total coins paid out by this budget
+    //total huzu paid out by this budget
     CAmount GetTotalPayout();
     //vote on this finalized budget as a masternode
     void SubmitVote();
@@ -492,10 +499,10 @@ public:
 
     bool IsEstablished()
     {
-        //Proposals must be at least a day old to make it into a budget
+        // Proposals must be at least a day old to make it into a budget
         if (Params().NetworkID() == CBaseChainParams::MAIN) return (nTime < GetTime() - (60 * 60 * 24));
 
-        //for testing purposes - 4 hours
+        // For testing purposes - 5 minutes
         return (nTime < GetTime() - (60 * 5));
     }
 

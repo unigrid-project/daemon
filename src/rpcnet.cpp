@@ -1,8 +1,7 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,35 +14,35 @@
 #include "protocol.h"
 #include "sync.h"
 #include "timedata.h"
+#include "ui_interface.h"
 #include "util.h"
 #include "version.h"
-#include "base58.h"
 
 #include <boost/foreach.hpp>
 
-#include "json/json_spirit_value.h"
+#include <univalue.h>
 
-using namespace json_spirit;
 using namespace std;
 
-Value getconnectioncount(const Array& params, bool fHelp)
+UniValue getconnectioncount(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getconnectioncount\n"
             "\nReturns the number of connections to other nodes.\n"
+
             "\nbResult:\n"
             "n          (numeric) The connection count\n"
-            "\nExamples:\n"
-            + HelpExampleCli("getconnectioncount", "")
-            + HelpExampleRpc("getconnectioncount", "")
-        );
 
-    LOCK(cs_vNodes);
+            "\nExamples:\n" +
+            HelpExampleCli("getconnectioncount", "") + HelpExampleRpc("getconnectioncount", ""));
+
+    LOCK2(cs_main, cs_vNodes);
+
     return (int)vNodes.size();
 }
 
-Value ping(const Array& params, bool fHelp)
+UniValue ping(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw runtime_error(
@@ -51,18 +50,18 @@ Value ping(const Array& params, bool fHelp)
             "\nRequests that a ping be sent to all other nodes, to measure ping time.\n"
             "Results provided in getpeerinfo, pingtime and pingwait fields are decimal seconds.\n"
             "Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.\n"
-            "\nExamples:\n"
-            + HelpExampleCli("ping", "")
-            + HelpExampleRpc("ping", "")
-        );
+
+            "\nExamples:\n" +
+            HelpExampleCli("ping", "") + HelpExampleRpc("ping", ""));
 
     // Request that each node send a ping during next message processing pass
-    LOCK(cs_vNodes);
-    BOOST_FOREACH(CNode* pNode, vNodes) {
+    LOCK2(cs_main, cs_vNodes);
+
+    BOOST_FOREACH (CNode* pNode, vNodes) {
         pNode->fPingQueued = true;
     }
 
-    return Value::null;
+    return NullUniValue;
 }
 
 static void CopyNodeStats(std::vector<CNodeStats>& vstats)
@@ -71,19 +70,20 @@ static void CopyNodeStats(std::vector<CNodeStats>& vstats)
 
     LOCK(cs_vNodes);
     vstats.reserve(vNodes.size());
-    BOOST_FOREACH(CNode* pnode, vNodes) {
+    BOOST_FOREACH (CNode* pnode, vNodes) {
         CNodeStats stats;
         pnode->copyStats(stats);
         vstats.push_back(stats);
     }
 }
 
-Value getpeerinfo(const Array& params, bool fHelp)
+UniValue getpeerinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getpeerinfo\n"
             "\nReturns data about each connected network node as a json array of objects.\n"
+
             "\nbResult:\n"
             "[\n"
             "  {\n"
@@ -96,10 +96,11 @@ Value getpeerinfo(const Array& params, bool fHelp)
             "    \"bytessent\": n,            (numeric) The total bytes sent\n"
             "    \"bytesrecv\": n,            (numeric) The total bytes received\n"
             "    \"conntime\": ttt,           (numeric) The connection time in seconds since epoch (Jan 1 1970 GMT)\n"
+            "    \"timeoffset\": ttt,         (numeric) The time offset in seconds\n"
             "    \"pingtime\": n,             (numeric) ping time\n"
             "    \"pingwait\": n,             (numeric) ping wait\n"
             "    \"version\": v,              (numeric) The peer version, such as 7001\n"
-            "    \"subver\": \"/HUZU:0.8.5/\",  (string) The string version\n"
+            "    \"subver\": \"/Huzu Core:x.x.x.x/\",  (string) The string version\n"
             "    \"inbound\": true|false,     (boolean) Inbound (true) or Outbound (false)\n"
             "    \"startingheight\": n,       (numeric) The starting height (block) of the peer\n"
             "    \"banscore\": n,             (numeric) The ban score\n"
@@ -112,18 +113,19 @@ Value getpeerinfo(const Array& params, bool fHelp)
             "  }\n"
             "  ,...\n"
             "]\n"
-            "\nExamples:\n"
-            + HelpExampleCli("getpeerinfo", "")
-            + HelpExampleRpc("getpeerinfo", "")
-        );
+
+            "\nExamples:\n" +
+            HelpExampleCli("getpeerinfo", "") + HelpExampleRpc("getpeerinfo", ""));
+
+    LOCK(cs_main);
 
     vector<CNodeStats> vstats;
     CopyNodeStats(vstats);
 
-    Array ret;
+    UniValue ret(UniValue::VARR);
 
-    BOOST_FOREACH(const CNodeStats& stats, vstats) {
-        Object obj;
+    BOOST_FOREACH (const CNodeStats& stats, vstats) {
+        UniValue obj(UniValue::VOBJ);
         CNodeStateStats statestats;
         bool fStateStats = GetNodeStateStats(stats.nodeid, statestats);
         obj.push_back(Pair("id", stats.nodeid));
@@ -136,6 +138,7 @@ Value getpeerinfo(const Array& params, bool fHelp)
         obj.push_back(Pair("bytessent", stats.nSendBytes));
         obj.push_back(Pair("bytesrecv", stats.nRecvBytes));
         obj.push_back(Pair("conntime", stats.nTimeConnected));
+        obj.push_back(Pair("timeoffset", stats.nTimeOffset));
         obj.push_back(Pair("pingtime", stats.dPingTime));
         if (stats.dPingWait > 0.0)
             obj.push_back(Pair("pingwait", stats.dPingWait));
@@ -150,8 +153,8 @@ Value getpeerinfo(const Array& params, bool fHelp)
             obj.push_back(Pair("banscore", statestats.nMisbehavior));
             obj.push_back(Pair("synced_headers", statestats.nSyncHeight));
             obj.push_back(Pair("synced_blocks", statestats.nCommonHeight));
-            Array heights;
-            BOOST_FOREACH(int height, statestats.vHeightInFlight) {
+            UniValue heights(UniValue::VARR);
+            BOOST_FOREACH (int height, statestats.vHeightInFlight) {
                 heights.push_back(height);
             }
             obj.push_back(Pair("inflight", heights));
@@ -164,7 +167,7 @@ Value getpeerinfo(const Array& params, bool fHelp)
     return ret;
 }
 
-Value addnode(const Array& params, bool fHelp)
+UniValue addnode(const UniValue& params, bool fHelp)
 {
     string strCommand;
     if (params.size() == 2)
@@ -175,46 +178,66 @@ Value addnode(const Array& params, bool fHelp)
             "addnode \"node\" \"add|remove|onetry\"\n"
             "\nAttempts add or remove a node from the addnode list.\n"
             "Or try a connection to a node once.\n"
+
             "\nArguments:\n"
             "1. \"node\"     (string, required) The node (see getpeerinfo for nodes)\n"
             "2. \"command\"  (string, required) 'add' to add a node to the list, 'remove' to remove a node from the list, 'onetry' to try a connection to the node once\n"
-            "\nExamples:\n"
-            + HelpExampleCli("addnode", "\"192.168.0.6:8333\" \"onetry\"")
-            + HelpExampleRpc("addnode", "\"192.168.0.6:8333\", \"onetry\"")
-        );
+
+            "\nExamples:\n" +
+            HelpExampleCli("addnode", "\"192.168.0.6:51992\" \"onetry\"") + HelpExampleRpc("addnode", "\"192.168.0.6:51992\", \"onetry\""));
 
     string strNode = params[0].get_str();
 
-    if (strCommand == "onetry")
-    {
+    if (strCommand == "onetry") {
         CAddress addr;
         OpenNetworkConnection(addr, NULL, strNode.c_str());
-        return Value::null;
+        return NullUniValue;
     }
 
     LOCK(cs_vAddedNodes);
     vector<string>::iterator it = vAddedNodes.begin();
-    for(; it != vAddedNodes.end(); it++)
+    for (; it != vAddedNodes.end(); it++)
         if (strNode == *it)
             break;
 
-    if (strCommand == "add")
-    {
+    if (strCommand == "add") {
         if (it != vAddedNodes.end())
             throw JSONRPCError(RPC_CLIENT_NODE_ALREADY_ADDED, "Error: Node already added");
         vAddedNodes.push_back(strNode);
-    }
-    else if(strCommand == "remove")
-    {
+    } else if (strCommand == "remove") {
         if (it == vAddedNodes.end())
             throw JSONRPCError(RPC_CLIENT_NODE_NOT_ADDED, "Error: Node has not been added.");
         vAddedNodes.erase(it);
     }
 
-    return Value::null;
+    return NullUniValue;
 }
 
-Value getaddednodeinfo(const Array& params, bool fHelp)
+UniValue disconnectnode(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "disconnectnode \"node\" \n"
+            "\nImmediately disconnects from the specified node.\n"
+
+            "\nArguments:\n"
+            "1. \"node\"     (string, required) The node (see getpeerinfo for nodes)\n"
+
+            "\nExamples:\n"
+            + HelpExampleCli("disconnectnode", "\"192.168.0.6:8333\"")
+            + HelpExampleRpc("disconnectnode", "\"192.168.0.6:8333\"")
+        );
+
+    CNode* pNode = FindNode(params[0].get_str());
+    if (pNode == NULL)
+        throw JSONRPCError(RPC_CLIENT_NODE_NOT_CONNECTED, "Node not found in connected nodes");
+
+    pNode->CloseSocketDisconnect();
+
+    return NullUniValue;
+}
+
+UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
@@ -223,9 +246,11 @@ Value getaddednodeinfo(const Array& params, bool fHelp)
             "(note that onetry addnodes are not listed here)\n"
             "If dns is false, only a list of added nodes will be provided,\n"
             "otherwise connected information will also be available.\n"
+
             "\nArguments:\n"
             "1. dns        (boolean, required) If false, only a list of added nodes will be provided, otherwise connected information will also be available.\n"
             "2. \"node\"   (string, optional) If provided, return information about this specific node, otherwise all nodes are returned.\n"
+
             "\nResult:\n"
             "[\n"
             "  {\n"
@@ -233,7 +258,7 @@ Value getaddednodeinfo(const Array& params, bool fHelp)
             "    \"connected\" : true|false,          (boolean) If connected\n"
             "    \"addresses\" : [\n"
             "       {\n"
-            "         \"address\" : \"192.168.0.201:8333\",  (string) The HUZU server host and port\n"
+            "         \"address\" : \"192.168.0.201:51992\",  (string) The huzu server host and port\n"
             "         \"connected\" : \"outbound\"           (string) connection, inbound or outbound\n"
             "       }\n"
             "       ,...\n"
@@ -241,28 +266,22 @@ Value getaddednodeinfo(const Array& params, bool fHelp)
             "  }\n"
             "  ,...\n"
             "]\n"
-            "\nExamples:\n"
-            + HelpExampleCli("getaddednodeinfo", "true")
-            + HelpExampleCli("getaddednodeinfo", "true \"192.168.0.201\"")
-            + HelpExampleRpc("getaddednodeinfo", "true, \"192.168.0.201\"")
-        );
+
+            "\nExamples:\n" +
+            HelpExampleCli("getaddednodeinfo", "true") + HelpExampleCli("getaddednodeinfo", "true \"192.168.0.201\"") + HelpExampleRpc("getaddednodeinfo", "true, \"192.168.0.201\""));
 
     bool fDns = params[0].get_bool();
 
     list<string> laddedNodes(0);
-    if (params.size() == 1)
-    {
+    if (params.size() == 1) {
         LOCK(cs_vAddedNodes);
-        BOOST_FOREACH(string& strAddNode, vAddedNodes)
+        BOOST_FOREACH (string& strAddNode, vAddedNodes)
             laddedNodes.push_back(strAddNode);
-    }
-    else
-    {
+    } else {
         string strNode = params[1].get_str();
         LOCK(cs_vAddedNodes);
-        BOOST_FOREACH(string& strAddNode, vAddedNodes)
-            if (strAddNode == strNode)
-            {
+        BOOST_FOREACH (string& strAddNode, vAddedNodes)
+            if (strAddNode == strNode) {
                 laddedNodes.push_back(strAddNode);
                 break;
             }
@@ -270,12 +289,10 @@ Value getaddednodeinfo(const Array& params, bool fHelp)
             throw JSONRPCError(RPC_CLIENT_NODE_NOT_ADDED, "Error: Node has not been added.");
     }
 
-    Array ret;
-    if (!fDns)
-    {
-        BOOST_FOREACH(string& strAddNode, laddedNodes)
-        {
-            Object obj;
+    UniValue ret(UniValue::VARR);
+    if (!fDns) {
+        BOOST_FOREACH (string& strAddNode, laddedNodes) {
+            UniValue obj(UniValue::VOBJ);
             obj.push_back(Pair("addednode", strAddNode));
             ret.push_back(obj);
         }
@@ -283,37 +300,32 @@ Value getaddednodeinfo(const Array& params, bool fHelp)
     }
 
     list<pair<string, vector<CService> > > laddedAddreses(0);
-    BOOST_FOREACH(string& strAddNode, laddedNodes)
-    {
+    BOOST_FOREACH (string& strAddNode, laddedNodes) {
         vector<CService> vservNode(0);
-        if(Lookup(strAddNode.c_str(), vservNode, Params().GetDefaultPort(), fNameLookup, 0))
+        if (Lookup(strAddNode.c_str(), vservNode, Params().GetDefaultPort(), fNameLookup, 0))
             laddedAddreses.push_back(make_pair(strAddNode, vservNode));
-        else
-        {
-            Object obj;
+        else {
+            UniValue obj(UniValue::VOBJ);
             obj.push_back(Pair("addednode", strAddNode));
             obj.push_back(Pair("connected", false));
-            Array addresses;
+            UniValue addresses(UniValue::VARR);
             obj.push_back(Pair("addresses", addresses));
         }
     }
 
     LOCK(cs_vNodes);
-    for (list<pair<string, vector<CService> > >::iterator it = laddedAddreses.begin(); it != laddedAddreses.end(); it++)
-    {
-        Object obj;
+    for (list<pair<string, vector<CService> > >::iterator it = laddedAddreses.begin(); it != laddedAddreses.end(); it++) {
+        UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("addednode", it->first));
 
-        Array addresses;
+        UniValue addresses(UniValue::VARR);
         bool fConnected = false;
-        BOOST_FOREACH(CService& addrNode, it->second)
-        {
+        BOOST_FOREACH (CService& addrNode, it->second) {
             bool fFound = false;
-            Object node;
+            UniValue node(UniValue::VOBJ);
             node.push_back(Pair("address", addrNode.ToString()));
-            BOOST_FOREACH(CNode* pnode, vNodes)
-                if (pnode->addr == addrNode)
-                {
+            BOOST_FOREACH (CNode* pnode, vNodes)
+                if (pnode->addr == addrNode) {
                     fFound = true;
                     fConnected = true;
                     node.push_back(Pair("connected", pnode->fInbound ? "inbound" : "outbound"));
@@ -331,61 +343,62 @@ Value getaddednodeinfo(const Array& params, bool fHelp)
     return ret;
 }
 
-Value getnettotals(const Array& params, bool fHelp)
+UniValue getnettotals(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 0)
         throw runtime_error(
             "getnettotals\n"
             "\nReturns information about network traffic, including bytes in, bytes out,\n"
             "and current time.\n"
+
             "\nResult:\n"
             "{\n"
             "  \"totalbytesrecv\": n,   (numeric) Total bytes received\n"
             "  \"totalbytessent\": n,   (numeric) Total bytes sent\n"
             "  \"timemillis\": t        (numeric) Total cpu time\n"
             "}\n"
-            "\nExamples:\n"
-            + HelpExampleCli("getnettotals", "")
-            + HelpExampleRpc("getnettotals", "")
-       );
 
-    Object obj;
+            "\nExamples:\n" +
+            HelpExampleCli("getnettotals", "") + HelpExampleRpc("getnettotals", ""));
+
+    UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("totalbytesrecv", CNode::GetTotalBytesRecv()));
     obj.push_back(Pair("totalbytessent", CNode::GetTotalBytesSent()));
     obj.push_back(Pair("timemillis", GetTimeMillis()));
     return obj;
 }
 
-static Array GetNetworksInfo()
+static UniValue GetNetworksInfo()
 {
-    Array networks;
-    for(int n=0; n<NET_MAX; ++n)
-    {
+    UniValue networks(UniValue::VARR);
+    for (int n = 0; n < NET_MAX; ++n) {
         enum Network network = static_cast<enum Network>(n);
-        if(network == NET_UNROUTABLE)
+        if (network == NET_UNROUTABLE)
             continue;
         proxyType proxy;
-        Object obj;
+        UniValue obj(UniValue::VOBJ);
         GetProxy(network, proxy);
         obj.push_back(Pair("name", GetNetworkName(network)));
         obj.push_back(Pair("limited", IsLimited(network)));
         obj.push_back(Pair("reachable", IsReachable(network)));
-        obj.push_back(Pair("proxy", proxy.IsValid() ? proxy.ToStringIPPort() : string()));
+        obj.push_back(Pair("proxy", proxy.IsValid() ? proxy.proxy.ToStringIPPort() : string()));
+        obj.push_back(Pair("proxy_randomize_credentials", proxy.randomize_credentials));
         networks.push_back(obj);
     }
     return networks;
 }
 
-Value getnetworkinfo(const Array& params, bool fHelp)
+UniValue getnetworkinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getnetworkinfo\n"
-            "Returns an object containing various state info regarding P2P networking.\n"
+            "\nReturns an object containing various state info regarding P2P networking.\n"
+
             "\nResult:\n"
             "{\n"
             "  \"version\": xxxxx,                      (numeric) the server version\n"
-            "  \"subversion\": \"/HUZU:x.x.x/\",     (string) the server subversion string\n"
+            "  \"subversion\": \"/Huzu Core:x.x.x.x/\",     (string) the server subversion string\n"
             "  \"protocolversion\": xxxxx,              (numeric) the protocol version\n"
             "  \"localservices\": \"xxxxxxxxxxxxxxxx\", (string) the services we offer to the network\n"
             "  \"timeoffset\": xxxxx,                   (numeric) the time offset\n"
@@ -399,7 +412,7 @@ Value getnetworkinfo(const Array& params, bool fHelp)
             "  }\n"
             "  ,...\n"
             "  ],\n"
-            "  \"relayfee\": x.xxxxxxxx,                (numeric) minimum relay fee for non-free transactions in btc/kb\n"
+            "  \"relayfee\": x.xxxxxxxx,                (numeric) minimum relay fee for non-free transactions in huzu/kb\n"
             "  \"localaddresses\": [                    (array) list of local addresses\n"
             "  {\n"
             "    \"address\": \"xxxx\",                 (string) network address\n"
@@ -409,27 +422,27 @@ Value getnetworkinfo(const Array& params, bool fHelp)
             "  ,...\n"
             "  ]\n"
             "}\n"
-            "\nExamples:\n"
-            + HelpExampleCli("getnetworkinfo", "")
-            + HelpExampleRpc("getnetworkinfo", "")
-        );
 
-    Object obj;
-    obj.push_back(Pair("version",       CLIENT_VERSION));
+            "\nExamples:\n" +
+            HelpExampleCli("getnetworkinfo", "") + HelpExampleRpc("getnetworkinfo", ""));
+
+    LOCK(cs_main);
+
+    UniValue obj(UniValue::VOBJ);
+    obj.push_back(Pair("version", CLIENT_VERSION));
     obj.push_back(Pair("subversion",
         FormatSubVersion(CLIENT_NAME, CLIENT_VERSION, std::vector<string>())));
-    obj.push_back(Pair("protocolversion",PROTOCOL_VERSION));
-    obj.push_back(Pair("localservices",       strprintf("%016x", nLocalServices)));
-    obj.push_back(Pair("timeoffset",    GetTimeOffset()));
-    obj.push_back(Pair("connections",   (int)vNodes.size()));
-    obj.push_back(Pair("networks",      GetNetworksInfo()));
-    obj.push_back(Pair("relayfee",      ValueFromAmount(::minRelayTxFee.GetFeePerK())));
-    Array localAddresses;
+    obj.push_back(Pair("protocolversion", PROTOCOL_VERSION));
+    obj.push_back(Pair("localservices", strprintf("%016x", nLocalServices)));
+    obj.push_back(Pair("timeoffset", GetTimeOffset()));
+    obj.push_back(Pair("connections", (int)vNodes.size()));
+    obj.push_back(Pair("networks", GetNetworksInfo()));
+    obj.push_back(Pair("relayfee", ValueFromAmount(::minRelayTxFee.GetFeePerK())));
+    UniValue localAddresses(UniValue::VARR);
     {
         LOCK(cs_mapLocalHost);
-        BOOST_FOREACH(const PAIRTYPE(CNetAddr, LocalServiceInfo) &item, mapLocalHost)
-        {
-            Object rec;
+        BOOST_FOREACH (const PAIRTYPE(CNetAddr, LocalServiceInfo) & item, mapLocalHost) {
+            UniValue rec(UniValue::VOBJ);
             rec.push_back(Pair("address", item.first.ToString()));
             rec.push_back(Pair("port", item.second.nPort));
             rec.push_back(Pair("score", item.second.nScore));
@@ -440,33 +453,129 @@ Value getnetworkinfo(const Array& params, bool fHelp)
     return obj;
 }
 
-Value makekeypair(const Array& params, bool fHelp)
+UniValue setban(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() > 1)
+    string strCommand;
+    if (params.size() >= 2)
+        strCommand = params[1].get_str();
+    if (fHelp || params.size() < 2 ||
+        (strCommand != "add" && strCommand != "remove"))
         throw runtime_error(
-            "makekeypair [prefix]\n"
-            "Make a public/private key pair.\n"
-            "[prefix] is optional preferred prefix for the public key.\n");
+            "setban \"ip(/netmask)\" \"add|remove\" (bantime) (absolute)\n"
+            "\nAttempts add or remove a IP/Subnet from the banned list.\n"
 
-    string strPrefix = "";
-    if (params.size() > 0)
-        strPrefix = params[0].get_str();
+            "\nArguments:\n"
+            "1. \"ip(/netmask)\" (string, required) The IP/Subnet (see getpeerinfo for nodes ip) with a optional netmask (default is /32 = single ip)\n"
+            "2. \"command\"      (string, required) 'add' to add a IP/Subnet to the list, 'remove' to remove a IP/Subnet from the list\n"
+            "3. \"bantime\"      (numeric, optional) time in seconds how long (or until when if [absolute] is set) the ip is banned (0 or empty means using the default time of 24h which can also be overwritten by the -bantime startup argument)\n"
+            "4. \"absolute\"     (boolean, optional) If set, the bantime must be a absolute timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
 
-    CKey key;
-    CPubKey pubkey;
-    int nCount = 0;
-    do
+            "\nExamples:\n"
+            + HelpExampleCli("setban", "\"192.168.0.6\" \"add\" 86400")
+            + HelpExampleCli("setban", "\"192.168.0.0/24\" \"add\"")
+            + HelpExampleRpc("setban", "\"192.168.0.6\", \"add\" 86400"));
+
+    CSubNet subNet;
+    CNetAddr netAddr;
+    bool isSubnet = false;
+
+    if (params[0].get_str().find("/") != string::npos)
+        isSubnet = true;
+
+    if (!isSubnet)
+        netAddr = CNetAddr(params[0].get_str());
+    else
+        subNet = CSubNet(params[0].get_str());
+
+    if (! (isSubnet ? subNet.IsValid() : netAddr.IsValid()) )
+        throw JSONRPCError(RPC_CLIENT_NODE_ALREADY_ADDED, "Error: Invalid IP/Subnet");
+
+    if (strCommand == "add")
     {
-        key.MakeNewKey(false);
-        pubkey = key.GetPubKey();
-        nCount++;
-    } while (nCount < 10000 && strPrefix != HexStr(pubkey.begin(), pubkey.end()).substr(0, strPrefix.size()));
+        if (isSubnet ? CNode::IsBanned(subNet) : CNode::IsBanned(netAddr))
+            throw JSONRPCError(RPC_CLIENT_NODE_ALREADY_ADDED, "Error: IP/Subnet already banned");
 
-    if (strPrefix != HexStr(pubkey.begin(), pubkey.end()).substr(0, strPrefix.size()))
-        return Value::null;
+        int64_t banTime = 0; //use standard bantime if not specified
+        if (params.size() >= 3 && !params[2].isNull())
+            banTime = params[2].get_int64();
 
-    Object result;
-    result.push_back(Pair("PublicKey", HexStr(pubkey.begin(), pubkey.end())));
-    result.push_back(Pair("PrivateKey", CBitcoinSecret(key).ToString()));
-    return result;
+        bool absolute = false;
+        if (params.size() == 4)
+            absolute = params[3].get_bool();
+
+        isSubnet ? CNode::Ban(subNet, BanReasonManuallyAdded, banTime, absolute) : CNode::Ban(netAddr, BanReasonManuallyAdded, banTime, absolute);
+
+        //disconnect possible nodes
+        while(CNode *bannedNode = (isSubnet ? FindNode(subNet) : FindNode(netAddr)))
+            bannedNode->CloseSocketDisconnect();
+    }
+    else if(strCommand == "remove")
+    {
+        if (!( isSubnet ? CNode::Unban(subNet) : CNode::Unban(netAddr) ))
+            throw JSONRPCError(RPC_MISC_ERROR, "Error: Unban failed");
+    }
+
+    DumpBanlist(); //store banlist to disk
+    uiInterface.BannedListChanged();
+
+    return NullUniValue;
+}
+
+UniValue listbanned(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "listbanned\n"
+            "\nList all banned IPs/Subnets.\n"
+
+            "\nResult:\n"
+            "[\n"
+            "  {\n"
+            "    \"address\": \"xxx\",          (string) Network address of banned client.\n"
+            "    \"banned_until\": nnn,         (numeric) Timestamp when the ban is lifted.\n"
+            "    \"ban_created\": nnn,          (numeric) Timestamp when the ban was created.\n"
+            "    \"ban_reason\": \"xxx\"        (string) Reason for banning.\n"
+            "  }\n"
+            "  ,...\n"
+            "]\n"
+
+            "\nExamples:\n"
+            + HelpExampleCli("listbanned", "")
+            + HelpExampleRpc("listbanned", ""));
+
+    banmap_t banMap;
+    CNode::GetBanned(banMap);
+
+    UniValue bannedAddresses(UniValue::VARR);
+    for (banmap_t::iterator it = banMap.begin(); it != banMap.end(); it++)
+    {
+        CBanEntry banEntry = (*it).second;
+        UniValue rec(UniValue::VOBJ);
+        rec.push_back(Pair("address", (*it).first.ToString()));
+        rec.push_back(Pair("banned_until", banEntry.nBanUntil));
+        rec.push_back(Pair("ban_created", banEntry.nCreateTime));
+        rec.push_back(Pair("ban_reason", banEntry.banReasonToString()));
+
+        bannedAddresses.push_back(rec);
+    }
+
+    return bannedAddresses;
+}
+
+UniValue clearbanned(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "clearbanned\n"
+            "\nClear all banned IPs.\n"
+
+            "\nExamples:\n"
+            + HelpExampleCli("clearbanned", "")
+            + HelpExampleRpc("clearbanned", ""));
+
+    CNode::ClearBanned();
+    DumpBanlist(); //store banlist to disk
+    uiInterface.BannedListChanged();
+
+    return NullUniValue;
 }

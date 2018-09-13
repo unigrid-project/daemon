@@ -1,9 +1,10 @@
 Sample configuration files for:
 
-SystemD: bitcoind.service
-Upstart: bitcoind.conf
-OpenRC:  bitcoind.openrc
-         bitcoind.openrcconf
+SystemD: huzud.service
+Upstart: huzud.conf
+OpenRC:  huzud.openrc
+         huzud.openrcconf
+CentOS:  huzud.init
 
 have been made available to assist packagers in creating node packages here.
 

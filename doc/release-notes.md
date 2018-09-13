@@ -1,172 +1,154 @@
-HUZU Core version 0.10.4 is now available from:
+HUZU Core version *3.1.1* is now available from:  <https://github.com/huzu-project/huzu/releases>
 
-  <https://bitcoin.org/bin/bitcoin-core-0.10.4/>
+This is a new minor version release, including various bug fixes and performance improvements, as well as updated translations.
 
-This is a new minor version release, bringing bug fixes, the BIP65
-(CLTV) consensus change, and relay policy preparation for BIP113. It is
-recommended to upgrade to this version as soon as possible.
+Please report bugs using the issue tracker at github: <https://github.com/huzu-project/huzu/issues>
 
-Please report bugs using the issue tracker at github:
+Non-Mandatory Update
+==============
 
-  <https://github.com/HUZU-project/HUZU/issues>
-
-Upgrading and downgrading
-=========================
+HUZU Core v3.1.1 is a non-mandatory update to address bugs and introduce minor enhancements that do not require a network change.
 
 How to Upgrade
+==============
+
+If you are running an older version, shut it down. Wait until it has completely shut down (which might take a few minutes for older versions), then run the installer (on Windows) or just copy over /Applications/HUZU-Qt (on Mac) or huzud/huzu-qt (on Linux).
+
+
+Compatibility
+==============
+
+HUZU Core is extensively tested on multiple operating systems using
+the Linux kernel, macOS 10.8+, and Windows Vista and later.
+
+Microsoft ended support for Windows XP on [April 8th, 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support),
+No attempt is made to prevent installing or running the software on Windows XP, you
+can still do so at your own risk but be aware that there are known instabilities and issues.
+Please do not report issues about Windows XP to the issue tracker.
+
+HUZU Core should also work on most other Unix-like systems but is not
+frequently tested on them.
+
+### :exclamation::exclamation::exclamation: MacOS 10.13 High Sierra :exclamation::exclamation::exclamation:
+
+**Currently there are issues with the 3.0.0+ gitian release on MacOS version 10.13 (High Sierra), no reports of issues on older versions of MacOS.**
+
+Notable Changes
+==============
+
+zHUZU Updates
 --------------
 
-If you are running an older version, shut it down. Wait until it has completely
-shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/HUZU-Qt (on Mac) or
-HUZUd/HUZU-qt (on Linux).
+### Fix spending for v1 zHUZU created before block 1050020
 
-Downgrade warning
-------------------
+The transition to v2 zHUZU and reset of the accumulators caused blocks 1050000 - 1050010 to be accumulated twice. This was causing a number v1 zHUZU to not create valid witnesses, and thus were not spendable. This problem is fixed by double accumulating blocks 1050000-1050010 when creating the witness. Any user that had issues spending zHUZU v1 will now be able to convert that into HUZU and then zHUZU v2 (if desired).
 
-Because release 0.10.0 and later makes use of headers-first synchronization and
-parallel block download (see further), the block files and databases are not
-backwards-compatible with pre-0.10 versions of HUZU Core or other software:
+### Adjustment to staking properties to reduce orphaned blocks
 
-* Blocks will be stored on disk out of order (in the order they are
-received, really), which makes it incompatible with some tools or
-other programs. Reindexing using earlier versions will also not work
-anymore as a result of this.
+zHUZU stake set to update more frequently and lowering the stake hashdrift to 30 seconds to reduce the number of orphans being experienced by HUZU stakers.
 
-* The block index database will now hold headers for which no block is
-stored on disk, which earlier versions won't support.
+Further work is being done to improve the efficiently of zPoS beyond this, and will be available in a subsequent release at a later date.
 
-If you want to be able to downgrade smoothly, make a backup of your entire data
-directory. Without this your node will need start syncing (or importing from
-bootstrap.dat) anew afterwards. It is possible that the data from a completely
-synchronised 0.10 node may be usable in older versions as-is, but this is not
-supported and may break as soon as the older version attempts to reindex.
 
-This does not affect wallet forward or backward compatibility. There are no
-known problems when downgrading from 0.11.x to 0.10.x.
+User Experience
+--------------
 
-Notable changes since 0.10.3
-============================
+### Fix wrongly displayed balance on Overview tab
 
-BIP65 soft fork to enforce OP_CHECKLOCKTIMEVERIFY opcode
---------------------------------------------------------
+Fixes a display issue introduced with a previous change. This was a "display only" issue, all your coins were there all the time.
 
-This release includes several changes related to the [BIP65][] soft fork
-which redefines the existing OP_NOP2 opcode as OP_CHECKLOCKTIMEVERIFY
-(CLTV) so that a transaction output can be made unspendable until a
-specified point in the future.
+### Show progress percent for zpiv reindex operations
 
-1. This release will only relay and mine transactions spending a CLTV
-   output if they comply with the BIP65 rules as provided in code.
+When starting the wallet with `-reindexaccumulators` and/or `-reindexzerocoin`, these operations can take a considerable time to complete depending on system hardware. A progress percent on the splash screen is now shown for these processes to avoid confusion in thinking that the wallet has frozen.
 
-2. This release will produce version 4 blocks by default. Please see the
-   *notice to miners* below.
 
-3. Once 951 out of a sequence of 1,001 blocks on the local node's best block
-   chain contain version 4 (or higher) blocks, this release will no
-   longer accept new version 3 blocks and it will only accept version 4
-   blocks if they comply with the BIP65 rules for CLTV.
+### Add TOR service icon to status bar
 
-For more information about the soft-forking change, please see
-<https://github.com/bitcoin/bitcoin/pull/6351>
+An icon is now shown for clients that are connected and operating over the TOR network. Included is a mouse-over tooltip showing the onion address associated with the client. This icon is only shown when a connection to the TOR network can be established, and will be hidden otherwise.
 
-Graphs showing the progress towards block version 4 adoption may be
-found at the URLs below:
 
-- Block versions over the last 50,000 blocks as progress towards BIP65
-  consensus enforcement: <http://bitcoin.sipa.be/ver-50k.png>
+HUZU Daemon & Client (RPC Changes)
+--------------
 
-- Block versions over the last 2,000 blocks showing the days to the
-  earliest possible BIP65 consensus-enforced block: <http://bitcoin.sipa.be/ver-2k.png>
+### Fix listtransactions RPC function
 
-**Notice to miners:** HUZU Core’s block templates are now for
-version 4 blocks only, and any mining software relying on its
-getblocktemplate must be updated in parallel to use libblkmaker either
-version FIXME or any version from FIXME onward.
+This addresses an issue where new incoming transactions are not recorded properly, and subsequently, not returned with `listtransactions` in the same session.
 
-- If you are solo mining, this will affect you the moment you upgrade
-  HUZU Core, which must be done prior to BIP65 achieving its 951/1001
-  status.
+This fix was previously included in the `v3.1.0.3` tag, and relayed to affected exchanges/services, which typically use this command for accounting purposes. It is included here for completeness.
 
-- If you are mining with the stratum mining protocol: this does not
-  affect you.
+Technical Changes
+--------------
 
-- If you are mining with the getblocktemplate protocol to a pool: this
-  will affect you at the pool operator’s discretion, which must be no
-  later than BIP65 achieving its 951/1001 status.
+### Switch to libsecp256k1 signature verification
 
-[BIP65]: https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki
+Here is the long overdue update for HUZU to let go of OpenSSL in its consensus code. The rationale behind it is to avoid depending on an external and changing library where our consensus code is affected. This is security and consensus critical. HUZU users will experience quicker block validations and sync times as block transactions are verified under libsecp256k1.
 
-Windows bug fix for corrupted UTXO database on unclean shutdowns
-----------------------------------------------------------------
+The recent [CVE-2018-0495](https://www.nccgroup.trust/us/our-research/technical-advisory-return-of-the-hidden-number-problem/) brings into question a potential vulnerability with OpenSSL (and other crypto libraries) that libsecp256k1 is not susceptible to.
 
-Several Windows users reported that they often need to reindex the
-entire blockchain after an unclean shutdown of HUZU Core on Windows
-(or an unclean shutdown of Windows itself). Although unclean shutdowns
-remain unsafe, this release no longer relies on memory-mapped files for
-the UTXO database, which significantly reduced the frequency of unclean
-shutdowns leading to required reindexes during testing.
+### Write to the zerocoinDB in batches
 
-For more information, see: <https://github.com/bitcoin/bitcoin/pull/6917>
+Instead of using a separate write operation for each and every bit of data that needs to be flushed to disk, utilize leveldb's batch writing capability. The primary area of improvement this offers is when reindexing the zerocoinDB (`-reindexzerocoin`), which went from needing multiple hours on some systems to mere minutes.
 
-Other fixes for database corruption on Windows are expected in the
-next major release.
+Secondary improvement area is in ConnectBlock() when multiple zerocoin transactions are involved.
 
-0.10.4 Change log
-=================
+### Resolution of excessive peer banning
 
-Detailed release notes follow. This overview includes changes that affect
-behavior, not code moves, refactors and string updates. For convenience in locating
-the code changes and accompanying discussion, both the pull request and
-git merge commit are mentioned.
+It was found that following a forced closure of the HUZU core wallet (ungraceful), a situation could arise that left partial/incomplete data in the disk cache. This caused the client to fail a basic sanity test and ban any peer which was sending the (complete) data. This, in turn, was causing the wallet to become stuck. This issue has been resolved client side by guarding against this partial/incomplete data in the disk cache.
 
-- #6953 `8b3311f` alias -h for --help
-- #6953 `97546fc` Change URLs to https in debian/control
-- #6953 `38671bf` Update debian/changelog and slight tweak to debian/control
-- #6953 `256321e` Correct spelling mistakes in doc folder
-- #6953 `eae0350` Clarification of unit test build instructions
-- #6953 `90897ab` Update bluematt-key, the old one is long-since revoked
-- #6953 `a2f2fb6` build: disable -Wself-assign
-- #6953 `cf67d8b` Bugfix: Allow mining on top of old tip blocks for testnet (fixes testnet-in-a-box use case)
-- #6953 `b3964e3` Drop "with minimal dependencies" from description
-- #6953 `43c2789` Split bitcoin-tx into its own package
-- #6953 `dfe0d4d` Include bitcoin-tx binary on Debian/Ubuntu
-- #6953 `612efe8` [Qt] Raise debug window when requested
-- #6953 `3ad96bd` Fix locking in GetTransaction
-- #6953 `9c81005` Fix spelling of Qt
-- #6946 `94b67e5` Update LevelDB
-- #6706 `5dc72f8` CLTV: Add more tests to improve coverage
-- #6706 `6a1343b` Add RPC tests for the CHECKLOCKTIMEVERIFY (BIP65) soft-fork
-- #6706 `4137248` Add CHECKLOCKTIMEVERIFY (BIP65) soft-fork logic
-- #6706 `0e01d0f` Enable CHECKLOCKTIMEVERIFY as a standard script verify flag
-- #6706 `6d01325` Replace NOP2 with CHECKLOCKTIMEVERIFY (BIP65)
-- #6706 `750d54f` Move LOCKTIME_THRESHOLD to src/script/script.h
-- #6706 `6897468` Make CScriptNum() take nMaxNumSize as an argument
-- #6867 `5297194` Set TCP_NODELAY on P2P sockets
-- #6836 `fb818b6` Bring historical release notes up to date
-- #6852 `0b3fd07` build: make sure OpenSSL heeds noexecstack
+*3.1.1* Change log
+--------------
 
-Credits
-=======
+Detailed release notes follow. This overview includes changes that affect behavior, code moves, refactoring and string updates. For convenience in locating the code changes and accompanying discussion, both the pull request and git merge commit are mentioned.
 
+### Core Features
+ - #549 `8bf13a5ad` [Crypto] Switch to libsecp256k1 signature verification and update the lib (warrows)
+ - #609 `6b73598b9` [MoveOnly] Remove zHUZU code from main.cpp (presstab)
+ - #610 `6c3bc8c76` [Main] Check whether tx is in chain in ContextualCheckZerocoinMint(). (presstab)
+ - #624 `1a82aec96` [Core] Missing seesaw value for block 325000 (warrows)
+ - #636 `d359c6136` [Main] Write to the zerocoinDB in batches (Fuzzbawls)
+
+### Build System
+ - #605 `b4d82c944` [Build] Remove unnecessary BOOST dependency (Mrs-X)
+ - #622 `b8c672c98` [Build] Make sure Boost headers are included for libzerocoin (Fuzzbawls)
+ - #639 `98c7a4f65` [Travis] Add separate job to check doc/logprint/subtree (Fuzzbawls)
+ - #648 `9950fce59` [Depends] Update Qt download url (fanquake)
+ 
+### P2P Protocol and Network Code
+ - #608 `a602d00eb` [Budget] Make sorting of finalized budgets deterministic (Mrs-X)
+ - #647 `3aa3e5c97` [Net] Update hard-coded fallback seeds (Fuzzbawls)
+
+### GUI
+ - #580 `c296b7572` Fixed Multisend dialog to show settings properly (SHTDJ)
+ - #598 `f0d894253` [GUI] Fix wrongly displayed balance on Overview tab (Mrs-X)
+ - #600 `217433561` [GUI] Only enable/disable PrivacyDialog zHUZU elements if needed. (presstab)
+ - #612 `6dd752cb5` [Qt] Show progress percent for zpiv reindex operations (Fuzzbawls)
+ - #626 `9b6a42ba0` [Qt] Add Tor service icon to status bar (Fuzzbawls)
+ - #629 `14e125795` [Qt] Remove useless help button from QT dialogs (windows) (warrows)
+ - #646 `c66b7b632` [Qt] Periodic translation update (Fuzzbawls)
+ 
+### Wallet
+ - #597 `766d5196c` [Wallet] Write new transactions to wtxOrdered properly (Fuzzbawls)
+ - #603 `779d8d597` Fix spending for v1 zHUZU created before block 1050020. (presstab)
+ - #617 `6b525f0df` [Wallet] Adjust staking properties to lower orphan rates. (presstab)
+ - #625 `5f2e61d60` [Wallet] Add some LOCK to avoid crash (warrows)
+ 
+### Miscellaneous
+ - #585 `76c01a560` [Doc] Change aarch assert sign output folder (Warrows)
+ - #595 `d2ce04cc0` [Tests] Fix chain ordering in budget tests (Fuzzbawls)
+ - #611 `c6a57f664` [Output] Properly log reason(s) for increasing a peer's DoS score. (Fuzzbawls)
+ - #649 `f6bfb4ade` [Utils] Add copyright header to logprint-scanner.py (Fuzzbawls)
+ 
+## Credits
 Thanks to everyone who directly contributed to this release:
 
-- Alex Morcos
-- Daniel Cousens
-- Diego Viola
-- Eric Lombrozo
-- Esteban Ordano
-- Gregory Maxwell
-- Luke Dashjr
-- MarcoFalke
-- Matt Corallo
-- Micha
-- Mitchell Cash
-- Peter Todd
-- Pieter Wuille
-- Wladimir J. van der Laan
-- Zak Wilcox
+ - Fuzzbawls
+ - Mrs-X
+ - SHTDJ
+ - Sieres
+ - Warrows
+ - fanquake
+ - gpdionisio
+ - presstab
 
-And those who contributed additional code review and/or security research.
 
-As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/bitcoin/).
+As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/huzu-project-translations/).

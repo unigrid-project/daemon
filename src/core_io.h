@@ -1,9 +1,7 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_CORE_IO_H
@@ -30,7 +28,8 @@ extern std::vector<unsigned char> ParseHexUV(const UniValue& v, const std::strin
 extern std::string FormatScript(const CScript& script);
 extern std::string EncodeHexTx(const CTransaction& tx);
 extern void ScriptPubKeyToUniv(const CScript& scriptPubKey,
-                        UniValue& out, bool fIncludeHex);
+    UniValue& out,
+    bool fIncludeHex);
 extern void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry);
 
 #endif // BITCOIN_CORE_IO_H

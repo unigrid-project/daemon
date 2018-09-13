@@ -264,12 +264,12 @@ void LRUCache::Erase(const Slice& key, uint32_t hash) {
   }
 }
 
-static const int kNuHUZUardBits = 4;
-static const int kNuHUZUards = 1 << kNuHUZUardBits;
+static const int kNumShardBits = 4;
+static const int kNumShards = 1 << kNumShardBits;
 
 class ShardedLRUCache : public Cache {
  private:
-  LRUCache shard_[kNuHUZUards];
+  LRUCache shard_[kNumShards];
   port::Mutex id_mutex_;
   uint64_t last_id_;
 
@@ -278,14 +278,14 @@ class ShardedLRUCache : public Cache {
   }
 
   static uint32_t Shard(uint32_t hash) {
-    return hash >> (32 - kNuHUZUardBits);
+    return hash >> (32 - kNumShardBits);
   }
 
  public:
   explicit ShardedLRUCache(size_t capacity)
       : last_id_(0) {
-    const size_t per_shard = (capacity + (kNuHUZUards - 1)) / kNuHUZUards;
-    for (int s = 0; s < kNuHUZUards; s++) {
+    const size_t per_shard = (capacity + (kNumShards - 1)) / kNumShards;
+    for (int s = 0; s < kNumShards; s++) {
       shard_[s].SetCapacity(per_shard);
     }
   }

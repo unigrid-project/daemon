@@ -1,16 +1,14 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_TRAFFICGRAPHWIDGET_H
 #define BITCOIN_QT_TRAFFICGRAPHWIDGET_H
 
-#include <QWidget>
 #include <QQueue>
+#include <QWidget>
 
 class ClientModel;
 
@@ -24,12 +22,12 @@ class TrafficGraphWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit TrafficGraphWidget(QWidget *parent = 0);
-    void setClientModel(ClientModel *model);
+    explicit TrafficGraphWidget(QWidget* parent = 0);
+    void setClientModel(ClientModel* model);
     int getGraphRangeMins() const;
 
 protected:
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent*);
 
 public slots:
     void updateRates();
@@ -37,16 +35,16 @@ public slots:
     void clear();
 
 private:
-    void paintPath(QPainterPath &path, QQueue<float> &samples);
+    void paintPath(QPainterPath& path, QQueue<float>& samples);
 
-    QTimer *timer;
+    QTimer* timer;
     float fMax;
     int nMins;
     QQueue<float> vSamplesIn;
     QQueue<float> vSamplesOut;
     quint64 nLastBytesIn;
     quint64 nLastBytesOut;
-    ClientModel *clientModel;
+    ClientModel* clientModel;
 };
 
 #endif // BITCOIN_QT_TRAFFICGRAPHWIDGET_H

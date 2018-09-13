@@ -1,9 +1,6 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "db.h"
@@ -49,7 +46,7 @@ void CDBEnv::EnvShutdown()
     if (ret != 0)
         LogPrintf("CDBEnv::EnvShutdown : Error %d shutting down database environment: %s\n", ret, DbEnv::strerror(ret));
     if (!fMockDb)
-        DbEnv(0).remove(path.string().c_str(), 0);
+        DbEnv(0).remove(strPath.c_str(), 0);
 }
 
 CDBEnv::CDBEnv() : dbenv(DB_CXX_NO_EXCEPTIONS)
@@ -75,11 +72,11 @@ bool CDBEnv::Open(const boost::filesystem::path& pathIn)
 
     boost::this_thread::interruption_point();
 
-    path = pathIn;
-    filesystem::path pathLogDir = path / "database";
+    strPath = pathIn.string();
+    boost::filesystem::path pathLogDir = pathIn / "database";
     TryCreateDirectory(pathLogDir);
-    filesystem::path pathErrorFile = path / "db.log";
-    LogPrintf("CDBEnv::Open : LogDir=%s ErrorFile=%s\n", pathLogDir.string(), pathErrorFile.string());
+    boost::filesystem::path pathErrorFile = pathIn / "db.log";
+    LogPrintf("CDBEnv::Open: LogDir=%s ErrorFile=%s\n", pathLogDir.string(), pathErrorFile.string());
 
     unsigned int nEnvFlags = 0;
     if (GetBoolArg("-privdb", true))
@@ -95,16 +92,16 @@ bool CDBEnv::Open(const boost::filesystem::path& pathIn)
     dbenv.set_flags(DB_AUTO_COMMIT, 1);
     dbenv.set_flags(DB_TXN_WRITE_NOSYNC, 1);
     dbenv.log_set_config(DB_LOG_AUTO_REMOVE, 1);
-    int ret = dbenv.open(path.string().c_str(),
-                         DB_CREATE |
-                             DB_INIT_LOCK |
-                             DB_INIT_LOG |
-                             DB_INIT_MPOOL |
-                             DB_INIT_TXN |
-                             DB_THREAD |
-                             DB_RECOVER |
-                             nEnvFlags,
-                         S_IRUSR | S_IWUSR);
+    int ret = dbenv.open(strPath.c_str(),
+        DB_CREATE |
+            DB_INIT_LOCK |
+            DB_INIT_LOG |
+            DB_INIT_MPOOL |
+            DB_INIT_TXN |
+            DB_THREAD |
+            DB_RECOVER |
+            nEnvFlags,
+        S_IRUSR | S_IWUSR);
     if (ret != 0)
         return error("CDBEnv::Open : Error %d opening database environment: %s\n", ret, DbEnv::strerror(ret));
 
@@ -130,14 +127,14 @@ void CDBEnv::MakeMock()
     dbenv.set_flags(DB_AUTO_COMMIT, 1);
     dbenv.log_set_config(DB_LOG_IN_MEMORY, 1);
     int ret = dbenv.open(NULL,
-                         DB_CREATE |
-                             DB_INIT_LOCK |
-                             DB_INIT_LOG |
-                             DB_INIT_MPOOL |
-                             DB_INIT_TXN |
-                             DB_THREAD |
-                             DB_PRIVATE,
-                         S_IRUSR | S_IWUSR);
+        DB_CREATE |
+            DB_INIT_LOCK |
+            DB_INIT_LOG |
+            DB_INIT_MPOOL |
+            DB_INIT_TXN |
+            DB_THREAD |
+            DB_PRIVATE,
+        S_IRUSR | S_IWUSR);
     if (ret > 0)
         throw runtime_error(strprintf("CDBEnv::MakeMock : Error %d opening database environment.", ret));
 
@@ -202,7 +199,7 @@ bool CDBEnv::Salvage(std::string strFile, bool fAggressive, std::vector<CDBEnv::
     std::string keyHex, valueHex;
     while (!strDump.eof() && keyHex != "DATA=END") {
         getline(strDump, keyHex);
-        if (keyHex != "DATA_END") {
+        if (keyHex != "DATA=END") {
             getline(strDump, valueHex);
             vResult.push_back(make_pair(ParseHex(keyHex), ParseHex(valueHex)));
         }
@@ -252,12 +249,12 @@ CDB::CDB(const std::string& strFilename, const char* pszMode) : pdb(NULL), activ
                     throw runtime_error(strprintf("CDB : Failed to configure for no temp file backing for database %s", strFile));
             }
 
-            ret = pdb->open(NULL,                               // Txn pointer
-                            fMockDb ? NULL : strFile.c_str(),   // Filename
-                            fMockDb ? strFile.c_str() : "main", // Logical db name
-                            DB_BTREE,                           // Database type
-                            nFlags,                             // Flags
-                            0);
+            ret = pdb->open(NULL,                   // Txn pointer
+                fMockDb ? NULL : strFile.c_str(),   // Filename
+                fMockDb ? strFile.c_str() : "main", // Logical db name
+                DB_BTREE,                           // Database type
+                nFlags,                             // Flags
+                0);
 
             if (ret != 0) {
                 delete pdb;
@@ -350,12 +347,12 @@ bool CDB::Rewrite(const string& strFile, const char* pszSkip)
                     CDB db(strFile.c_str(), "r");
                     Db* pdbCopy = new Db(&bitdb.dbenv, 0);
 
-                    int ret = pdbCopy->open(NULL,               // Txn pointer
-                                            strFileRes.c_str(), // Filename
-                                            "main",             // Logical db name
-                                            DB_BTREE,           // Database type
-                                            DB_CREATE,          // Flags
-                                            0);
+                    int ret = pdbCopy->open(NULL, // Txn pointer
+                        strFileRes.c_str(),       // Filename
+                        "main",                   // Logical db name
+                        DB_BTREE,                 // Database type
+                        DB_CREATE,                // Flags
+                        0);
                     if (ret > 0) {
                         LogPrintf("CDB::Rewrite : Can't create database file %s\n", strFileRes);
                         fSuccess = false;
@@ -450,7 +447,7 @@ void CDBEnv::Flush(bool fShutdown)
                 dbenv.log_archive(&listp, DB_ARCH_REMOVE);
                 Close();
                 if (!fMockDb)
-                    boost::filesystem::remove_all(path / "database");
+                    boost::filesystem::remove_all(boost::filesystem::path(strPath) / "database");
             }
         }
     }

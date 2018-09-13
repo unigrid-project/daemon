@@ -1,9 +1,7 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2011-2014 The Bitcoin Core developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The HUZU developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "base58.h"
@@ -20,23 +18,20 @@
 
 #include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
-#include "json/json_spirit_reader_template.h"
-#include "json/json_spirit_utils.h"
-#include "json/json_spirit_writer_template.h"
 
-using namespace json_spirit;
-extern Array read_json(const std::string& jsondata);
+#include <univalue.h>
+
+extern UniValue read_json(const std::string& jsondata);
 
 BOOST_AUTO_TEST_SUITE(base58_tests)
 
 // Goal: test low-level base58 encoding functionality
 BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
 {
-    Array tests = read_json(std::string(json_tests::base58_encode_decode, json_tests::base58_encode_decode + sizeof(json_tests::base58_encode_decode)));
-    BOOST_FOREACH(Value& tv, tests)
-    {
-        Array test = tv.get_array();
-        std::string strTest = write_string(tv, false);
+    UniValue tests = read_json(std::string(json_tests::base58_encode_decode, json_tests::base58_encode_decode + sizeof(json_tests::base58_encode_decode)));
+    for (unsigned int idx = 0; idx < tests.size(); idx++) {
+        UniValue test = tests[idx];
+        std::string strTest = test.write();
         if (test.size() < 2) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
@@ -53,13 +48,12 @@ BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
 // Goal: test low-level base58 decoding functionality
 BOOST_AUTO_TEST_CASE(base58_DecodeBase58)
 {
-    Array tests = read_json(std::string(json_tests::base58_encode_decode, json_tests::base58_encode_decode + sizeof(json_tests::base58_encode_decode)));
+    UniValue tests = read_json(std::string(json_tests::base58_encode_decode, json_tests::base58_encode_decode + sizeof(json_tests::base58_encode_decode)));
     std::vector<unsigned char> result;
 
-    BOOST_FOREACH(Value& tv, tests)
-    {
-        Array test = tv.get_array();
-        std::string strTest = write_string(tv, false);
+    for (unsigned int idx = 0; idx < tests.size(); idx++) {
+        UniValue test = tests[idx];
+        std::string strTest = test.write();
         if (test.size() < 2) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
@@ -127,15 +121,14 @@ public:
 // Goal: check that parsed keys match test payload
 BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
 {
-    Array tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
+    UniValue tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
     std::vector<unsigned char> result;
     CBitcoinSecret secret;
     CBitcoinAddress addr;
 
-    BOOST_FOREACH(Value& tv, tests)
-    {
-        Array test = tv.get_array();
-        std::string strTest = write_string(tv, false);
+    for (unsigned int idx = 0; idx < tests.size(); idx++) {
+        UniValue test = tests[idx];
+        std::string strTest = test.write();
         if (test.size() < 3) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
@@ -143,7 +136,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
         }
         std::string exp_base58string = test[0].get_str();
         std::vector<unsigned char> exp_payload = ParseHex(test[1].get_str());
-        const Object &metadata = test[2].get_obj();
+        const UniValue &metadata = test[2].get_obj();
         bool isPrivkey = find_value(metadata, "isPrivkey").get_bool();
         bool isTestnet = find_value(metadata, "isTestnet").get_bool();
         if (isTestnet)
@@ -186,12 +179,12 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
 // Goal: check that generated keys match test vectors
 BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
 {
-    Array tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
+    UniValue tests = read_json(std::string(json_tests::base58_keys_valid, json_tests::base58_keys_valid + sizeof(json_tests::base58_keys_valid)));
     std::vector<unsigned char> result;
-    BOOST_FOREACH(Value& tv, tests)
-    {
-        Array test = tv.get_array();
-        std::string strTest = write_string(tv, false);
+
+    for (unsigned int idx = 0; idx < tests.size(); idx++) {
+        UniValue test = tests[idx];
+        std::string strTest = test.write();
         if (test.size() < 3) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);
@@ -199,7 +192,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
         }
         std::string exp_base58string = test[0].get_str();
         std::vector<unsigned char> exp_payload = ParseHex(test[1].get_str());
-        const Object &metadata = test[2].get_obj();
+        const UniValue &metadata = test[2].get_obj();
         bool isPrivkey = find_value(metadata, "isPrivkey").get_bool();
         bool isTestnet = find_value(metadata, "isTestnet").get_bool();
         if (isTestnet)
@@ -254,15 +247,14 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
 // Goal: check that base58 parsing code is robust against a variety of corrupted data
 BOOST_AUTO_TEST_CASE(base58_keys_invalid)
 {
-    Array tests = read_json(std::string(json_tests::base58_keys_invalid, json_tests::base58_keys_invalid + sizeof(json_tests::base58_keys_invalid))); // Negative testcases
+    UniValue tests = read_json(std::string(json_tests::base58_keys_invalid, json_tests::base58_keys_invalid + sizeof(json_tests::base58_keys_invalid))); // Negative testcases
     std::vector<unsigned char> result;
     CBitcoinSecret secret;
     CBitcoinAddress addr;
 
-    BOOST_FOREACH(Value& tv, tests)
-    {
-        Array test = tv.get_array();
-        std::string strTest = write_string(tv, false);
+    for (unsigned int idx = 0; idx < tests.size(); idx++) {
+        UniValue test = tests[idx];
+        std::string strTest = test.write();
         if (test.size() < 1) // Allow for extra stuff (useful for comments)
         {
             BOOST_ERROR("Bad test: " << strTest);

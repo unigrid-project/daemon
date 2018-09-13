@@ -1,8 +1,5 @@
-// Copyright c 2009-2010 Satoshi Nakamoto
-// Copyright c 2009-2014 The Bitcoin developers
-// Copyright c 2014-2015 The Dash developers
-// Copyright c 2015-2018 The PIVX developers
-// Copyright c 2018 The HUZU developers
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -38,7 +35,9 @@ class CDBEnv
 private:
     bool fDbEnvInit;
     bool fMockDb;
-    boost::filesystem::path path;
+    // Don't change into boost::filesystem::path, as that can result in
+    // shutdown problems/crashes caused by a static initialized internal pointer.
+    std::string strPath;
 
     void EnvShutdown();
 
@@ -60,8 +59,8 @@ public:
      * Returns true if strFile is OK.
      */
     enum VerifyResult { VERIFY_OK,
-                        RECOVER_OK,
-                        RECOVER_FAIL };
+        RECOVER_OK,
+        RECOVER_FAIL };
     VerifyResult Verify(std::string strFile, bool (*recoverFunc)(CDBEnv& dbenv, std::string strFile));
     /**
      * Salvage data from a file that Verify says is bad.
