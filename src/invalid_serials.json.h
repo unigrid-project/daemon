@@ -1,12 +1,12 @@
-// Copyright (c) 2018 The DOMOX developers
-// Copyright (c) 2018 The DOMO developers
+// Copyright (c) 2018 The HUZUX developers
+// Copyright (c) 2018 The HUZU developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
 
-#ifndef DOMO_INVALID_SERIALS_JSON_H
-#define DOMO_INVALID_SERIALS_JSON_H
+#ifndef HUZU_INVALID_SERIALS_JSON_H
+#define HUZU_INVALID_SERIALS_JSON_H
 
 #include <string>
 
@@ -1190,4 +1190,4 @@ std::string LoadInvalidSerials()
     return str;
 }
 
-#endif //DOMO_INVALID_SERIALS_JSON_H
+#endif //HUZU_INVALID_SERIALS_JSON_H
