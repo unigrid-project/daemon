@@ -55,7 +55,7 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
     (0, uint256("00000416490cfdea94f5f78bc14285e48c78c42ea8ec9c8a623050d0175cf2d2"))
-    (30, uint256("00000061ef9ccbbb1f2b65021684fd9275ad7615ff7fcb3f09245be8cd08e02e"))
+    (50, uint256("00000056ed36e39376091820467610ca296f240bc660fa8c58653941e3eb113a"))
     // (616764, uint256("29dd0bd1c59484f290896687b4ffb6a49afa5c498caf61967c69a541f8191557")) //first block to use modifierV2
     // (623933, uint256("c7aafa648a0f1450157dc93bd4d7448913a85b7448f803b4ab970d91fc2a7da7"))
     // (791150, uint256("8e76f462e4e82d1bd21cb72e1ce1567d4ddda2390f26074ffd1f5d9c270e5e50"))
@@ -146,9 +146,9 @@ public:
         strDevpubkey = "028b4f493822fe835ec6d68396a87835f9f77723c13a2e2a3af386d3afe5fa758d";
 
         /** Height or Time Based Activations **/
-        nLastPOWBlock = 170;
+        nLastPOWBlock = 1000;
         nModifierUpdateBlock = 1999999999;
-        nZerocoinStartHeight = 180;
+        nZerocoinStartHeight = 5000;
         nZerocoinStartTime = 1536253000; // October 17, 2017 4:30:00 AM
         nBlockEnforceSerialRange = 1999999999; //Enforce serial range starting this block
         nBlockRecalculateAccumulators = 1999999999; //Trigger a recalculation of accumulators
@@ -156,7 +156,7 @@ public:
         nBlockLastGoodCheckpoint = 1999999999; //Last valid accumulator checkpoint
         nBlockEnforceInvalidUTXO = 1999999999; //Start enforcing the invalid UTXO's
         nInvalidAmountFiltered = 268200*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
-        nBlockZerocoinV2 = 190; //!> The block that zerocoin v2 becomes active - roughly Tuesday, May 8, 2018 4:00:00 AM GMT
+        nBlockZerocoinV2 = 25000; //!> The block that zerocoin v2 becomes active - roughly Tuesday, May 8, 2018 4:00:00 AM GMT
         nEnforceNewSporkKey = 1999999999; //!> Sporks signed after (GMT): Tuesday, May 1, 2018 7:00:00 AM GMT must use the new spork key
         nRejectOldSporkKey = 1999999999; //!> Fully reject old spork key after (GMT): Friday, June 1, 2018 12:00:00 AM
 
