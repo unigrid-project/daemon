@@ -4104,7 +4104,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
         LogPrintf("CheckBlock() : skipping transaction locking checks\n");
     }
 
-    // masternode payments / budgets
+    // masternode payments / budgets / devfund
     CBlockIndex* pindexPrev = chainActive.Tip();
     int nHeight = 0;
     if (pindexPrev != NULL) {
@@ -4131,6 +4131,33 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
         } else {
             if (fDebug)
                 LogPrintf("CheckBlock(): Masternode payment check skipped on sync - skipping IsBlockPayeeValid()\n");
+        }
+
+        if (nHeight > Params().LAST_POW_BLOCK()) {
+            CTransaction tx = block.vtx[1];
+            if (!tx.vout[1].IsZerocoinMint()) {
+                int nIndex = tx.vout.size() - 2;
+                CAmount nBlockValue = GetBlockValue(nHeight);
+                CAmount nDevFundValue = GetDevFundPayment(nHeight, nBlockValue);
+                CAmount nMasternodeValue = GetMasternodePayment(nHeight, nBlockValue, 0, false);
+
+                if (tx.vout[nIndex].nValue != nMasternodeValue) {
+                    return state.DoS(100, error("%s : rejected by check masternode lock-in at %d", __func__, nHeight),
+                        REJECT_INVALID, "check devfund mismatch");
+                }
+
+                if (tx.vout[nIndex + 1].nValue != nDevFundValue) {
+                    return state.DoS(100, error("%s : rejected by check devfund value lock-in at %d", __func__, nHeight),
+                        REJECT_INVALID, "check devfund mismatch");
+                }
+
+                CScript devScriptPubKey = CScript()
+                                          << ParseHex(Params().DevPubKey().c_str()) << OP_CHECKSIG;
+                if (tx.vout[nIndex + 1].scriptPubKey != devScriptPubKey) {
+                    return state.DoS(100, error("%s : rejected by check devfund address lock-in at %d", __func__, nHeight),
+                        REJECT_INVALID, "check devfund mismatch");
+                }
+            }
         }
     }
 

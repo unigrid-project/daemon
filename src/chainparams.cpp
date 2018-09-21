@@ -196,13 +196,12 @@ public:
         // vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net")); // Single node address
         // vSeeds.push_back(CDNSSeedData("178.254.23.111", "178.254.23.111"));           // Single node address
 
-        vSeeds.push_back(CDNSSeedData("54.39.98.89", "54.39.98.89"));
-		vSeeds.push_back(CDNSSeedData("51.68.212.21", "51.68.212.21"));
-		vSeeds.push_back(CDNSSeedData("51.38.129.175", "51.38.129.175"));
-        vSeeds.push_back(CDNSSeedData("51.38.129.175", "92.222.71.178"));
-        vSeeds.push_back(CDNSSeedData("51.38.129.175", "51.68.172.119"));
-        vSeeds.push_back(CDNSSeedData("51.38.129.175", "51.68.172.120"));
-		vSeeds.push_back(CDNSSeedData("183.182.104.121", "183.182.104.121"));
+        vSeeds.push_back(CDNSSeedData("seed1.huzu.io", "dnsseed1.huzu.io"));
+        vSeeds.push_back(CDNSSeedData("seed2.huzu.io", "dnsseed2.huzu.io"));
+        vSeeds.push_back(CDNSSeedData("seed3.huzu.io", "dnsseed3.huzu.io"));
+        vSeeds.push_back(CDNSSeedData("seed4.huzu.io", "dnsseed4.huzu.io"));
+        vSeeds.push_back(CDNSSeedData("seed5.huzu.io", "dnsseed5.huzu.io"));
+        vSeeds.push_back(CDNSSeedData("seed6.huzu.io", "dnsseed6.huzu.io"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 40);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 100);
