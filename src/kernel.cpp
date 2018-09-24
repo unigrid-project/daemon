@@ -10,9 +10,9 @@
 #include "db.h"
 #include "kernel.h"
 #include "script/interpreter.h"
+#include "stakeinput.h"
 #include "timedata.h"
 #include "util.h"
-#include "stakeinput.h"
 #include "zpivchain.h"
 
 using namespace std;
@@ -97,7 +97,7 @@ static bool SelectBlockFromCandidates(
             break;
 
         //if the lowest block height (vSortedByTimestamp[0]) is >= switch height, use new modifier calc
-        if (fFirstRun){
+        if (fFirstRun) {
             fModifierV2 = pindex->nHeight >= Params().ModifierUpgradeBlock();
             fFirstRun = false;
         }
@@ -107,7 +107,7 @@ static bool SelectBlockFromCandidates(
 
         // compute the selection hash by hashing an input that is unique to that block
         uint256 hashProof;
-        if(fModifierV2)
+        if (fModifierV2)
             hashProof = pindex->GetBlockHash();
         else
             hashProof = pindex->IsProofOfStake() ? 0 : pindex->GetBlockHash();
@@ -256,6 +256,7 @@ bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int
     const CBlockIndex* pindex = pindexFrom;
     CBlockIndex* pindexNext = chainActive[pindexFrom->nHeight + 1];
 
+    int nCount = 0;
     // loop to find the stake modifier later by a selection interval
     while (nStakeModifierTime < pindexFrom->GetBlockTime() + nStakeModifierSelectionInterval) {
         if (!pindexNext) {
@@ -263,6 +264,7 @@ bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int
             return error("Null pindexNext\n");
         }
 
+        nCount++;
         pindex = pindexNext;
         pindexNext = chainActive[pindexNext->nHeight + 1];
         if (pindex->GeneratedStakeModifier()) {
@@ -284,8 +286,7 @@ bool stakeTargetHit(uint256 hashProofOfStake, int64_t nValueIn, uint256 bnTarget
     return hashProofOfStake < (bnCoinDayWeight * bnTargetPerCoinDay);
 }
 
-bool CheckStake(const CDataStream& ssUniqueID, CAmount nValueIn, const uint64_t nStakeModifier, const uint256& bnTarget,
-                unsigned int nTimeBlockFrom, unsigned int& nTimeTx, uint256& hashProofOfStake)
+bool CheckStake(const CDataStream& ssUniqueID, CAmount nValueIn, const uint64_t nStakeModifier, const uint256& bnTarget, unsigned int nTimeBlockFrom, unsigned int& nTimeTx, uint256& hashProofOfStake)
 {
     CDataStream ss(SER_GETHASH, 0);
     ss << nStakeModifier << nTimeBlockFrom << ssUniqueID << nTimeTx;
@@ -302,7 +303,7 @@ bool Stake(CStakeInput* stakeInput, unsigned int nBits, unsigned int nTimeBlockF
 
     if (nTimeBlockFrom + nStakeMinAge > nTimeTx) // Min age requirement
         return error("CheckStakeKernelHash() : min age violation - nTimeBlockFrom=%d nStakeMinAge=%d nTimeTx=%d",
-                     nTimeBlockFrom, nStakeMinAge, nTimeTx);
+            nTimeBlockFrom, nStakeMinAge, nTimeTx);
 
     //grab difficulty
     uint256 bnTargetPerCoinDay;
@@ -395,9 +396,9 @@ bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake, std::uniqu
     unsigned int nBlockFromTime = blockprev.nTime;
     unsigned int nTxTime = block.nTime;
     if (!CheckStake(stake->GetUniqueness(), stake->GetValue(), nStakeModifier, bnTargetPerCoinDay, nBlockFromTime,
-                    nTxTime, hashProofOfStake)) {
+            nTxTime, hashProofOfStake)) {
         return error("CheckProofOfStake() : INFO: check kernel failed on coinstake %s, hashProof=%s \n",
-                     tx.GetHash().GetHex(), hashProofOfStake.GetHex());
+            tx.GetHash().GetHex(), hashProofOfStake.GetHex());
     }
 
     return true;

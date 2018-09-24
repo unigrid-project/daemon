@@ -535,7 +535,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
             strHeader += rpc_user;
             strHeader += "\nrpcpassword=";
             strHeader += rpc_passwd;
-            strHeader += "\naddnode=54.39.98.89\naddnode=51.68.212.21\naddnode=51.38.129.175\naddnode=92.222.71.178\naddnode=51.68.172.119\naddnode=51.68.172.120\n";
+            strHeader += "\naddnode=dnsseed1.huzu.io\naddnode=dnsseed2.huzu.io\naddnode=dnsseed3.huzu.io\naddnode=dnsseed4.huzu.io\naddnode=dnsseed5.huzu.io\naddnode=dnsseed6.huzu.io\n";
             strHeader += "txindex=1\nhuzustake=1\n";
             fwrite(strHeader.c_str(), std::strlen(strHeader.c_str()), 1, configFile);
             fclose(configFile);
