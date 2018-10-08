@@ -56,7 +56,7 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
     (0, uint256("00000416490cfdea94f5f78bc14285e48c78c42ea8ec9c8a623050d0175cf2d2"))
     (50, uint256("00000056ed36e39376091820467610ca296f240bc660fa8c58653941e3eb113a"))
-    // (616764, uint256("29dd0bd1c59484f290896687b4ffb6a49afa5c498caf61967c69a541f8191557")) //first block to use modifierV2
+    (25000, uint256("70e4a6288d390e03d7f1035387739539e53a158e0b11dbed7397c2241d5af800")) //first block to use modifierV2
     // (623933, uint256("c7aafa648a0f1450157dc93bd4d7448913a85b7448f803b4ab970d91fc2a7da7"))
     // (791150, uint256("8e76f462e4e82d1bd21cb72e1ce1567d4ddda2390f26074ffd1f5d9c270e5e50"))
     // (795000, uint256("4423cceeb9fd574137a18733416275a70fdf95283cc79ad976ca399aa424a443"))
