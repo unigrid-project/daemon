@@ -2284,9 +2284,6 @@ bool CScriptCheck::operator()()
     return true;
 }
 
-CBitcoinAddress addressExp1("DQZzqnSR6PXxagep1byLiRg9ZurCZ5KieQ");
-CBitcoinAddress addressExp2("DTQYdnNqKuEHXyNeeYhPQGGGdqHbXYwjpj");
-
 map<COutPoint, COutPoint> mapInvalidOutPoints;
 map<CBigNum, CAmount> mapInvalidSerials;
 void AddInvalidSpendsToMap(const CBlock& block)
@@ -4151,11 +4148,21 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                         REJECT_INVALID, "check devfund mismatch");
                 }
 
-                CScript devScriptPubKey = CScript()
-                                          << ParseHex(Params().DevPubKey().c_str()) << OP_CHECKSIG;
-                if (tx.vout[nIndex + 1].scriptPubKey != devScriptPubKey) {
-                    return state.DoS(100, error("%s : rejected by check devfund address lock-in at %d", __func__, nHeight),
-                        REJECT_INVALID, "check devfund mismatch");
+                if (nHeight != 0 && !IsInitialBlockDownload()) {
+                    CScript devScriptPubKey;
+
+                    if (IsSporkActive(SPORK_17_NEW_DEVFUND_ENFORCEMENT)) {
+                        devScriptPubKey = CScript() << ParseHex(Params().DevPubKey().c_str()) << OP_CHECKSIG;
+                    } else {
+                        devScriptPubKey = CScript() << ParseHex(Params().OldDevPubKey().c_str()) << OP_CHECKSIG;
+                    }
+
+                    if (tx.vout[nIndex + 1].scriptPubKey != devScriptPubKey) {
+                        return state.DoS(100, error("%s : rejected by check devfund address lock-in at %d", __func__, nHeight),
+                            REJECT_INVALID, "check devfund mismatch");
+                    }
+                } else if (fDebug) {
+                    LogPrintf("CheckBlock(): Devfund destination check skipped on sync\n");
                 }
             }
         }
