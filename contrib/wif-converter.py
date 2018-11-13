@@ -1,10 +1,11 @@
 #!/usr/bin/python
 #
-# WIF converter from private ECDSA keys and vice versa, tailored for Swipp
+# WIF converter from private ECDSA keys and vice versa, tailored for HUZU
 # Some code and ideas taken from https://github.com/crcarlo/btcwif
 #
 # Copyright (c) 2017 Carlo Cervellin
 # Copyright (c) 2017-2018 The Swipp developers
+# Copyright (c) 2018 The HUZU developers
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -50,7 +51,7 @@ def privToWif(priv, testnet=False, verbose=False) :
     if verbose:
         print("Private key: "+_priv)
 
-    priv_add_wprefix = ("ef" if testnet else "9b") + _priv
+    priv_add_wprefix = ("ef" if testnet else "99") + _priv
 
     if verbose:
         print("Private with prefix at beginning: " + priv_add_wprefix)
@@ -134,7 +135,7 @@ def wifChecksum(wif, verbose=False) :
         print("4 bytes check: " + str(bytes_check))
 
     check_sum = False
-    if bytes_check and (byte_str[0:2] == "ef" or byte_str[0:2] == "9b"):
+    if bytes_check and (byte_str[0:2] == "ef" or byte_str[0:2] == "99"):
         check_sum = True
 
     if verbose:
