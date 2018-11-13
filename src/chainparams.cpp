@@ -118,7 +118,7 @@ public:
         pchMessageStart[1] = 0xc4;
         pchMessageStart[2] = 0xfd;
         pchMessageStart[3] = 0xe9;
-        vAlertPubKey = ParseHex("0426d1c5aac0e7b98f37f5f8ca10a18bb915820516723a727093cca65108ac24cdf3467ff06a39ad388ccc3d83802c85df73dba14e3db3835cec6892b9647e92fa");
+        vAlertPubKey = ParseHex("04a6e236e07f7a5eb0f60bc46c256e5c0a2b31bd86dd9471465b01190807ab46a085806fb8639ea27375a20b88303a6989d3f05b1e0e5f59d988c60dd415d355df");
         nDefaultPort = 51992;
         bnProofOfWorkLimit = ~uint256(0) >> 20; // HUZU starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 259000;
@@ -147,8 +147,8 @@ public:
         nBlockEnforceInvalidUTXO = 1999999999; //Start enforcing the invalid UTXO's
         nInvalidAmountFiltered = 268200*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
         nBlockZerocoinV2 = 25000; //!> The block that zerocoin v2 becomes active - roughly Tuesday, May 8, 2018 4:00:00 AM GMT
-        nEnforceNewSporkKey = 1999999999; //!> Sporks signed after (GMT): Tuesday, May 1, 2018 7:00:00 AM GMT must use the new spork key
-        nRejectOldSporkKey = 1999999999; //!> Fully reject old spork key after (GMT): Friday, June 1, 2018 12:00:00 AM
+        nEnforceNewSporkKey = 1542079146; //!> Sporks signed after GMT: Tuesday 13 November 2018 03:19:06 must use the new spork key
+        nRejectOldSporkKey = 1542326400; //!> Reject old spork key after GMT:  Friday 16 November 2018 00:00:00
 
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
@@ -213,8 +213,8 @@ public:
         fHeadersFirstSyncingActive = false;
 
         nPoolMaxTransactions = 3;
-        strSporkKey = "0404f577bf0f27840383286ed9ccb6de0331f434fc1367752e6b13a7d7ba53fb233aba934b70da91c71a5439d14c7362040a95f4d85da759def35b4dc24eaabcda";
-        strSporkKeyOld = "0421fbe5c99cdf5ae07cacfc76e4fa6cd646ffba3cbaea8cb21d77a754ec684270104d60c0b561f7f9f82ba3a619487776ff5ca387d3225f51812f90655848b287";
+        strSporkKey = "04f393cef0f43dbd9b647b2014c21249d9a710461a6ea640a2121b8a4a3ee0040599f945643982d820d228540a2e7a2c0e5ae0149ce841368e4f2b587ea1d690d1";
+        strSporkKeyOld = "0404f577bf0f27840383286ed9ccb6de0331f434fc1367752e6b13a7d7ba53fb233aba934b70da91c71a5439d14c7362040a95f4d85da759def35b4dc24eaabcda";
         strObfuscationPoolDummyAddress = "D87q2gC9j6nNrnzCsg4aY6bHMLsT9nUhEw";
         nStartMasternodePayments = 1403728576; //Wed, 25 Jun 2014 20:36:16 GMT
 
@@ -257,7 +257,7 @@ public:
         pchMessageStart[1] = 0x76;
         pchMessageStart[2] = 0x65;
         pchMessageStart[3] = 0xba;
-        vAlertPubKey = ParseHex("000010e83b2703ccf322f7dbd62dd5855ac7c10bd055814ce121ba32607d573b8810c02c0582aed05b4deb9c4b77b26d92428c61256cd42774babea0a073b2ed0c9");
+        vAlertPubKey = ParseHex("04a6e236e07f7a5eb0f60bc46c256e5c0a2b31bd86dd9471465b01190807ab46a085806fb8639ea27375a20b88303a6989d3f05b1e0e5f59d988c60dd415d355df");
         nDefaultPort = 51996;
         nEnforceBlockUpgradeMajority = 51;
         nRejectBlockOutdatedMajority = 75;
@@ -279,8 +279,8 @@ public:
         nBlockEnforceInvalidUTXO = 9902850; //Start enforcing the invalid UTXO's
         nInvalidAmountFiltered = 0; //Amount of invalid coins filtered through exchanges, that should be considered valid
         nBlockZerocoinV2 = 444020; //!> The block that zerocoin v2 becomes active
-        nEnforceNewSporkKey = 1521604800; //!> Sporks signed after Wednesday, March 21, 2018 4:00:00 AM GMT must use the new spork key
-        nRejectOldSporkKey = 1522454400; //!> Reject old spork key after Saturday, March 31, 2018 12:00:00 AM GMT
+        nEnforceNewSporkKey = 1542079146; //!> Sporks signed after GMT: Tuesday 13 November 2018 03:19:06 must use the new spork key
+        nRejectOldSporkKey = 1542326400; //!> Reject old spork key after GMT:  Friday 16 November 2018 00:00:00
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1536062401;
@@ -317,8 +317,8 @@ public:
         fTestnetToBeDeprecatedFieldRPC = true;
 
         nPoolMaxTransactions = 2;
-        strSporkKey = "04A8B319388C0F8588D238B9941DC26B26D3F9465266B368A051C5C100F79306A557780101FE2192FE170D7E6DEFDCBEE4C8D533396389C0DAFFDBC842B002243C";
-        strSporkKeyOld = "04348C2F50F90267E64FACC65BFDC9D0EB147D090872FB97ABAE92E9A36E6CA60983E28E741F8E7277B11A7479B626AC115BA31463AC48178A5075C5A9319D4A38";
+        strSporkKey = "0458d06208c9ebeaacaec91ebb6818f1fc6bceba3f32ae4a827f99edea38295a21e9600b9a7e344e7703e9dc20d5fe6a8cb3ea20fbb20fa24460f47c38ac0c879e";
+        strSporkKeyOld = "04A8B319388C0F8588D238B9941DC26B26D3F9465266B368A051C5C100F79306A557780101FE2192FE170D7E6DEFDCBEE4C8D533396389C0DAFFDBC842B002243C";
         strObfuscationPoolDummyAddress = "y57cqfGRkekRyDRNeJiLtYVEbvhXrNbmox";
         nStartMasternodePayments = 1420837558; //Fri, 09 Jan 2015 21:05:58 GMT
         nBudget_Fee_Confirmations = 3; // Number of confirmations for the finalization fee. We have to make this very short
