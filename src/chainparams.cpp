@@ -282,6 +282,7 @@ public:
         nBlockZerocoinV2 = 444020; //!> The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1542079146; //!> Sporks signed after GMT: Tuesday 13 November 2018 03:19:06 must use the new spork key
         nRejectOldSporkKey = 1542326400; //!> Reject old spork key after GMT:  Friday 16 November 2018 00:00:00
+        nMNCollateral = 3000 * COIN;
         strDevpubkey = "02a631da396e4a45047968f138555e8ed2acae449acde7d751f9f4979f3fd0eaf7";
         strOldDevpubkey = "028b4f493822fe835ec6d68396a87835f9f77723c13a2e2a3af386d3afe5fa758d";
 
