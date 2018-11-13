@@ -152,12 +152,17 @@ if __name__ == "__main__":
         contents = keyfile.read()
 
     start = contents.find("priv:")
-    end = contents.find("pub:")
+    private_key_end = contents.find("pub:")
+    public_key_end = contents.find("ASN1 OID:")
 
     if start == -1:
         sys.stderr.write("Invalid key file\n")
         sys.exit(errno.EINVAL)
 
-    key = contents[len("priv:") + start:end]
-    key = key.replace(":", "").replace("\n", "").replace(" ", "")
-    privToWif(key, len(sys.argv) >= 3 and sys.argv[2] == "testnet", True)
+    public_key = contents[private_key_end + len("pub:"):public_key_end];
+    public_key = public_key.replace(":", "").replace("\n", "").replace(" ", "")
+    print("Public key: " + str(public_key))
+
+    private_key = contents[len("priv:") + start:private_key_end]
+    private_key = private_key.replace(":", "").replace("\n", "").replace(" ", "")
+    privToWif(private_key, len(sys.argv) >= 3 and sys.argv[2] == "testnet", True)
