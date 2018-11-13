@@ -198,12 +198,14 @@ private:
 };
 
 /** Main HUZU application object */
-class BitcoinApplication : public QApplication
+class BitcoinApplication Q_DECL_FINAL : public QApplication
 {
     Q_OBJECT
 public:
     explicit BitcoinApplication(int& argc, char** argv);
     ~BitcoinApplication();
+
+    bool notify(QObject *receiver, QEvent *e) Q_DECL_OVERRIDE;
 
 #ifdef ENABLE_WALLET
     /// Create payment server
@@ -359,6 +361,19 @@ BitcoinApplication::~BitcoinApplication()
     }
     delete optionsModel;
     optionsModel = 0;
+}
+
+bool BitcoinApplication::notify(QObject *receiver, QEvent *e)
+{
+    try {
+        return QApplication::notify(receiver, e);
+    } catch (std::exception &e) {
+        QMessageBox::warning(0, "Warning", e.what());
+    } catch (...) {
+        std::cerr << "unknown exception\n";
+    }
+
+    return false;
 }
 
 #ifdef ENABLE_WALLET
