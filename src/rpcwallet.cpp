@@ -676,6 +676,8 @@ CAmount GetAccountBalance(CWalletDB& walletdb, const string& strAccount, int nMi
 
         if (nReceived != 0 && wtx.GetDepthInMainChain() >= nMinDepth)
             nBalance += nReceived;
+
+        nBalance -= wtx.GetLockedCredit();
         nBalance -= nSent + nFee;
     }
 
@@ -757,6 +759,7 @@ UniValue getbalance(const UniValue& params, bool fHelp)
             BOOST_FOREACH (const COutputEntry& s, listSent)
                 nBalance -= s.amount;
             nBalance -= allFee;
+            nBalance -= wtx.GetLockedCredit();
         }
         return ValueFromAmount(nBalance);
     }
