@@ -1314,14 +1314,10 @@ CAmount CWalletTx::GetLockedWatchOnlyCredit() const
         if (pwallet->IsSpent(hashTx, i)) continue;
 
         // Add locked coins
-        if (pwallet->IsLockedCoin(hashTx, i)) {
+        if (pwallet->IsLockedCoin(hashTx, i))
             nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
-        }
-
-        // Add masternode collaterals which are handled likc locked coins
-        if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) {
+        else if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral())
             nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
-        }
 
         if (!MoneyRange(nCredit))
             throw std::runtime_error("CWalletTx::GetLockedCredit() : value out of range");
