@@ -4149,13 +4149,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 }
 
                 if (nHeight != 0 && !IsInitialBlockDownload()) {
-                    CScript devScriptPubKey;
-
-                    if (IsSporkActive(SPORK_17_NEW_DEVFUND_ENFORCEMENT)) {
-                        devScriptPubKey = CScript() << ParseHex(Params().DevPubKey().c_str()) << OP_CHECKSIG;
-                    } else {
-                        devScriptPubKey = CScript() << ParseHex(Params().OldDevPubKey().c_str()) << OP_CHECKSIG;
-                    }
+                    CScript devScriptPubKey = CScript() << ParseHex(Params().ActiveDevPubKey().c_str()) << OP_CHECKSIG;
 
                     if (tx.vout[nIndex + 1].scriptPubKey != devScriptPubKey) {
                         return state.DoS(100, error("%s : rejected by check devfund address lock-in at %d", __func__, nHeight),

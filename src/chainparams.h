@@ -13,12 +13,15 @@
 #include "checkpoints.h"
 #include "primitives/block.h"
 #include "protocol.h"
+#include "sporknames.h"
 #include "uint256.h"
 
 #include "libzerocoin/Params.h"
 #include <vector>
 
 typedef unsigned char MessageStartChars[MESSAGE_START_SIZE];
+
+extern bool IsSporkActive(int nSporkID);
 
 struct CDNSSeedData {
     std::string name, host;
@@ -92,8 +95,15 @@ public:
     const std::vector<CAddress>& FixedSeeds() const { return vFixedSeeds; }
     virtual const Checkpoints::CCheckpointData& Checkpoints() const = 0;
     int PoolMaxTransactions() const { return nPoolMaxTransactions; }
+
     std::string DevPubKey() const { return strDevpubkey; }
     std::string OldDevPubKey() const { return strOldDevpubkey; }
+    std::string ActiveDevPubKey() const {
+        if (IsSporkActive(SPORK_17_NEW_DEVFUND_ENFORCEMENT))
+            return DevPubKey();
+
+       return OldDevPubKey();
+    }
 
     /** Spork key and Masternode Handling **/
     std::string SporkKey() const { return strSporkKey; }

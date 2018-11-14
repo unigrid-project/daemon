@@ -13,6 +13,7 @@
 #include "protocol.h"
 #include "sync.h"
 #include "sporkdb.h"
+#include "sporknames.h"
 #include "util.h"
 #include <boost/lexical_cast.hpp>
 
