@@ -139,6 +139,7 @@ int64_t GetSporkValue(int nSporkID)
         if (nSporkID == SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) r = SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2_DEFAULT;
         if (nSporkID == SPORK_16_ZEROCOIN_MAINTENANCE_MODE) r = SPORK_16_ZEROCOIN_MAINTENANCE_MODE_DEFAULT;
         if (nSporkID == SPORK_17_NEW_DEVFUND_ENFORCEMENT) r = SPORK_17_NEW_DEVFUND_ENFORCEMENT_DEFAULT;
+        if (nSporkID == SPORK_18_BLACKLIST_BLOCK_REFERENCE) r = SPORK_18_BLACKLIST_BLOCK_REFERENCE_DEFAULT;
 
         if (r == -1) LogPrintf("%s : Unknown Spork %d\n", __func__, nSporkID);
     }
@@ -150,7 +151,12 @@ int64_t GetSporkValue(int nSporkID)
 bool IsSporkActive(int nSporkID)
 {
     int64_t r = GetSporkValue(nSporkID);
-    if (r == -1) return false;
+
+    if (r == -1)
+        return false;
+    else if (nSporkID == SPORK_18_BLACKLIST_BLOCK_REFERENCE)
+        return r;
+
     return r < GetTime();
 }
 
@@ -287,6 +293,7 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     if (strName == "SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2") return SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2;
     if (strName == "SPORK_16_ZEROCOIN_MAINTENANCE_MODE") return SPORK_16_ZEROCOIN_MAINTENANCE_MODE;
     if (strName == "SPORK_17_NEW_DEVFUND_ENFORCEMENT") return SPORK_17_NEW_DEVFUND_ENFORCEMENT;
+    if (strName == "SPORK_18_BLACKLIST_BLOCK_REFERENCE") return SPORK_18_BLACKLIST_BLOCK_REFERENCE;
 
     return -1;
 }
@@ -305,6 +312,7 @@ std::string CSporkManager::GetSporkNameByID(int id)
     if (id == SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) return "SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2";
     if (id == SPORK_16_ZEROCOIN_MAINTENANCE_MODE) return "SPORK_16_ZEROCOIN_MAINTENANCE_MODE";
     if (id == SPORK_17_NEW_DEVFUND_ENFORCEMENT) return "SPORK_17_NEW_DEVFUND_ENFORCEMENT";
+    if (id == SPORK_18_BLACKLIST_BLOCK_REFERENCE) return "SPORK_18_BLACKLIST_BLOCK_REFERENCE";
 
     return "Unknown";
 }
