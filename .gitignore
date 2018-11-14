@@ -131,3 +131,9 @@ cmake-build-debug
 
 *.pc
 *config.h*
+
+
+#db ignore
+db-4.8.30.NC.tar.gz
+db-4.8.30.NC/
+db4/
