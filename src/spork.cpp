@@ -154,8 +154,13 @@ bool IsSporkActive(int nSporkID)
 
     if (r == -1)
         return false;
-    else if (nSporkID == SPORK_18_BLACKLIST_BLOCK_REFERENCE)
-        return r;
+
+    if (nSporkID == SPORK_18_BLACKLIST_BLOCK_REFERENCE) {
+        if (((r >> 16) & 0xffffffffffff) > 0)
+            return true;
+
+        return false;
+    }
 
     return r < GetTime();
 }
