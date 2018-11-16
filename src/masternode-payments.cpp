@@ -349,17 +349,14 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew,
 				txNew.vout[i - 1].nValue -= (masternodePayment + devFund);
 
 			txNew.vout.resize(i + 2);
-			txNew.vout[i + 1].scriptPubKey = CScript()
-					<< ParseHex(Params().DevPubKey().c_str()) << OP_CHECKSIG;
+			txNew.vout[i + 1].scriptPubKey = CScript() << ParseHex(Params().ActiveDevPubKey().c_str()) << OP_CHECKSIG;
 			txNew.vout[i + 1].nValue = devFund;
 		} else {
 			txNew.vout.resize(3);
 			txNew.vout[1].scriptPubKey = payee;
 			txNew.vout[1].nValue = masternodePayment;
-			txNew.vout[2].scriptPubKey = CScript()
-					<< ParseHex(Params().DevPubKey().c_str()) << OP_CHECKSIG;
-			txNew.vout[2].nValue = GetDevFundPayment(pindexPrev->nHeight,
-					blockValue);
+			txNew.vout[2].scriptPubKey = CScript() << ParseHex(Params().ActiveDevPubKey().c_str()) << OP_CHECKSIG;
+			txNew.vout[2].nValue = GetDevFundPayment(pindexPrev->nHeight, blockValue);
 			txNew.vout[0].nValue = blockValue - masternodePayment - devFund;
 		}
 
