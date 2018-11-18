@@ -214,7 +214,7 @@ fi
 # Add a "v" if no -c
 if [[ $commit = false ]]
 then
-	COMMIT="v${VERSION}"
+	COMMIT="HUZU-Core_${VERSION}"
 fi
 echo ${COMMIT}
 
