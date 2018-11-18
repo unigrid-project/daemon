@@ -14,11 +14,11 @@ windows=true
 osx=true
 
 # Other Basic variables
-SIGNER="The Huzu Developers"
+SIGNER="the-huzu-developers"
 VERSION=1.0.0.5
 commit=false
-url=https://github.com/huzu-project/huzu
-proc=2
+url=https://github.com/huzu-project/huzu.git
+proc=6
 mem=2000
 lxc=true
 osslTarUrl=http://downloads.sourceforge.net/project/osslsigncode/osslsigncode/osslsigncode-1.7.1.tar.gz
