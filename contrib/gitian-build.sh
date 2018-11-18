@@ -14,8 +14,8 @@ windows=true
 osx=true
 
 # Other Basic variables
-SIGNER=
-VERSION=
+SIGNER="The Huzu Developers"
+VERSION=1.0.0.5
 commit=false
 url=https://github.com/huzu-project/huzu
 proc=2
@@ -185,13 +185,6 @@ if [[ ! -e "gitian-builder/inputs/MacOSX10.11.sdk.tar.gz" && $osx == true ]]
 then
     echo "Cannot build for OSX, SDK does not exist. Will build for other OSes"
     osx=false
-fi
-
-# Get signer
-if [[ -n"$1" ]]
-then
-    SIGNER=$1
-    shift
 fi
 
 # Get version
