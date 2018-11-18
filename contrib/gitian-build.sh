@@ -293,6 +293,7 @@ then
 	    ./bin/gbuild -j ${proc} -m ${mem} --commit huzu=${COMMIT} --url huzu=${url} ../huzu-build/contrib/gitian-descriptors/gitian-aarch64.yml
 	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-aarch64 --destination ../gitian.sigs/ ../huzu-build/contrib/gitian-descriptors/gitian-aarch64.yml
 	    mv build/out/huzu-*.tar.gz build/out/src/huzu-*.tar.gz ../huzu-binaries/${VERSION}
+	fi
 	popd
 
         if [[ $commitFiles = true ]]
