@@ -1,5 +1,5 @@
 ---
-name: "huzu-win-3.1"
+name: "huzu-win"
 enable_cache: true
 suites:
 - "trusty"

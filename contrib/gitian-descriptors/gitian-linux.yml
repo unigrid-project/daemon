@@ -1,5 +1,5 @@
 ---
-name: "huzu-linux-3.1"
+name: "huzu-linux"
 enable_cache: true
 suites:
 - "trusty"
