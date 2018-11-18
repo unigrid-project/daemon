@@ -47,7 +47,6 @@ Options:
 -o|--os		Specify which Operating Systems the build is for. Default is lwx. l for linux, w for windows, x for osx, a for aarch64
 -j		Number of processes to use. Default 2
 -m		Memory to allocate in MiB. Default 2000
---kvm           Use KVM instead of LXC
 --setup         Setup the gitian building environment. Uses KVM. If you want to use lxc, use the --lxc option. Only works on Debian-based systems (Ubuntu, Debian)
 --detach-sign   Create the assert file for detached signing. Will not commit anything.
 --no-commit     Do not commit anything to git
@@ -157,10 +156,6 @@ while :; do
 		exit 1
 	    fi
 	    ;;
-        # kvm
-        --kvm)
-            lxc=false
-            ;;
         # Detach sign
         --detach-sign)
             signProg="true"
@@ -181,12 +176,9 @@ while :; do
 done
 
 # Set up LXC
-if [[ $lxc = true ]]
-then
-    export USE_LXC=1
-    export LXC_BRIDGE=lxcbr0
-    sudo ifconfig lxcbr0 up 10.0.2.2
-fi
+export USE_LXC=1
+export LXC_BRIDGE=lxcbr0
+sudo ifconfig lxcbr0 up 10.0.2.2
 
 # Check for OSX SDK
 if [[ ! -e "gitian-builder/inputs/MacOSX10.11.sdk.tar.gz" && $osx == true ]]
@@ -236,18 +228,13 @@ echo ${COMMIT}
 # Setup build environment
 if [[ $setup = true ]]
 then
-    sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm qemu-utils
+    sudo apt-get -y install git ruby sudo apt-cacher-ng qemu-utils debootstrap lxc python-cheetah parted kpartx bridge-utils
     git clone https://github.com/huzu-project/gitian.sigs.git
     git clone https://github.com/huzu-project/huzu-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
     pushd ./gitian-builder
-    if [[ -n "$USE_LXC" ]]
-    then
-        sudo apt-get install lxc
-        bin/make-base-vm --suite trusty --arch amd64 --lxc
-    else
-        bin/make-base-vm --suite trusty --arch amd64
-    fi
+    sudo apt-get install lxc
+    bin/make-base-vm --suite trusty --arch amd64 --lxc
     popd
 fi
 
