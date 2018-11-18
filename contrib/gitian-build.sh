@@ -239,6 +239,7 @@ fi
 # Set up build
 mkdir huzu-build
 pushd ./huzu-build
+git clone ${url} .
 git fetch
 git checkout ${COMMIT}
 popd
