@@ -176,6 +176,11 @@ while :; do
 done
 
 # Set up LXC
+if [[ ! -d "/proc/sys/net/ipv4/conf/lxcbr0" ]]
+then
+    sudo brctl addbr lxcbr0
+fi
+
 export USE_LXC=1
 export LXC_BRIDGE=lxcbr0
 sudo ifconfig lxcbr0 up 10.0.2.2
