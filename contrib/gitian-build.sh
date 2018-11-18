@@ -222,8 +222,6 @@ echo ${COMMIT}
 if [[ $setup = true ]]
 then
     sudo apt-get -y install git ruby sudo apt-cacher-ng qemu-utils debootstrap lxc python-cheetah parted kpartx bridge-utils
-    git clone https://github.com/huzu-project/gitian.sigs.git
-    git clone https://github.com/huzu-project/huzu-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
     pushd ./gitian-builder
     sudo apt-get install lxc
