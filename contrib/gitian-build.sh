@@ -184,6 +184,8 @@ fi
 export USE_LXC=1
 export LXC_BRIDGE=lxcbr0
 sudo ifconfig lxcbr0 up 10.0.2.2
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+sudo echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # Check for OSX SDK
 if [[ ! -e "gitian-builder/inputs/MacOSX10.11.sdk.tar.xz" && $osx == true ]]
