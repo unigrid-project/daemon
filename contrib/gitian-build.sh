@@ -230,7 +230,8 @@ then
 fi
 
 # Set up build
-pushd ./huzu
+mkdir huzu-build
+pushd ./huzu-build
 git fetch
 git checkout ${COMMIT}
 popd
