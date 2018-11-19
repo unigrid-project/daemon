@@ -112,6 +112,7 @@ HEADERS += src/activemasternode.h \
            src/rpcserver.h \
            src/serialize.h \
            src/spork.h \
+           src/sporknames.h \
            src/streams.h \
            src/sync.h \
            src/threadsafety.h \

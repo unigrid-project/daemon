@@ -170,6 +170,7 @@ BITCOIN_CORE_H = \
   script/script_error.h \
   serialize.h \
   spork.h \
+  sporknames.h \
   sporkdb.h \
   stakeinput.h \
   streams.h \
