@@ -1,24 +1,24 @@
-HUZU Core integration/staging tree
+UNIGRID integration/staging tree
 ===================================
 
-https://www.HUZU.io
+https://unigrid.org
 
-What is HUZU?
+What is UNIGRID?
 --------------
 
-HUZU is an experimental new digital currency that enables instant payments to
-anyone, anywhere in the world. HUZU uses peer-to-peer technology to operate
+UNIGRID is an experimental new digital currency that enables instant payments to
+anyone, anywhere in the world. UNIGRID uses peer-to-peer technology to operate
 with no central authority: managing transactions and issuing money are carried
-out collectively by the network. HUZU Core is the name of open source
+out collectively by the network. UNIGRID is the name of open source
 software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the HUZU Core software, see https://www.HUZU.io/.
+the UNIGRID software, see https://unigrid.org.
 
 License
 -------
 
-HUZU Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+UNIGRID is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see http://opensource.org/licenses/MIT.
 
 Development process
@@ -27,7 +27,7 @@ Development process
 Developers work in their own trees, then submit pull requests when they think
 their feature or bug fix is ready.
 
-If it is a simple/trivial/non-controversial change, then one of the HUZU
+If it is a simple/trivial/non-controversial change, then one of the UNIGRID
 development team members simply pulls it.
 
 
@@ -37,8 +37,8 @@ match the project's coding conventions (see [doc/coding.md](doc/coding.md)) or a
 controversial.
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/HUZU-Project/HUZU/tags) are created
-regularly to indicate new official, stable release versions of HUZU.
+completely stable. [Tags](https://github.com/unigrid-project/UNIGRID/tags) are created
+regularly to indicate new official, stable release versions of UNIGRID.
 
 Testing
 -------
