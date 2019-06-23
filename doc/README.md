@@ -26,11 +26,9 @@ Drag HUZU-Qt to your applications folder, and then run HUZU-Qt.
 
 ### Need Help?
 
-* See the documentation at the [HUZU Wiki](https://en.bitcoin.it/wiki/Main_Page) ***TODO***
 for help and more information.
-* Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [HUZU Forum](http://forum.huzu.org/).
-* Join our Discord server [Discord Server](https://discord.huzu.org)
-* Join one of our Slack groups [HUZU Slack Groups](https://huzu.org/slack-logins/) (Main community is replaced by Discord).
+* Join our Discord server [Discord Server](https://discord.gg/CRWZ7V5)
+
 
 Building
 ---------------------
@@ -53,11 +51,6 @@ The Huzu repo's [root README](https://github.com/HUZU-Project/HUZU/blob/master/R
 - [Unit Tests](unit-tests.md)
 - [Unauthenticated REST Interface](REST-interface.md)
 - [Dnsseed Policy](dnsseed-policy.md)
-
-### Resources
-
-* Discuss on the [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or the [HUZU](http://forum.huzu.org/) forum.
-* Join the [HUZU-Dev](https://huzu-dev.slack.com/) Slack group ([Sign-Up](https://huzu-dev.herokuapp.com/)).
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)
