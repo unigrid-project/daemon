@@ -1,95 +1,30 @@
-UNIGRID integration/staging tree
-===================================
+The UNIGRID main wallet and daemon
+==================================
+<p align="center">
+  <a href="https://www.unigrid.org"><img alt="UNIGRID - Sharded Internet" src="https://www.unigrid.org/assets/img/unigrid14.png" width="500"/></a>
+</p>
 
-https://unigrid.org
+The original Internet was envisioned to become an open and distributed network that was scalable and fair, allowing access to data and services without surveillance or security concerns. However, in recent years, the network has become increasingly centralized and controlled by big businesses running huge data centers. This centralization has given big entities and businesses unprecedented control of the traffic and data of the network.
 
-What is UNIGRID?
---------------
+As a remedy to this deteriorating trend, we suggest the inception of a decentralized and consensus-driven segmented blockchain network based on a striped storage solution. The protocol allows for a completely decentralized and secure blockchain-based Internet where anybody, including private persons, can host an income-generating service node, aiding the network with compute cycles, bandwidth and storage space. To allow for complete utilization of the network, an access layer is provided, allowing for the development of protocols, services and infrastructure.
 
-UNIGRID is an experimental new digital currency that enables instant payments to
-anyone, anywhere in the world. UNIGRID uses peer-to-peer technology to operate
-with no central authority: managing transactions and issuing money are carried
-out collectively by the network. UNIGRID is the name of open source
-software which enables the use of this currency.
+UNIGRID the digital currency and main block chain that supports the previously mentioned network, enablng instant payments to anyone, anywhere in the world. UNIGRID uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network. UNIGRID is the name of open source software which enables the use of this currency.
 
-For more information, as well as an immediately useable, binary version of
-the UNIGRID software, see https://unigrid.org.
+For more information, as well as an immediately useable, binary version of the UNIGRID sofware, see https://unigrid.org.
 
 License
 -------
-
-UNIGRID is released under the terms of the MIT license. See [COPYING](COPYING) for more
-information or see http://opensource.org/licenses/MIT.
+The UNIGRID daemon and wallet are released under the terms of the MIT license. See [COPYING](COPYING) for more information or see http://opensource.org/licenses/MIT.
 
 Development process
 -------------------
+Developers work in their own trees, then submit pull requests when they think their feature or bug fix is ready.
 
-Developers work in their own trees, then submit pull requests when they think
-their feature or bug fix is ready.
+The patch will be accepted if there is broad consensus that it is a good thing. Developers should expect to rework and resubmit patches if the code doesn't match the project's coding conventions (see [doc/coding.md](doc/coding.md)) or are controversial.
 
-If it is a simple/trivial/non-controversial change, then one of the UNIGRID
-development team members simply pulls it.
+The `master` branch is regularly built and tested, but is not guaranteed to be completely stable. [Tags](https://github.com/unigrid-project/UNIGRID/tags) are created regularly to indicate new official, stable release versions of UNIGRID.
 
+Automated Testing
+-----------------
+Developers are strongly encouraged to write unit tests for new code, and to submit new unit tests for old code. Unit tests can be compiled and run (assuming they weren't disabled in configure) with: `make check`.
 
-The patch will be accepted if there is broad consensus that it is a good thing.
-Developers should expect to rework and resubmit patches if the code doesn't
-match the project's coding conventions (see [doc/coding.md](doc/coding.md)) or are
-controversial.
-
-The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/unigrid-project/UNIGRID/tags) are created
-regularly to indicate new official, stable release versions of UNIGRID.
-
-Testing
--------
-
-Testing and code review is the bottleneck for development; we get more pull
-requests than we can review and test on short notice. Please be patient and help out by testing
-other people's pull requests, and remember this is a security-critical project where any mistake might cost people
-lots of money.
-
-### Automated Testing
-
-Developers are strongly encouraged to write unit tests for new code, and to
-submit new unit tests for old code. Unit tests can be compiled and run (assuming they weren't disabled in configure) with: `make check`
-
-
-### Manual Quality Assurance (QA) Testing
-
-Large changes should have a test plan, and should be tested by somebody other
-than the developer who wrote the code.
-
-Development tips and tricks
----------------------------
-
-**compiling for debugging**
-
-Run configure with the --enable-debug option, then make. Or run configure with
-CXXFLAGS="-g -ggdb -O0" or whatever debug flags you need.
-
-**debug.log**
-
-If the code is behaving strangely, take a look in the debug.log file in the data directory;
-error and debugging messages are written there.
-
-The -debug=... command-line option controls debugging; running with just -debug will turn
-on all categories (and give you a very large debug.log file).
-
-The Qt code routes qDebug() output to debug.log under category "qt": run with -debug=qt
-to see it.
-
-**testnet and regtest modes**
-
-Run with the -testnet option to run with "play UNIGRIDs" on the test network, if you
-are testing multi-machine code that needs to operate across the internet.
-
-If you are testing something that can run on one machine, run with the -regtest option.
-In regression test mode, blocks can be created on-demand; see qa/rpc-tests/ for tests
-that run in -regtest mode.
-
-**DEBUG_LOCKORDER**
-
-UNIGRID is a multithreaded application, and deadlocks or other multithreading bugs
-can be very difficult to track down. Compiling with -DDEBUG_LOCKORDER (configure
-CXXFLAGS="-DDEBUG_LOCKORDER -g") inserts run-time checks to keep track of which locks
-are held, and adds warnings to the debug.log file if inconsistencies are detected.
