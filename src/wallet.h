@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -85,30 +85,30 @@ enum AvailableCoinsType {
     ALL_COINS = 1,
     ONLY_DENOMINATED = 2,
     ONLY_NOT10000IFMN = 3,
-    ONLY_NONDENOMINATED_NOT10000IFMN = 4, // ONLY_NONDENOMINATED and not 10000 HUZU at the same time
+    ONLY_NONDENOMINATED_NOT10000IFMN = 4, // ONLY_NONDENOMINATED and not 10000 UNIGRID at the same time
     ONLY_10000 = 5,                        // find masternode outputs including locked ones (use with caution)
     STAKABLE_COINS = 6                          // UTXO's that are valid for staking
 };
 
-// Possible states for zHUZU send
+// Possible states for zUNIGRID send
 enum ZerocoinSpendStatus {
-    ZHUZU_SPEND_OKAY = 0,                            // No error
-    ZHUZU_SPEND_ERROR = 1,                           // Unspecified class of errors, more details are (hopefully) in the returning text
-    ZHUZU_WALLET_LOCKED = 2,                         // Wallet was locked
-    ZHUZU_COMMIT_FAILED = 3,                         // Commit failed, reset status
-    ZHUZU_ERASE_SPENDS_FAILED = 4,                   // Erasing spends during reset failed
-    ZHUZU_ERASE_NEW_MINTS_FAILED = 5,                // Erasing new mints during reset failed
-    ZHUZU_TRX_FUNDS_PROBLEMS = 6,                    // Everything related to available funds
-    ZHUZU_TRX_CREATE = 7,                            // Everything related to create the transaction
-    ZHUZU_TRX_CHANGE = 8,                            // Everything related to transaction change
-    ZHUZU_TXMINT_GENERAL = 9,                        // General errors in MintToTxIn
-    ZHUZU_INVALID_COIN = 10,                         // Selected mint coin is not valid
-    ZHUZU_FAILED_ACCUMULATOR_INITIALIZATION = 11,    // Failed to initialize witness
-    ZHUZU_INVALID_WITNESS = 12,                      // Spend coin transaction did not verify
-    ZHUZU_BAD_SERIALIZATION = 13,                    // Transaction verification failed
-    ZHUZU_SPENT_USED_ZHUZU = 14,                      // Coin has already been spend
-    ZHUZU_TX_TOO_LARGE = 15,                          // The transaction is larger than the max tx size
-    ZHUZU_SPEND_V1_SEC_LEVEL                         // Spend is V1 and security level is not set to 100
+    ZUNIGRID_SPEND_OKAY = 0,                            // No error
+    ZUNIGRID_SPEND_ERROR = 1,                           // Unspecified class of errors, more details are (hopefully) in the returning text
+    ZUNIGRID_WALLET_LOCKED = 2,                         // Wallet was locked
+    ZUNIGRID_COMMIT_FAILED = 3,                         // Commit failed, reset status
+    ZUNIGRID_ERASE_SPENDS_FAILED = 4,                   // Erasing spends during reset failed
+    ZUNIGRID_ERASE_NEW_MINTS_FAILED = 5,                // Erasing new mints during reset failed
+    ZUNIGRID_TRX_FUNDS_PROBLEMS = 6,                    // Everything related to available funds
+    ZUNIGRID_TRX_CREATE = 7,                            // Everything related to create the transaction
+    ZUNIGRID_TRX_CHANGE = 8,                            // Everything related to transaction change
+    ZUNIGRID_TXMINT_GENERAL = 9,                        // General errors in MintToTxIn
+    ZUNIGRID_INVALID_COIN = 10,                         // Selected mint coin is not valid
+    ZUNIGRID_FAILED_ACCUMULATOR_INITIALIZATION = 11,    // Failed to initialize witness
+    ZUNIGRID_INVALID_WITNESS = 12,                      // Spend coin transaction did not verify
+    ZUNIGRID_BAD_SERIALIZATION = 13,                    // Transaction verification failed
+    ZUNIGRID_SPENT_USED_ZUNIGRID = 14,                      // Coin has already been spend
+    ZUNIGRID_TX_TOO_LARGE = 15,                          // The transaction is larger than the max tx size
+    ZUNIGRID_SPEND_V1_SEC_LEVEL                         // Spend is V1 and security level is not set to 100
 };
 
 struct CompactTallyItem {
@@ -214,9 +214,9 @@ public:
     std::string ResetMintZerocoin();
     std::string ResetSpentZerocoin();
     void ReconsiderZerocoins(std::list<CZerocoinMint>& listMintsRestored, std::list<CDeterministicMint>& listDMintsRestored);
-    void ZHuzuBackupWallet();
+    void ZUnigridBackupWallet();
     bool GetZerocoinKey(const CBigNum& bnSerial, CKey& key);
-    bool CreateZHUZUOutPut(libzerocoin::CoinDenomination denomination, CTxOut& outMint, CDeterministicMint& dMint);
+    bool CreateZUNIGRIDOutPut(libzerocoin::CoinDenomination denomination, CTxOut& outMint, CDeterministicMint& dMint);
     bool GetMint(const uint256& hashSerial, CZerocoinMint& mint);
     bool GetMintFromStakeHash(const uint256& hashStake, CZerocoinMint& mint);
     bool DatabaseMint(CDeterministicMint& dMint);
@@ -238,13 +238,13 @@ public:
      */
     mutable CCriticalSection cs_wallet;
 
-    CzHUZUWallet* zwalletMain;
+    CzUNIGRIDWallet* zwalletMain;
 
     bool fFileBacked;
     bool fWalletUnlockAnonymizeOnly;
     std::string strWalletFile;
     bool fBackupMints;
-    std::unique_ptr<CzHUZUTracker> zpivTracker;
+    std::unique_ptr<CzUNIGRIDTracker> zpivTracker;
 
     std::set<int64_t> setKeyPool;
     std::map<CKeyID, CKeyMetadata> mapKeyMetadata;
@@ -329,20 +329,20 @@ public:
         return nZeromintPercentage;
     }
 
-    void setZWallet(CzHUZUWallet* zwallet)
+    void setZWallet(CzUNIGRIDWallet* zwallet)
     {
         zwalletMain = zwallet;
-        zpivTracker = std::unique_ptr<CzHUZUTracker>(new CzHUZUTracker(strWalletFile));
+        zpivTracker = std::unique_ptr<CzUNIGRIDTracker>(new CzUNIGRIDTracker(strWalletFile));
     }
 
-    CzHUZUWallet* getZWallet() { return zwalletMain; }
+    CzUNIGRIDWallet* getZWallet() { return zwalletMain; }
 
     bool isZeromintEnabled()
     {
         return fEnableZeromint;
     }
 
-    void setZHuzuAutoBackups(bool fEnabled)
+    void setZUnigridAutoBackups(bool fEnabled)
     {
         fBackupMints = fEnabled;
     }
@@ -670,8 +670,8 @@ public:
     /** MultiSig address added */
     boost::signals2::signal<void(bool fHaveMultiSig)> NotifyMultiSigChanged;
 
-    /** zHUZU reset */
-    boost::signals2::signal<void()> NotifyzHUZUReset;
+    /** zUNIGRID reset */
+    boost::signals2::signal<void()> NotifyzUNIGRIDReset;
 
     /** notify wallet file backed up */
     boost::signals2::signal<void (const bool& fSuccess, const std::string& filename)> NotifyWalletBacked;

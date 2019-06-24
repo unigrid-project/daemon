@@ -172,7 +172,7 @@
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_3">
                         <item>
-                         <widget class="QLabel" name="labelzHUZUActions">
+                         <widget class="QLabel" name="labelzUNIGRIDActions">
                           <property name="font">
                            <font>
                             <pointsize>12</pointsize>
@@ -189,9 +189,9 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzHUZUSyncStatus">
+                         <widget class="QLabel" name="labelzUNIGRIDSyncStatus">
                           <property name="toolTip">
-                           <string>The displayed information may be out of date. Your wallet automatically synchronizes with the HUZU network after a connection is established, but this process has not completed yet.</string>
+                           <string>The displayed information may be out of date. Your wallet automatically synchronizes with the UNIGRID network after a connection is established, but this process has not completed yet.</string>
                           </property>
                           <property name="styleSheet">
                            <string notr="true">QLabel { color: red; }</string>
@@ -244,7 +244,7 @@
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_4">
                         <item>
-                         <widget class="QPushButton" name="pushButtonMintzHUZU">
+                         <widget class="QPushButton" name="pushButtonMintzUNIGRID">
                           <property name="minimumSize">
                            <size>
                             <width>131</width>
@@ -252,7 +252,7 @@
                            </size>
                           </property>
                           <property name="toolTip">
-                           <string>Enter an amount of Huzu to convert to zHUZU</string>
+                           <string>Enter an amount of Unigrid to convert to zUNIGRID</string>
                           </property>
                           <property name="text">
                            <string>Mint Zerocoin</string>
@@ -276,14 +276,14 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzHUZU_2">
+                         <widget class="QLabel" name="labelzUNIGRID_2">
                           <property name="text">
-                           <string>zHUZU</string>
+                           <string>zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzHUZUAmountText">
+                         <widget class="QLabel" name="labelzUNIGRIDAmountText">
                           <property name="toolTip">
                            <string>Available for minting are coins which are confirmed and not locked or Masternode collaterals.</string>
                           </property>
@@ -296,7 +296,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzHUZUAmountValue">
+                         <widget class="QLabel" name="labelzUNIGRIDAmountValue">
                           <property name="font">
                            <font>
                             <weight>75</weight>
@@ -304,10 +304,10 @@
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Enter an amount of Huzu to convert to zHUZU</string>
+                           <string>Enter an amount of Unigrid to convert to zUNIGRID</string>
                           </property>
                           <property name="text">
-                           <string>0.000???000???00 HUZU</string>
+                           <string>0.000???000???00 UNIGRID</string>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -483,7 +483,7 @@
                              <enum>Qt::ActionsContextMenu</enum>
                             </property>
                             <property name="text">
-                             <string notr="true">0.00 HUZU</string>
+                             <string notr="true">0.00 UNIGRID</string>
                             </property>
                             <property name="textInteractionFlags">
                              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -603,21 +603,21 @@
                          <number>0</number>
                         </property>
                         <item>
-                         <widget class="QPushButton" name="pushButtonZHuzuControl">
+                         <widget class="QPushButton" name="pushButtonZUnigridControl">
                           <property name="text">
-                           <string>zHUZU Control</string>
+                           <string>zUNIGRID Control</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzHuzuSelected">
+                         <widget class="QLabel" name="labelzUnigridSelected">
                           <property name="text">
-                           <string>zHUZU Selected:</string>
+                           <string>zUNIGRID Selected:</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzHuzuSelected_int">
+                         <widget class="QLabel" name="labelzUnigridSelected_int">
                           <property name="text">
                            <string>0</string>
                           </property>
@@ -671,7 +671,7 @@
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_6">
                         <item>
-                         <widget class="QPushButton" name="pushButtonSpendzHUZU">
+                         <widget class="QPushButton" name="pushButtonSpendzUNIGRID">
                           <property name="minimumSize">
                            <size>
                             <width>131</width>
@@ -687,9 +687,9 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzHUZUBalanceText">
+                         <widget class="QLabel" name="labelzUNIGRIDBalanceText">
                           <property name="toolTip">
-                           <string>Available (mature and spendable) zHUZU for spending</string>
+                           <string>Available (mature and spendable) zUNIGRID for spending</string>
                           </property>
                           <property name="text">
                            <string>Available Balance:</string>
@@ -708,12 +708,12 @@
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Available (mature and spendable) zHUZU for spending
+                           <string>Available (mature and spendable) zUNIGRID for spending
 
-zHUZU are mature when they have more than 20 confirmations AND more than 2 mints of the same denomination after them were minted</string>
+zUNIGRID are mature when they have more than 20 confirmations AND more than 2 mints of the same denomination after them were minted</string>
                           </property>
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -827,7 +827,7 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                              </size>
                             </property>
                             <property name="toolTip">
-                             <string>The HUZU address to send the payment to. Creates local payment to yourself when empty.</string>
+                             <string>The UNIGRID address to send the payment to. Creates local payment to yourself when empty.</string>
                             </property>
                            </widget>
                           </item>
@@ -840,7 +840,7 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                              <string/>
                             </property>
                             <property name="icon">
-                             <iconset resource="../huzu.qrc">
+                             <iconset resource="../unigrid.qrc">
                               <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
                             </property>
                             <property name="shortcut">
@@ -857,7 +857,7 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                              <string/>
                             </property>
                             <property name="icon">
-                             <iconset resource="../huzu.qrc">
+                             <iconset resource="../unigrid.qrc">
                               <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
                             </property>
                             <property name="shortcut">
@@ -908,7 +908,7 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                           </property>
                           <property name="buddy">
-                           <cstring>zHUZUpayAmount</cstring>
+                           <cstring>zUNIGRIDpayAmount</cstring>
                           </property>
                          </widget>
                         </item>
@@ -918,10 +918,10 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                            <number>0</number>
                           </property>
                           <item>
-                           <widget class="QLineEdit" name="zHUZUpayAmount"/>
+                           <widget class="QLineEdit" name="zUNIGRIDpayAmount"/>
                           </item>
                           <item>
-                           <widget class="QLabel" name="labelzHUZU">
+                           <widget class="QLabel" name="labelzUNIGRID">
                             <property name="minimumSize">
                              <size>
                               <width>55</width>
@@ -929,7 +929,7 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                              </size>
                             </property>
                             <property name="text">
-                             <string>zHUZU</string>
+                             <string>zUNIGRID</string>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1013,7 +1013,7 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_21">
                         <item>
-                         <widget class="QLabel" name="labelzHUZUStats">
+                         <widget class="QLabel" name="labelzUNIGRIDStats">
                           <property name="font">
                            <font>
                             <pointsize>12</pointsize>
@@ -1093,7 +1093,7 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Total Balance including unconfirmed and immature zHUZU</string>
+                           <string>Total Balance including unconfirmed and immature zUNIGRID</string>
                           </property>
                           <property name="text">
                            <string>Total Zerocoin  Balance:</string>
@@ -1131,10 +1131,10 @@ zHUZU are mature when they have more than 20 confirmations AND more than 2 mints
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Total Balance including unconfirmed and immature zHUZU</string>
+                           <string>Total Balance including unconfirmed and immature zUNIGRID</string>
                           </property>
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1591,14 +1591,14 @@ Immature: confirmed, but less than 1 mint of the same denomination after it was 
                         <item>
                          <widget class="QLabel" name="label_AutoMintStatus">
                           <property name="toolTip">
-                           <string>Show the current status of automatic zHUZU minting.
+                           <string>Show the current status of automatic zUNIGRID minting.
 
 To change the status (restart required):
-- enable: add 'enablezeromint=1' to huzu.conf
-- disable: add 'enablezeromint=0' to huzu.conf
+- enable: add 'enablezeromint=1' to unigrid.conf
+- disable: add 'enablezeromint=0' to unigrid.conf
 
 To change the percentage (no restart required):
-- menu Settings-&gt;Options-&gt;Percentage of autominted zHUZU
+- menu Settings-&gt;Options-&gt;Percentage of autominted zUNIGRID
 
 </string>
                           </property>
@@ -1678,7 +1678,7 @@ To change the percentage (no restart required):
                            </font>
                           </property>
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -1709,7 +1709,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount1">
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -1740,7 +1740,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount5">
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -1771,7 +1771,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount10">
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -1802,7 +1802,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount50">
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -1833,7 +1833,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount100">
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -1864,7 +1864,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount500">
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -1895,7 +1895,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount1000">
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -1926,7 +1926,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount5000">
                           <property name="text">
-                           <string>0 zHUZU</string>
+                           <string>0 zUNIGRID</string>
                           </property>
                          </widget>
                         </item>
@@ -2056,7 +2056,7 @@ To change the percentage (no restart required):
          <enum>Qt::ActionsContextMenu</enum>
         </property>
         <property name="text">
-         <string notr="true">0.000???000???00 HUZU</string>
+         <string notr="true">0.000???000???00 UNIGRID</string>
         </property>
         <property name="textInteractionFlags">
          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -2138,7 +2138,7 @@ To change the percentage (no restart required):
            <enum>Qt::ActionsContextMenu</enum>
           </property>
           <property name="text">
-           <string notr="true">0.00 HUZU</string>
+           <string notr="true">0.00 UNIGRID</string>
           </property>
           <property name="textInteractionFlags">
            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -2360,7 +2360,7 @@ To change the percentage (no restart required):
          <enum>Qt::ActionsContextMenu</enum>
         </property>
         <property name="text">
-         <string notr="true">0.000???000???00 HUZU</string>
+         <string notr="true">0.000???000???00 UNIGRID</string>
         </property>
         <property name="textInteractionFlags">
          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -2677,7 +2677,7 @@ To change the percentage (no restart required):
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../huzu.qrc"/>
+  <include location="../unigrid.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2016 The Dash developers
 // Copyright (c) 2016-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -345,9 +345,9 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::SendToSelf:
         return tr("Payment to yourself");
     case TransactionRecord::StakeMint:
-        return tr("HUZU Stake");
-    case TransactionRecord::StakeZHUZU:
-        return tr("zHUZU Stake");
+        return tr("UNIGRID Stake");
+    case TransactionRecord::StakeZUNIGRID:
+        return tr("zUNIGRID Stake");
     case TransactionRecord::Generated:
         return tr("Mined");
     case TransactionRecord::ObfuscationDenominate:
@@ -361,15 +361,15 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::Obfuscated:
         return tr("Obfuscated");
     case TransactionRecord::ZerocoinMint:
-        return tr("Converted HUZU to zHUZU");
+        return tr("Converted UNIGRID to zUNIGRID");
     case TransactionRecord::ZerocoinSpend:
-        return tr("Spent zHUZU");
+        return tr("Spent zUNIGRID");
     case TransactionRecord::RecvFromZerocoinSpend:
-        return tr("Received HUZU from zHUZU");
-    case TransactionRecord::ZerocoinSpend_Change_zHuzu:
-        return tr("Minted Change as zHUZU from zHUZU Spend");
+        return tr("Received UNIGRID from zUNIGRID");
+    case TransactionRecord::ZerocoinSpend_Change_zUnigrid:
+        return tr("Minted Change as zUNIGRID from zUNIGRID Spend");
     case TransactionRecord::ZerocoinSpend_FromMe:
-        return tr("Converted zHUZU to HUZU");
+        return tr("Converted zUNIGRID to UNIGRID");
 
     default:
         return QString();
@@ -381,7 +381,7 @@ QVariant TransactionTableModel::txAddressDecoration(const TransactionRecord* wtx
     switch (wtx->type) {
     case TransactionRecord::Generated:
     case TransactionRecord::StakeMint:
-    case TransactionRecord::StakeZHUZU:
+    case TransactionRecord::StakeZUNIGRID:
     case TransactionRecord::MNReward:
         return QIcon(":/icons/tx_mined");
     case TransactionRecord::RecvWithObfuscation:
@@ -424,10 +424,10 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
     case TransactionRecord::SendToOther:
         return QString::fromStdString(wtx->address) + watchAddress;
     case TransactionRecord::ZerocoinMint:
-    case TransactionRecord::ZerocoinSpend_Change_zHuzu:
-        return tr("Anonymous (zHUZU Transaction)");
-    case TransactionRecord::StakeZHUZU:
-        return tr("Anonymous (zHUZU Stake)");
+    case TransactionRecord::ZerocoinSpend_Change_zUnigrid:
+        return tr("Anonymous (zUNIGRID Transaction)");
+    case TransactionRecord::StakeZUNIGRID:
+        return tr("Anonymous (zUNIGRID Stake)");
     case TransactionRecord::SendToSelf:
     default:
         return tr("(n/a)") + watchAddress;

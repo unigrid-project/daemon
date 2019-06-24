@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_ACCUMULATORMAP_H
-#define HUZU_ACCUMULATORMAP_H
+#ifndef UNIGRID_ACCUMULATORMAP_H
+#define UNIGRID_ACCUMULATORMAP_H
 
 #include "libzerocoin/Accumulator.h"
 #include "libzerocoin/Coin.h"
@@ -26,4 +26,4 @@ public:
     void Reset();
     void Reset(libzerocoin::ZerocoinParams* params2);
 };
-#endif //HUZU_ACCUMULATORMAP_H
+#endif //UNIGRID_ACCUMULATORMAP_H

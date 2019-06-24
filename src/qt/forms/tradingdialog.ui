@@ -181,7 +181,7 @@
       <string>Asks</string>
      </property>
     </widget>
-    <widget class="QLabel" name="HUZUSupply">
+    <widget class="QLabel" name="UNIGRIDSupply">
      <property name="geometry">
       <rect>
        <x>540</x>
@@ -197,7 +197,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="HUZUDemand">
+    <widget class="QLabel" name="UNIGRIDDemand">
      <property name="geometry">
       <rect>
        <x>160</x>
@@ -432,7 +432,7 @@
     <attribute name="title">
      <string>Buy</string>
     </attribute>
-    <widget class="QPushButton" name="BuyHUZU">
+    <widget class="QPushButton" name="BuyUNIGRID">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -442,10 +442,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>Buy HUZU</string>
+      <string>Buy UNIGRID</string>
      </property>
      <property name="icon">
-      <iconset resource="../huzu.qrc">
+      <iconset resource="../unigrid.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -512,7 +512,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>HUZU</string>
+      <string>UNIGRID</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -1704,10 +1704,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>HUZU</string>
+      <string>UNIGRID</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="UnitsInputHUZU">
+    <widget class="QLineEdit" name="UnitsInputUNIGRID">
      <property name="geometry">
       <rect>
        <x>310</x>
@@ -1741,7 +1741,7 @@
       </font>
      </property>
     </widget>
-    <widget class="QPushButton" name="SellHUZUBTN">
+    <widget class="QPushButton" name="SellUNIGRIDBTN">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -1751,10 +1751,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>Sell HUZU</string>
+      <string>Sell UNIGRID</string>
      </property>
      <property name="icon">
-      <iconset resource="../huzu">
+      <iconset resource="../unigrid">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -1777,12 +1777,12 @@
          </font>
         </property>
         <property name="text">
-         <string>HUZU Available:</string>
+         <string>UNIGRID Available:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="HUZUAvailableLabel">
+       <widget class="QLabel" name="UNIGRIDAvailableLabel">
         <property name="palette">
          <palette>
           <active>
@@ -2213,7 +2213,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labelHUZU">
+       <widget class="QLabel" name="labelUNIGRID">
         <property name="font">
          <font>
           <weight>75</weight>
@@ -2221,7 +2221,7 @@
          </font>
         </property>
         <property name="text">
-         <string>HUZU</string>
+         <string>UNIGRID</string>
         </property>
        </widget>
       </item>
@@ -2733,7 +2733,7 @@
       <string>TextLabel</string>
      </property>
     </widget>
-    <widget class="QLabel" name="HUZUBalanceLabel">
+    <widget class="QLabel" name="UNIGRIDBalanceLabel">
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -2762,7 +2762,7 @@
       </font>
      </property>
      <property name="text">
-      <string>HUZU Balance:</string>
+      <string>UNIGRID Balance:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
@@ -2784,7 +2784,7 @@
       <string>BTC Balance:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="HUZUAvailableLabel_2">
+    <widget class="QLabel" name="UNIGRIDAvailableLabel_2">
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -2813,7 +2813,7 @@
       </font>
      </property>
      <property name="text">
-      <string>HUZU Available:</string>
+      <string>UNIGRID Available:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_14">
@@ -2832,10 +2832,10 @@
       </font>
      </property>
      <property name="text">
-      <string>HUZU Pending:</string>
+      <string>UNIGRID Pending:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="HUZUPendingLabel">
+    <widget class="QLabel" name="UNIGRIDPendingLabel">
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -2928,7 +2928,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Bittrex HUZU Deposit Address:</string>
+      <string>Bittrex UNIGRID Deposit Address:</string>
      </property>
     </widget>
     <widget class="QPushButton" name="GenDepositBTN">
@@ -2941,10 +2941,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>Generate HUZU Deposit Address</string>
+      <string>Generate UNIGRID Deposit Address</string>
      </property>
      <property name="icon">
-      <iconset resource="../huzu.qrc">
+      <iconset resource="../unigrid.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -3155,7 +3155,7 @@
        <string notr="true">border: 1px solid #61696c;margin-left:4px;</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btnConvertHuzu">
+     <widget class="QPushButton" name="btnConvertUnigrid">
       <property name="geometry">
        <rect>
         <x>260</x>
@@ -3206,7 +3206,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="../huzu.qrc">:/icons/transaction_1</pixmap>
+       <pixmap resource="../unigrid.qrc">:/icons/transaction_1</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -3253,7 +3253,7 @@
       <string>Update API Keys</string>
      </property>
      <property name="icon">
-      <iconset resource="../huzu.qrc">
+      <iconset resource="../unigrid.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -3408,7 +3408,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="../huzu.qrc"/>
+  <include location="../unigrid.qrc"/>
  </resources>
  <connections/>
 </ui>

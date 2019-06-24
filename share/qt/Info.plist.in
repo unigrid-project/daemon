@@ -17,7 +17,7 @@
   <string>APPL</string>
 
   <key>CFBundleGetInfoString</key>
-  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, 2014-@COPYRIGHT_YEAR@ The Dash Core developers, 2015-@COPYRIGHT_YEAR@ The PIVX Core developers, @COPYRIGHT_YEAR@ The HUZU Core developers</string>
+  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, 2014-@COPYRIGHT_YEAR@ The Dash Core developers, 2015-@COPYRIGHT_YEAR@ The PIVX Core developers, @COPYRIGHT_YEAR@ The UNIGRID Core developers</string>
 
   <key>CFBundleShortVersionString</key>
   <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@</string>
@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>HUZU-Qt</string>
+  <string>UNIGRID-Qt</string>
   
   <key>CFBundleName</key>
-  <string>HUZU-Qt</string>
+  <string>UNIGRID-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>io.huzu.Huzu-Qt</string>
+  <string>io.unigrid.Unigrid-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>io.huzu.HuzuPayment</string>
+      <string>io.unigrid.UnigridPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>huzu</string>
+        <string>unigrid</string>
       </array>
     </dict>
   </array>
@@ -58,9 +58,9 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>io.huzu.paymentrequest</string>
+      <string>io.unigrid.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>Huzu payment request</string>
+      <string>Unigrid payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-huzu-payment-request</string>
+        <string>application/x-unigrid-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>huzupaymentrequest</string>
+          <string>unigridpaymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>io.huzu.paymentrequest</string>
+        <string>io.unigrid.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

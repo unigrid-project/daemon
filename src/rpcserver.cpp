@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -264,11 +264,11 @@ UniValue stop(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "stop\n"
-            "\nStop HUZU server.");
+            "\nStop UNIGRID server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "HUZU server stopping";
+    return "UNIGRID server stopping";
 }
 
 
@@ -352,37 +352,37 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "reconsiderblock", &reconsiderblock, true, true, false},
         {"hidden", "setmocktime", &setmocktime, true, false, false},
 
-        /* HUZU features */
-        {"huzu", "masternode", &masternode, true, true, false},
-        {"huzu", "listmasternodes", &listmasternodes, true, true, false},
-        {"huzu", "getmasternodecount", &getmasternodecount, true, true, false},
-        {"huzu", "masternodeconnect", &masternodeconnect, true, true, false},
-        {"huzu", "createmasternodebroadcast", &createmasternodebroadcast, true, true, false},
-        {"huzu", "decodemasternodebroadcast", &decodemasternodebroadcast, true, true, false},
-        {"huzu", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
-        {"huzu", "masternodecurrent", &masternodecurrent, true, true, false},
-        {"huzu", "masternodedebug", &masternodedebug, true, true, false},
-        {"huzu", "startmasternode", &startmasternode, true, true, false},
-        {"huzu", "createmasternodekey", &createmasternodekey, true, true, false},
-        {"huzu", "getmasternodeoutputs", &getmasternodeoutputs, true, true, false},
-        {"huzu", "listmasternodeconf", &listmasternodeconf, true, true, false},
-        {"huzu", "getmasternodestatus", &getmasternodestatus, true, true, false},
-        {"huzu", "getmasternodewinners", &getmasternodewinners, true, true, false},
-        {"huzu", "getmasternodescores", &getmasternodescores, true, true, false},
-        {"huzu", "mnbudget", &mnbudget, true, true, false},
-        {"huzu", "preparebudget", &preparebudget, true, true, false},
-        {"huzu", "submitbudget", &submitbudget, true, true, false},
-        {"huzu", "mnbudgetvote", &mnbudgetvote, true, true, false},
-        {"huzu", "getbudgetvotes", &getbudgetvotes, true, true, false},
-        {"huzu", "getnextsuperblock", &getnextsuperblock, true, true, false},
-        {"huzu", "getbudgetprojection", &getbudgetprojection, true, true, false},
-        {"huzu", "getbudgetinfo", &getbudgetinfo, true, true, false},
-        {"huzu", "mnbudgetrawvote", &mnbudgetrawvote, true, true, false},
-        {"huzu", "mnfinalbudget", &mnfinalbudget, true, true, false},
-        {"huzu", "checkbudgets", &checkbudgets, true, true, false},
-        {"huzu", "mnsync", &mnsync, true, true, false},
-        {"huzu", "spork", &spork, true, true, false},
-        {"huzu", "getpoolinfo", &getpoolinfo, true, true, false},
+        /* UNIGRID features */
+        {"unigrid", "masternode", &masternode, true, true, false},
+        {"unigrid", "listmasternodes", &listmasternodes, true, true, false},
+        {"unigrid", "getmasternodecount", &getmasternodecount, true, true, false},
+        {"unigrid", "masternodeconnect", &masternodeconnect, true, true, false},
+        {"unigrid", "createmasternodebroadcast", &createmasternodebroadcast, true, true, false},
+        {"unigrid", "decodemasternodebroadcast", &decodemasternodebroadcast, true, true, false},
+        {"unigrid", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
+        {"unigrid", "masternodecurrent", &masternodecurrent, true, true, false},
+        {"unigrid", "masternodedebug", &masternodedebug, true, true, false},
+        {"unigrid", "startmasternode", &startmasternode, true, true, false},
+        {"unigrid", "createmasternodekey", &createmasternodekey, true, true, false},
+        {"unigrid", "getmasternodeoutputs", &getmasternodeoutputs, true, true, false},
+        {"unigrid", "listmasternodeconf", &listmasternodeconf, true, true, false},
+        {"unigrid", "getmasternodestatus", &getmasternodestatus, true, true, false},
+        {"unigrid", "getmasternodewinners", &getmasternodewinners, true, true, false},
+        {"unigrid", "getmasternodescores", &getmasternodescores, true, true, false},
+        {"unigrid", "mnbudget", &mnbudget, true, true, false},
+        {"unigrid", "preparebudget", &preparebudget, true, true, false},
+        {"unigrid", "submitbudget", &submitbudget, true, true, false},
+        {"unigrid", "mnbudgetvote", &mnbudgetvote, true, true, false},
+        {"unigrid", "getbudgetvotes", &getbudgetvotes, true, true, false},
+        {"unigrid", "getnextsuperblock", &getnextsuperblock, true, true, false},
+        {"unigrid", "getbudgetprojection", &getbudgetprojection, true, true, false},
+        {"unigrid", "getbudgetinfo", &getbudgetinfo, true, true, false},
+        {"unigrid", "mnbudgetrawvote", &mnbudgetrawvote, true, true, false},
+        {"unigrid", "mnfinalbudget", &mnfinalbudget, true, true, false},
+        {"unigrid", "checkbudgets", &checkbudgets, true, true, false},
+        {"unigrid", "mnsync", &mnsync, true, true, false},
+        {"unigrid", "spork", &spork, true, true, false},
+        {"unigrid", "getpoolinfo", &getpoolinfo, true, true, false},
 
 #ifdef ENABLE_WALLET
         /* Wallet */
@@ -615,7 +615,7 @@ std::vector<std::string> CRPCTable::listCommands() const
 
 std::string HelpExampleCli(string methodname, string args)
 {
-    return "> huzu-cli " + methodname + " " + args + "\n";
+    return "> unigrid-cli " + methodname + " " + args + "\n";
 }
 
 std::string HelpExampleRpc(string methodname, string args)

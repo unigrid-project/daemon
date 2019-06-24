@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,7 +10,7 @@
 #include "stakeinput.h"
 #include "wallet.h"
 
-CZHuzuStake::CZHuzuStake(const libzerocoin::CoinSpend& spend)
+CZUnigridStake::CZUnigridStake(const libzerocoin::CoinSpend& spend)
 {
     this->nChecksum = spend.getAccumulatorChecksum();
     this->denom = spend.getDenomination();
@@ -20,7 +20,7 @@ CZHuzuStake::CZHuzuStake(const libzerocoin::CoinSpend& spend)
     fMint = false;
 }
 
-int CZHuzuStake::GetChecksumHeightFromMint()
+int CZUnigridStake::GetChecksumHeightFromMint()
 {
     int nHeightChecksum = chainActive.Height() - Params().Zerocoin_RequiredStakeDepth();
 
@@ -31,20 +31,20 @@ int CZHuzuStake::GetChecksumHeightFromMint()
     return GetChecksumHeight(nChecksum, denom);
 }
 
-int CZHuzuStake::GetChecksumHeightFromSpend()
+int CZUnigridStake::GetChecksumHeightFromSpend()
 {
     return GetChecksumHeight(nChecksum, denom);
 }
 
-uint32_t CZHuzuStake::GetChecksum()
+uint32_t CZUnigridStake::GetChecksum()
 {
     return nChecksum;
 }
 
-// The zHUZU block index is the first appearance of the accumulator checksum that was used in the spend
+// The zUNIGRID block index is the first appearance of the accumulator checksum that was used in the spend
 // note that this also means when staking that this checksum should be from a block that is beyond 60 minutes old and
 // 100 blocks deep.
-CBlockIndex* CZHuzuStake::GetIndexFrom()
+CBlockIndex* CZUnigridStake::GetIndexFrom()
 {
     if (pindexFrom)
         return pindexFrom;
@@ -66,13 +66,13 @@ CBlockIndex* CZHuzuStake::GetIndexFrom()
     return pindexFrom;
 }
 
-CAmount CZHuzuStake::GetValue()
+CAmount CZUnigridStake::GetValue()
 {
     return denom * COIN;
 }
 
 //Use the first accumulator checkpoint that occurs 60 minutes after the block being staked from
-bool CZHuzuStake::GetModifier(uint64_t& nStakeModifier)
+bool CZUnigridStake::GetModifier(uint64_t& nStakeModifier)
 {
     CBlockIndex* pindex = GetIndexFrom();
     if (!pindex)
@@ -92,15 +92,15 @@ bool CZHuzuStake::GetModifier(uint64_t& nStakeModifier)
     }
 }
 
-CDataStream CZHuzuStake::GetUniqueness()
+CDataStream CZUnigridStake::GetUniqueness()
 {
-    //The unique identifier for a zHUZU is a hash of the serial
+    //The unique identifier for a zUNIGRID is a hash of the serial
     CDataStream ss(SER_GETHASH, 0);
     ss << hashSerial;
     return ss;
 }
 
-bool CZHuzuStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CZUnigridStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     CBlockIndex* pindexCheckpoint = GetIndexFrom();
     if (!pindexCheckpoint)
@@ -121,25 +121,25 @@ bool CZHuzuStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
     return true;
 }
 
-bool CZHuzuStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+bool CZUnigridStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
 {
-    //Create an output returning the zHUZU that was staked
+    //Create an output returning the zUNIGRID that was staked
     CTxOut outReward;
     libzerocoin::CoinDenomination denomStaked = libzerocoin::AmountToZerocoinDenomination(this->GetValue());
     CDeterministicMint dMint;
-    if (!pwallet->CreateZHUZUOutPut(denomStaked, outReward, dMint))
-        return error("%s: failed to create zHUZU output", __func__);
+    if (!pwallet->CreateZUNIGRIDOutPut(denomStaked, outReward, dMint))
+        return error("%s: failed to create zUNIGRID output", __func__);
     vout.emplace_back(outReward);
 
     //Add new staked denom to our wallet
     if (!pwallet->DatabaseMint(dMint))
-        return error("%s: failed to database the staked zHUZU", __func__);
+        return error("%s: failed to database the staked zUNIGRID", __func__);
 
     for (unsigned int i = 0; i < 3; i++) {
         CTxOut out;
         CDeterministicMint dMintReward;
-        if (!pwallet->CreateZHUZUOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
-            return error("%s: failed to create zHUZU output", __func__);
+        if (!pwallet->CreateZUNIGRIDOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
+            return error("%s: failed to create zUNIGRID output", __func__);
         vout.emplace_back(out);
 
         if (!pwallet->DatabaseMint(dMintReward))
@@ -149,14 +149,14 @@ bool CZHuzuStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount n
     return true;
 }
 
-bool CZHuzuStake::GetTxFrom(CTransaction& tx)
+bool CZUnigridStake::GetTxFrom(CTransaction& tx)
 {
     return false;
 }
 
-bool CZHuzuStake::MarkSpent(CWallet *pwallet, const uint256& txid)
+bool CZUnigridStake::MarkSpent(CWallet *pwallet, const uint256& txid)
 {
-    CzHUZUTracker* zpivTracker = pwallet->zpivTracker.get();
+    CzUNIGRIDTracker* zpivTracker = pwallet->zpivTracker.get();
     CMintMeta meta;
     if (!zpivTracker->GetMetaFromStakeHash(hashSerial, meta))
         return error("%s: tracker does not have serialhash", __func__);
@@ -165,32 +165,32 @@ bool CZHuzuStake::MarkSpent(CWallet *pwallet, const uint256& txid)
     return true;
 }
 
-//!HUZU Stake
-bool CHuzuStake::SetInput(CTransaction txPrev, unsigned int n)
+//!UNIGRID Stake
+bool CUnigridStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
     this->nPosition = n;
     return true;
 }
 
-bool CHuzuStake::GetTxFrom(CTransaction& tx)
+bool CUnigridStake::GetTxFrom(CTransaction& tx)
 {
     tx = txFrom;
     return true;
 }
 
-bool CHuzuStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CUnigridStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     txIn = CTxIn(txFrom.GetHash(), nPosition);
     return true;
 }
 
-CAmount CHuzuStake::GetValue()
+CAmount CUnigridStake::GetValue()
 {
     return txFrom.vout[nPosition].nValue;
 }
 
-bool CHuzuStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+bool CUnigridStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
 {
     vector<valtype> vSolutions;
     txnouttype whichType;
@@ -225,7 +225,7 @@ bool CHuzuStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nT
     return true;
 }
 
-bool CHuzuStake::GetModifier(uint64_t& nStakeModifier)
+bool CUnigridStake::GetModifier(uint64_t& nStakeModifier)
 {
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
@@ -239,16 +239,16 @@ bool CHuzuStake::GetModifier(uint64_t& nStakeModifier)
     return true;
 }
 
-CDataStream CHuzuStake::GetUniqueness()
+CDataStream CUnigridStake::GetUniqueness()
 {
-    //The unique identifier for a HUZU stake is the outpoint
+    //The unique identifier for a UNIGRID stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
     ss << nPosition << txFrom.GetHash();
     return ss;
 }
 
 //The block that the UTXO was added to the chain
-CBlockIndex* CHuzuStake::GetIndexFrom()
+CBlockIndex* CUnigridStake::GetIndexFrom()
 {
     uint256 hashBlock = 0;
     CTransaction tx;

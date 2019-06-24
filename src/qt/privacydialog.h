@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -47,7 +47,7 @@ public:
 
     void setModel(WalletModel* model);
     void showOutOfSyncWarning(bool fShow);
-    void setZHuzuControlLabels(int64_t nAmount, int nQuantity);
+    void setZUnigridControlLabels(int64_t nAmount, int nQuantity);
 
 public slots:
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
@@ -77,7 +77,7 @@ private:
 
     int nDisplayUnit;
     bool updateLabel(const QString& address);
-    void sendzHUZU();
+    void sendzUNIGRID();
 
 private slots:
     void on_payTo_textChanged(const QString& address);
@@ -97,11 +97,11 @@ private slots:
 //    void coinControlClipboardLowOutput();
 //    void coinControlClipboardChange();
 
-    void on_pushButtonMintzHUZU_clicked();
+    void on_pushButtonMintzUNIGRID_clicked();
     void on_pushButtonMintReset_clicked();
     void on_pushButtonSpentReset_clicked();
-    void on_pushButtonSpendzHUZU_clicked();
-    void on_pushButtonZHuzuControl_clicked();
+    void on_pushButtonSpendzUNIGRID_clicked();
+    void on_pushButtonZUnigridControl_clicked();
     void on_pasteButton_clicked();
     void updateDisplayUnit();
     void updateAutomintStatus();

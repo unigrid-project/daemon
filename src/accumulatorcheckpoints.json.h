@@ -1,10 +1,10 @@
-// Copyright (c) 2018 The HUZUX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRIDX developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_ACCUMULATORCHECKPOINTS_JSON_H
-#define HUZU_ACCUMULATORCHECKPOINTS_JSON_H
+#ifndef UNIGRID_ACCUMULATORCHECKPOINTS_JSON_H
+#define UNIGRID_ACCUMULATORCHECKPOINTS_JSON_H
 
 #include <string>
 std::string GetMainCheckpoints() {
@@ -280,4 +280,4 @@ std::string GetRegTestCheckpoints() {
     return strRegTestCheckpoints;
 }
 
-#endif //HUZU_ACCUMULATORCHECKPOINTS_JSON_H
+#endif //UNIGRID_ACCUMULATORCHECKPOINTS_JSON_H

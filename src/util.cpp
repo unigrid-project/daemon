@@ -2,12 +2,12 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/huzu-config.h"
+#include "config/unigrid-config.h"
 #endif
 
 #include "util.h"
@@ -106,7 +106,7 @@ std::string to_internal(const std::string&);
 
 using namespace std;
 
-// HUZU only features
+// UNIGRID only features
 // Masternode
 bool fMasterNode = false;
 string strMasterNodePrivKey = "";
@@ -121,7 +121,7 @@ int nZeromintPercentage = 10;
 int nPreferredDenom = 0;
 const int64_t AUTOMINT_DELAY = (60 * 5); // Wait at least 5 minutes until Automint starts
 
-int nAnonymizeHuzuAmount = 1000;
+int nAnonymizeUnigridAmount = 1000;
 int nLiquidityProvider = 0;
 /** Spork enforcement enabled time */
 int64_t enforceMasternodePaymentsTime = 4085657524;
@@ -238,8 +238,8 @@ bool LogAcceptCategory(const char* category)
             const vector<string>& categories = mapMultiArgs["-debug"];
             ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
             // thread_specific_ptr automatically deletes the set when the thread ends.
-            // "huzu" is a composite category enabling all HUZU-related debug output
-            if (ptrCategory->count(string("huzu"))) {
+            // "unigrid" is a composite category enabling all UNIGRID-related debug output
+            if (ptrCategory->count(string("unigrid"))) {
                 ptrCategory->insert(string("obfuscation"));
                 ptrCategory->insert(string("swiftx"));
                 ptrCategory->insert(string("masternode"));
@@ -406,7 +406,7 @@ static std::string FormatException(std::exception* pex, const char* pszThread)
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "huzu";
+    const char* pszModule = "unigrid";
 #endif
     if (pex)
         return strprintf(
@@ -427,13 +427,13 @@ void PrintExceptionContinue(std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-// Windows < Vista: C:\Documents and Settings\Username\Application Data\HUZU
-// Windows >= Vista: C:\Users\Username\AppData\Roaming\HUZU
-// Mac: ~/Library/Application Support/HUZU
-// Unix: ~/.huzu
+// Windows < Vista: C:\Documents and Settings\Username\Application Data\UNIGRID
+// Windows >= Vista: C:\Users\Username\AppData\Roaming\UNIGRID
+// Mac: ~/Library/Application Support/UNIGRID
+// Unix: ~/.unigrid
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "HUZU";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "UNIGRID";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -445,10 +445,10 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     TryCreateDirectory(pathRet);
-    return pathRet / "HUZU";
+    return pathRet / "UNIGRID";
 #else
     // Unix
-    return pathRet / ".huzu";
+    return pathRet / ".unigrid";
 #endif
 #endif
 }
@@ -495,7 +495,7 @@ void ClearDatadirCache()
 
 boost::filesystem::path GetConfigFile()
 {
-    boost::filesystem::path pathConfigFile(GetArg("-conf", "huzu.conf"));
+    boost::filesystem::path pathConfigFile(GetArg("-conf", "unigrid.conf"));
     if (!pathConfigFile.is_complete())
         pathConfigFile = GetDataDir(false) / pathConfigFile;
 
@@ -514,7 +514,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good()) {
-        // Create empty huzu.conf if it does not exist
+        // Create empty unigrid.conf if it does not exist
         FILE* configFile = fopen(GetConfigFile().string().c_str(), "a");
         if (configFile != NULL) {
             unsigned char rand_pwd[32];
@@ -535,8 +535,8 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
             strHeader += rpc_user;
             strHeader += "\nrpcpassword=";
             strHeader += rpc_passwd;
-            strHeader += "\naddnode=dnsseed1.huzu.io\naddnode=dnsseed2.huzu.io\naddnode=dnsseed3.huzu.io\naddnode=dnsseed4.huzu.io\naddnode=dnsseed5.huzu.io\naddnode=dnsseed6.huzu.io\n";
-            strHeader += "txindex=1\nhuzustake=1\n";
+            strHeader += "\naddnode=dnsseed1.unigrid.io\naddnode=dnsseed2.unigrid.io\naddnode=dnsseed3.unigrid.io\naddnode=dnsseed4.unigrid.io\naddnode=dnsseed5.unigrid.io\naddnode=dnsseed6.unigrid.io\n";
+            strHeader += "txindex=1\nunigridstake=1\n";
             fwrite(strHeader.c_str(), std::strlen(strHeader.c_str()), 1, configFile);
             fclose(configFile);
         }
@@ -548,7 +548,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
     setOptions.insert("*");
 
     for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it) {
-        // Don't overwrite existing settings so command line settings override huzu.conf
+        // Don't overwrite existing settings so command line settings override unigrid.conf
         string strKey = string("-") + it->string_key;
         string strValue = it->value[0];
         InterpretNegativeSetting(strKey, strValue);
@@ -563,7 +563,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 #ifndef WIN32
 boost::filesystem::path GetPidFile()
 {
-    boost::filesystem::path pathPidFile(GetArg("-pid", "huzud.pid"));
+    boost::filesystem::path pathPidFile(GetArg("-pid", "unigridd.pid"));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }

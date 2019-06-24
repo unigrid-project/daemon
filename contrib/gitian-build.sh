@@ -14,10 +14,10 @@ windows=true
 osx=true
 
 # Other Basic variables
-SIGNER="the-huzu-developers"
+SIGNER="the-unigrid-developers"
 VERSION=1.0.0.5
 commit=false
-url=https://github.com/huzu-project/huzu.git
+url=https://github.com/unigrid-project/unigrid.git
 proc=6
 mem=2000
 lxc=true
@@ -31,7 +31,7 @@ commitFiles=true
 read -d '' usage <<- EOF
 Usage: $scriptName [-c|u|v|b|s|B|o|h|j|m|] signer version
 
-Run this script from the directory containing the huzu, gitian-builder, gitian.sigs, and huzu-detached-sigs.
+Run this script from the directory containing the unigrid, gitian-builder, gitian.sigs, and unigrid-detached-sigs.
 
 Arguments:
 signer          GPG signer to sign each build assert file
@@ -39,7 +39,7 @@ version		Version number, commit, or branch to build. If building a commit or bra
 
 Options:
 -c|--commit	Indicate that the version argument is for a commit or branch
--u|--url	Specify the URL of the repository. Default is https://github.com/huzu-project/huzu
+-u|--url	Specify the URL of the repository. Default is https://github.com/unigrid-project/unigrid
 -v|--verify 	Verify the gitian build
 -b|--build	Do a gitian build
 -s|--sign	Make signed binaries for Windows and Mac OSX
@@ -221,7 +221,7 @@ fi
 # Add a "v" if no -c
 if [[ $commit = false ]]
 then
-	COMMIT="HUZU-Core_${VERSION}"
+	COMMIT="UNIGRID-Core_${VERSION}"
 fi
 echo ${COMMIT}
 
@@ -237,8 +237,8 @@ then
 fi
 
 # Set up build
-mkdir huzu-build
-pushd ./huzu-build
+mkdir unigrid-build
+pushd ./unigrid-build
 git clone ${url} .
 git fetch
 git checkout ${COMMIT}
@@ -248,7 +248,7 @@ popd
 if [[ $build = true ]]
 then
 	# Make output folder
-	mkdir -p ./huzu-binaries/${VERSION}
+	mkdir -p ./unigrid-binaries/${VERSION}
 
 	# Build Dependencies
 	echo ""
@@ -258,7 +258,7 @@ then
 	mkdir -p inputs
 	wget -N -P inputs $osslPatchUrl
 	wget -N -P inputs $osslTarUrl
-	make -C ../huzu-build/depends download SOURCES_PATH=`pwd`/cache/common
+	make -C ../unigrid-build/depends download SOURCES_PATH=`pwd`/cache/common
 
 	# Linux
 	if [[ $linux = true ]]
@@ -266,9 +266,9 @@ then
             echo ""
 	    echo "Compiling ${VERSION} Linux"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit huzu=${COMMIT} --url huzu=${url} ../huzu-build/contrib/gitian-descriptors/gitian-linux.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../huzu-build/contrib/gitian-descriptors/gitian-linux.yml
-	    mv build/out/huzu-*.tar.gz build/out/src/huzu-*.tar.gz ../huzu-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit unigrid=${COMMIT} --url unigrid=${url} ../unigrid-build/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../unigrid-build/contrib/gitian-descriptors/gitian-linux.yml
+	    mv build/out/unigrid-*.tar.gz build/out/src/unigrid-*.tar.gz ../unigrid-binaries/${VERSION}
 	fi
 	# Windows
 	if [[ $windows = true ]]
@@ -276,10 +276,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit huzu=${COMMIT} --url huzu=${url} ../huzu-build/contrib/gitian-descriptors/gitian-win.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../huzu-build/contrib/gitian-descriptors/gitian-win.yml
-	    mv build/out/huzu-*-win-unsigned.tar.gz inputs/huzu-win-unsigned.tar.gz
-	    mv build/out/huzu-*.zip build/out/huzu-*.exe ../huzu-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit unigrid=${COMMIT} --url unigrid=${url} ../unigrid-build/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../unigrid-build/contrib/gitian-descriptors/gitian-win.yml
+	    mv build/out/unigrid-*-win-unsigned.tar.gz inputs/unigrid-win-unsigned.tar.gz
+	    mv build/out/unigrid-*.zip build/out/unigrid-*.exe ../unigrid-binaries/${VERSION}
 	fi
 	# Mac OSX
 	if [[ $osx = true ]]
@@ -287,10 +287,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit huzu=${COMMIT} --url huzu=${url} ../huzu-build/contrib/gitian-descriptors/gitian-osx.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../huzu-build/contrib/gitian-descriptors/gitian-osx.yml
-	    mv build/out/huzu-*-osx-unsigned.tar.gz inputs/huzu-osx-unsigned.tar.gz
-	    mv build/out/huzu-*.tar.gz build/out/huzu-*.dmg ../huzu-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit unigrid=${COMMIT} --url unigrid=${url} ../unigrid-build/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../unigrid-build/contrib/gitian-descriptors/gitian-osx.yml
+	    mv build/out/unigrid-*-osx-unsigned.tar.gz inputs/unigrid-osx-unsigned.tar.gz
+	    mv build/out/unigrid-*.tar.gz build/out/unigrid-*.dmg ../unigrid-binaries/${VERSION}
 	fi
 	# AArch64
 	if [[ $aarch64 = true ]]
@@ -298,9 +298,9 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} AArch64"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit huzu=${COMMIT} --url huzu=${url} ../huzu-build/contrib/gitian-descriptors/gitian-aarch64.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-aarch64 --destination ../gitian.sigs/ ../huzu-build/contrib/gitian-descriptors/gitian-aarch64.yml
-	    mv build/out/huzu-*.tar.gz build/out/src/huzu-*.tar.gz ../huzu-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit unigrid=${COMMIT} --url unigrid=${url} ../unigrid-build/contrib/gitian-descriptors/gitian-aarch64.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-aarch64 --destination ../gitian.sigs/ ../unigrid-build/contrib/gitian-descriptors/gitian-aarch64.yml
+	    mv build/out/unigrid-*.tar.gz build/out/src/unigrid-*.tar.gz ../unigrid-binaries/${VERSION}
 	fi
 	popd
 
@@ -328,32 +328,32 @@ then
 	echo ""
 	echo "Verifying v${VERSION} Linux"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../huzu-build/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../unigrid-build/contrib/gitian-descriptors/gitian-linux.yml
 	# Windows
 	echo ""
 	echo "Verifying v${VERSION} Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../huzu-build/contrib/gitian-descriptors/gitian-win.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../unigrid-build/contrib/gitian-descriptors/gitian-win.yml
 	# Mac OSX
 	echo ""
 	echo "Verifying v${VERSION} Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../huzu-build/contrib/gitian-descriptors/gitian-osx.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../unigrid-build/contrib/gitian-descriptors/gitian-osx.yml
 	# AArch64
 	echo ""
 	echo "Verifying v${VERSION} AArch64"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-aarch64 ../huzu-build/contrib/gitian-descriptors/gitian-aarch64.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-aarch64 ../unigrid-build/contrib/gitian-descriptors/gitian-aarch64.yml
 	# Signed Windows
 	echo ""
 	echo "Verifying v${VERSION} Signed Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../huzu-build/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../unigrid-build/contrib/gitian-descriptors/gitian-osx-signer.yml
 	# Signed Mac OSX
 	echo ""
 	echo "Verifying v${VERSION} Signed Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../huzu-build/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../unigrid-build/contrib/gitian-descriptors/gitian-osx-signer.yml
 	popd
 fi
 
@@ -368,10 +368,10 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} ../huzu-build/contrib/gitian-descriptors/gitian-win-signer.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../huzu-build/contrib/gitian-descriptors/gitian-win-signer.yml
-	    mv build/out/huzu-*win64-setup.exe ../huzu-binaries/${VERSION}
-	    mv build/out/huzu-*win32-setup.exe ../huzu-binaries/${VERSION}
+	    ./bin/gbuild -i --commit signature=${COMMIT} ../unigrid-build/contrib/gitian-descriptors/gitian-win-signer.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../unigrid-build/contrib/gitian-descriptors/gitian-win-signer.yml
+	    mv build/out/unigrid-*win64-setup.exe ../unigrid-binaries/${VERSION}
+	    mv build/out/unigrid-*win32-setup.exe ../unigrid-binaries/${VERSION}
 	fi
 	# Sign Mac OSX
 	if [[ $osx = true ]]
@@ -379,9 +379,9 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} ../huzu-build/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../huzu-build/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    mv build/out/huzu-osx-signed.dmg ../huzu-binaries/${VERSION}/huzu-${VERSION}-osx.dmg
+	    ./bin/gbuild -i --commit signature=${COMMIT} ../unigrid-build/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../unigrid-build/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    mv build/out/unigrid-osx-signed.dmg ../unigrid-binaries/${VERSION}/unigrid-${VERSION}-osx.dmg
 	fi
 	popd
 

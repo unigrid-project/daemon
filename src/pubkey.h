@@ -1,12 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2016-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_PUBKEY_H
-#define HUZU_PUBKEY_H
+#ifndef UNIGRID_PUBKEY_H
+#define UNIGRID_PUBKEY_H
 
 #include "hash.h"
 #include "serialize.h"
@@ -269,4 +269,4 @@ public:
     ~ECCVerifyHandle();
 };
 
-#endif // HUZU_PUBKEY_H
+#endif // UNIGRID_PUBKEY_H

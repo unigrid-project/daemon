@@ -1,10 +1,10 @@
 // Copyright (c) 2017 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_CSPORKDB_H
-#define HUZU_CSPORKDB_H
+#ifndef UNIGRID_CSPORKDB_H
+#define UNIGRID_CSPORKDB_H
 
 #include <boost/filesystem/path.hpp>
 #include "leveldbwrapper.h"
@@ -26,4 +26,4 @@ public:
 };
 
 
-#endif //HUZU_CSPORKDB_H
+#endif //UNIGRID_CSPORKDB_H

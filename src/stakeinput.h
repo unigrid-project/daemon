@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_STAKEINPUT_H
-#define HUZU_STAKEINPUT_H
+#ifndef UNIGRID_STAKEINPUT_H
+#define UNIGRID_STAKEINPUT_H
 
 class CKeyStore;
 class CWallet;
@@ -23,15 +23,15 @@ public:
     virtual CAmount GetValue() = 0;
     virtual bool CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal) = 0;
     virtual bool GetModifier(uint64_t& nStakeModifier) = 0;
-    virtual bool IsZHUZU() = 0;
+    virtual bool IsZUNIGRID() = 0;
     virtual CDataStream GetUniqueness() = 0;
 };
 
 
-// zHUZUStake can take two forms
+// zUNIGRIDStake can take two forms
 // 1) the stake candidate, which is a zcmint that is attempted to be staked
 // 2) a staked zpiv, which is a zcspend that has successfully staked
-class CZHuzuStake : public CStakeInput
+class CZUnigridStake : public CStakeInput
 {
 private:
     uint32_t nChecksum;
@@ -40,7 +40,7 @@ private:
     uint256 hashSerial;
 
 public:
-    explicit CZHuzuStake(libzerocoin::CoinDenomination denom, const uint256& hashSerial)
+    explicit CZUnigridStake(libzerocoin::CoinDenomination denom, const uint256& hashSerial)
     {
         this->denom = denom;
         this->hashSerial = hashSerial;
@@ -48,7 +48,7 @@ public:
         fMint = true;
     }
 
-    explicit CZHuzuStake(const libzerocoin::CoinSpend& spend);
+    explicit CZUnigridStake(const libzerocoin::CoinSpend& spend);
 
     CBlockIndex* GetIndexFrom() override;
     bool GetTxFrom(CTransaction& tx) override;
@@ -58,19 +58,19 @@ public:
     bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = 0) override;
     bool CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal) override;
     bool MarkSpent(CWallet* pwallet, const uint256& txid);
-    bool IsZHUZU() override { return true; }
+    bool IsZUNIGRID() override { return true; }
     int GetChecksumHeightFromMint();
     int GetChecksumHeightFromSpend();
     uint32_t GetChecksum();
 };
 
-class CHuzuStake : public CStakeInput
+class CUnigridStake : public CStakeInput
 {
 private:
     CTransaction txFrom;
     unsigned int nPosition;
 public:
-    CHuzuStake()
+    CUnigridStake()
     {
         this->pindexFrom = nullptr;
     }
@@ -84,8 +84,8 @@ public:
     CDataStream GetUniqueness() override;
     bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = 0) override;
     bool CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal) override;
-    bool IsZHUZU() override { return false; }
+    bool IsZUNIGRID() override { return false; }
 };
 
 
-#endif //HUZU_STAKEINPUT_H
+#endif //UNIGRID_STAKEINPUT_H

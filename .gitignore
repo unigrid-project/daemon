@@ -6,12 +6,12 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/huzu
-src/huzud
-src/huzu-cli
-src/huzu-tx
-src/test/test_huzu
-src/qt/test/test_huzu-qt
+src/unigrid
+src/unigridd
+src/unigrid-cli
+src/unigrid-tx
+src/test/test_unigrid
+src/qt/test/test_unigrid-qt
 
 # autoreconf
 Makefile.in
@@ -37,8 +37,8 @@ confdefs.h
 conftest.cpp
 conftest.err
 libtool
-src/config/huzu-config.h
-src/config/huzu-config.h.in
+src/config/unigrid-config.h
+src/config/unigrid-config.h.in
 **/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
@@ -61,7 +61,7 @@ src/qt/test/moc*.cpp
 *.pyc
 *.o
 *.o-*
-.huzu
+.unigrid
 *.a
 *.pb.cc
 *.pb.h
@@ -80,12 +80,12 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-huzu-qt
-HUZU-Qt.app
+unigrid-qt
+UNIGRID-Qt.app
 
 # Unit-tests
 Makefile.test
-huzu-qt_test
+unigrid-qt_test
 src/test/buildenv.py
 
 # Resources cpp
@@ -101,7 +101,7 @@ build
 #lcov
 *.gcno
 /*.info
-test_huzu.coverage/
+test_unigrid.coverage/
 total.coverage/
 coverage_percent.txt
 

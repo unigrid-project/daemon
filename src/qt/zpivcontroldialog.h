@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef ZHUZUCONTROLDIALOG_H
-#define ZHUZUCONTROLDIALOG_H
+#ifndef ZUNIGRIDCONTROLDIALOG_H
+#define ZUNIGRIDCONTROLDIALOG_H
 
 #include <QDialog>
 #include <QTreeWidgetItem>
@@ -15,16 +15,16 @@ class CZerocoinMint;
 class WalletModel;
 
 namespace Ui {
-class ZHuzuControlDialog;
+class ZUnigridControlDialog;
 }
 
-class ZHuzuControlDialog : public QDialog
+class ZUnigridControlDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ZHuzuControlDialog(QWidget *parent);
-    ~ZHuzuControlDialog();
+    explicit ZUnigridControlDialog(QWidget *parent);
+    ~ZUnigridControlDialog();
 
     void setModel(WalletModel* model);
 
@@ -33,7 +33,7 @@ public:
     static std::vector<CMintMeta> GetSelectedMints();
 
 private:
-    Ui::ZHuzuControlDialog *ui;
+    Ui::ZUnigridControlDialog *ui;
     WalletModel* model;
     PrivacyDialog* privacyDialog;
 
@@ -54,4 +54,4 @@ private slots:
     void ButtonAllClicked();
 };
 
-#endif // ZHUZUCONTROLDIALOG_H
+#endif // ZUNIGRIDCONTROLDIALOG_H

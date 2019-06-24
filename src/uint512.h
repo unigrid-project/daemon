@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_UINT512_H
-#define HUZU_UINT512_H
+#ifndef UNIGRID_UINT512_H
+#define UNIGRID_UINT512_H
 
 #include "arith_uint256.h"
 #include "uint256.h"
@@ -43,4 +43,4 @@ inline uint512 uint512S(const char* str)
     return rv;
 }
 
-#endif // HUZU_UINT512_H
+#endif // UNIGRID_UINT512_H

@@ -1,9 +1,9 @@
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_SPORKNAMES_H
-#define HUZU_SPORKNAMES_H
+#ifndef UNIGRID_SPORKNAMES_H
+#define UNIGRID_SPORKNAMES_H
 
 #define SPORK_2_SWIFTTX 10001
 #define SPORK_3_SWIFTTX_BLOCK_FILTERING 10002
@@ -21,4 +21,4 @@
 #define SPORK_17_NEW_DEVFUND_ENFORCEMENT 10016
 #define SPORK_18_BLACKLIST_BLOCK_REFERENCE 10017
 
-#endif /* HUZU_SPORKNAMES_H */
+#endif /* UNIGRID_SPORKNAMES_H */

@@ -1,10 +1,10 @@
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_DETERMINISTICMINT_H
-#define HUZU_DETERMINISTICMINT_H
+#ifndef UNIGRID_DETERMINISTICMINT_H
+#define UNIGRID_DETERMINISTICMINT_H
 
 #include <libzerocoin/Denominations.h>
 #include <uint256.h>
@@ -65,4 +65,4 @@ public:
     };
 };
 
-#endif //HUZU_DETERMINISTICMINT_H
+#endif //UNIGRID_DETERMINISTICMINT_H

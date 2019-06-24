@@ -1,10 +1,10 @@
 Sample configuration files for:
 
-SystemD: huzud.service
-Upstart: huzud.conf
-OpenRC:  huzud.openrc
-         huzud.openrcconf
-CentOS:  huzud.init
+SystemD: unigridd.service
+Upstart: unigridd.conf
+OpenRC:  unigridd.openrc
+         unigridd.openrcconf
+CentOS:  unigridd.init
 
 have been made available to assist packagers in creating node packages here.
 

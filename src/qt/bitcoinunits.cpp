@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,18 +20,18 @@ BitcoinUnits::BitcoinUnits(QObject* parent) : QAbstractListModel(parent),
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(HUZU);
-    unitlist.append(mHUZU);
-    unitlist.append(uHUZU);
+    unitlist.append(UNIGRID);
+    unitlist.append(mUNIGRID);
+    unitlist.append(uUNIGRID);
     return unitlist;
 }
 
 bool BitcoinUnits::valid(int unit)
 {
     switch (unit) {
-    case HUZU:
-    case mHUZU:
-    case uHUZU:
+    case UNIGRID:
+    case mUNIGRID:
+    case uUNIGRID:
         return true;
     default:
         return false;
@@ -41,12 +41,12 @@ bool BitcoinUnits::valid(int unit)
 QString BitcoinUnits::id(int unit)
 {
     switch (unit) {
-    case HUZU:
-        return QString("huzu");
-    case mHUZU:
-        return QString("mhuzu");
-    case uHUZU:
-        return QString::fromUtf8("uhuzu");
+    case UNIGRID:
+        return QString("unigrid");
+    case mUNIGRID:
+        return QString("munigrid");
+    case uUNIGRID:
+        return QString::fromUtf8("uunigrid");
     default:
         return QString("???");
     }
@@ -56,23 +56,23 @@ QString BitcoinUnits::name(int unit)
 {
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         switch (unit) {
-        case HUZU:
-            return QString("HUZU");
-        case mHUZU:
-            return QString("mHUZU");
-        case uHUZU:
-            return QString::fromUtf8("μHUZU");
+        case UNIGRID:
+            return QString("UNIGRID");
+        case mUNIGRID:
+            return QString("mUNIGRID");
+        case uUNIGRID:
+            return QString::fromUtf8("μUNIGRID");
         default:
             return QString("???");
         }
     } else {
         switch (unit) {
-        case HUZU:
-            return QString("tHUZU");
-        case mHUZU:
-            return QString("mtHUZU");
-        case uHUZU:
-            return QString::fromUtf8("μtHUZU");
+        case UNIGRID:
+            return QString("tUNIGRID");
+        case mUNIGRID:
+            return QString("mtUNIGRID");
+        case uUNIGRID:
+            return QString::fromUtf8("μtUNIGRID");
         default:
             return QString("???");
         }
@@ -83,23 +83,23 @@ QString BitcoinUnits::description(int unit)
 {
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         switch (unit) {
-        case HUZU:
-            return QString("HUZU");
-        case mHUZU:
-            return QString("Milli-HUZU (1 / 1" THIN_SP_UTF8 "000)");
-        case uHUZU:
-            return QString("Micro-HUZU (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+        case UNIGRID:
+            return QString("UNIGRID");
+        case mUNIGRID:
+            return QString("Milli-UNIGRID (1 / 1" THIN_SP_UTF8 "000)");
+        case uUNIGRID:
+            return QString("Micro-UNIGRID (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
         default:
             return QString("???");
         }
     } else {
         switch (unit) {
-        case HUZU:
-            return QString("TestHUZUs");
-        case mHUZU:
-            return QString("Milli-TestHUZU (1 / 1" THIN_SP_UTF8 "000)");
-        case uHUZU:
-            return QString("Micro-TestHUZU (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+        case UNIGRID:
+            return QString("TestUNIGRIDs");
+        case mUNIGRID:
+            return QString("Milli-TestUNIGRID (1 / 1" THIN_SP_UTF8 "000)");
+        case uUNIGRID:
+            return QString("Micro-TestUNIGRID (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
         default:
             return QString("???");
         }
@@ -109,11 +109,11 @@ QString BitcoinUnits::description(int unit)
 qint64 BitcoinUnits::factor(int unit)
 {
     switch (unit) {
-    case HUZU:
+    case UNIGRID:
         return 100000000;
-    case mHUZU:
+    case mUNIGRID:
         return 100000;
-    case uHUZU:
+    case uUNIGRID:
         return 100;
     default:
         return 100000000;
@@ -123,11 +123,11 @@ qint64 BitcoinUnits::factor(int unit)
 int BitcoinUnits::decimals(int unit)
 {
     switch (unit) {
-    case HUZU:
+    case UNIGRID:
         return 8;
-    case mHUZU:
+    case mUNIGRID:
         return 5;
-    case uHUZU:
+    case uUNIGRID:
         return 2;
     default:
         return 0;

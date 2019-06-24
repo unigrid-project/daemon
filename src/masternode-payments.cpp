@@ -1,6 +1,6 @@
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -282,7 +282,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight) {
 }
 
 void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees,
-		bool fProofOfStake, bool fZHUZUStake) {
+		bool fProofOfStake, bool fZUNIGRIDStake) {
 	CBlockIndex* pindexPrev = chainActive.Tip();
 	if (!pindexPrev)
 		return;
@@ -290,7 +290,7 @@ void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees,
 	// if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(pindexPrev->nHeight + 1)) {
 	//     budget.FillBlockPayee(txNew, nFees, fProofOfStake);
 	// } else {
-	masternodePayments.FillBlockPayee(txNew, nFees, fProofOfStake, fZHUZUStake);
+	masternodePayments.FillBlockPayee(txNew, nFees, fProofOfStake, fZUNIGRIDStake);
 	// }
 }
 
@@ -304,7 +304,7 @@ std::string GetRequiredPaymentsString(int nBlockHeight) {
 }
 
 void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew,
-		int64_t nFees, bool fProofOfStake, bool fZHUZUStake) {
+		int64_t nFees, bool fProofOfStake, bool fZUNIGRIDStake) {
 	CBlockIndex* pindexPrev = chainActive.Tip();
 
 	if (!pindexPrev)
@@ -329,7 +329,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew,
 
 	CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
 	CAmount masternodePayment = GetMasternodePayment(pindexPrev->nHeight,
-			blockValue, 0, fZHUZUStake);
+			blockValue, 0, fZUNIGRIDStake);
 	CAmount devFund = GetDevFundPayment(pindexPrev->nHeight, blockValue);
 
 	if (hasPayment) {

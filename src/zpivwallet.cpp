@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +14,7 @@
 
 using namespace libzerocoin;
 
-CzHUZUWallet::CzHUZUWallet(std::string strWalletFile)
+CzUNIGRIDWallet::CzUNIGRIDWallet(std::string strWalletFile)
 {
     this->strWalletFile = strWalletFile;
     CWalletDB walletdb(strWalletFile);
@@ -25,13 +25,13 @@ CzHUZUWallet::CzHUZUWallet(std::string strWalletFile)
     //Check for old db version of storing zpiv seed
     if (fFirstRun) {
         uint256 seed;
-        if (walletdb.ReadZHUZUSeed_deprecated(seed)) {
+        if (walletdb.ReadZUNIGRIDSeed_deprecated(seed)) {
             //Update to new format, erase old
             seedMaster = seed;
             hashSeed = Hash(seed.begin(), seed.end());
             if (pwalletMain->AddDeterministicSeed(seed)) {
-                if (walletdb.EraseZHUZUSeed_deprecated()) {
-                    LogPrintf("%s: Updated zHUZU seed databasing\n", __func__);
+                if (walletdb.EraseZUNIGRIDSeed_deprecated()) {
+                    LogPrintf("%s: Updated zUNIGRID seed databasing\n", __func__);
                     fFirstRun = false;
                 } else {
                     LogPrintf("%s: failed to remove old zpiv seed\n", __func__);
@@ -69,7 +69,7 @@ CzHUZUWallet::CzHUZUWallet(std::string strWalletFile)
     this->mintPool = CMintPool(nCountLastUsed);
 }
 
-bool CzHUZUWallet::SetMasterSeed(const uint256& seedMaster, bool fResetCount)
+bool CzUNIGRIDWallet::SetMasterSeed(const uint256& seedMaster, bool fResetCount)
 {
 
     CWalletDB walletdb(strWalletFile);
@@ -85,8 +85,8 @@ bool CzHUZUWallet::SetMasterSeed(const uint256& seedMaster, bool fResetCount)
     nCountLastUsed = 0;
 
     if (fResetCount)
-        walletdb.WriteZHUZUCount(nCountLastUsed);
-    else if (!walletdb.ReadZHUZUCount(nCountLastUsed))
+        walletdb.WriteZUNIGRIDCount(nCountLastUsed);
+    else if (!walletdb.ReadZUNIGRIDCount(nCountLastUsed))
         nCountLastUsed = 0;
 
     mintPool.Reset();
@@ -94,18 +94,18 @@ bool CzHUZUWallet::SetMasterSeed(const uint256& seedMaster, bool fResetCount)
     return true;
 }
 
-void CzHUZUWallet::Lock()
+void CzUNIGRIDWallet::Lock()
 {
     seedMaster = 0;
 }
 
-void CzHUZUWallet::AddToMintPool(const std::pair<uint256, uint32_t>& pMint, bool fVerbose)
+void CzUNIGRIDWallet::AddToMintPool(const std::pair<uint256, uint32_t>& pMint, bool fVerbose)
 {
     mintPool.Add(pMint, fVerbose);
 }
 
 //Add the next 20 mints to the mint pool
-void CzHUZUWallet::GenerateMintPool(uint32_t nCountStart, uint32_t nCountEnd)
+void CzUNIGRIDWallet::GenerateMintPool(uint32_t nCountStart, uint32_t nCountEnd)
 {
 
     //Is locked
@@ -147,7 +147,7 @@ void CzHUZUWallet::GenerateMintPool(uint32_t nCountStart, uint32_t nCountEnd)
         CBigNum bnSerial;
         CBigNum bnRandomness;
         CKey key;
-        SeedToZHUZU(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
+        SeedToZUNIGRID(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
 
         mintPool.Add(bnValue, i);
         CWalletDB(strWalletFile).WriteMintPoolPair(hashSeed, GetPubCoinHash(bnValue), i);
@@ -156,7 +156,7 @@ void CzHUZUWallet::GenerateMintPool(uint32_t nCountStart, uint32_t nCountEnd)
 }
 
 // pubcoin hashes are stored to db so that a full accounting of mints belonging to the seed can be tracked without regenerating
-bool CzHUZUWallet::LoadMintPoolFromDB()
+bool CzUNIGRIDWallet::LoadMintPoolFromDB()
 {
     map<uint256, vector<pair<uint256, uint32_t> > > mapMintPool = CWalletDB(strWalletFile).MapMintPool();
 
@@ -167,20 +167,20 @@ bool CzHUZUWallet::LoadMintPoolFromDB()
     return true;
 }
 
-void CzHUZUWallet::RemoveMintsFromPool(const std::vector<uint256>& vPubcoinHashes)
+void CzUNIGRIDWallet::RemoveMintsFromPool(const std::vector<uint256>& vPubcoinHashes)
 {
     for (const uint256& hash : vPubcoinHashes)
         mintPool.Remove(hash);
 }
 
-void CzHUZUWallet::GetState(int& nCount, int& nLastGenerated)
+void CzUNIGRIDWallet::GetState(int& nCount, int& nLastGenerated)
 {
     nCount = this->nCountLastUsed + 1;
     nLastGenerated = mintPool.CountOfLastGenerated();
 }
 
 //Catch the counter up with the chain
-void CzHUZUWallet::SyncWithChain(bool fGenerateMintPool)
+void CzUNIGRIDWallet::SyncWithChain(bool fGenerateMintPool)
 {
     uint32_t nLastCountUsed = 0;
     bool found = true;
@@ -281,7 +281,7 @@ void CzHUZUWallet::SyncWithChain(bool fGenerateMintPool)
     }
 }
 
-bool CzHUZUWallet::SetMintSeen(const CBigNum& bnValue, const int& nHeight, const uint256& txid, const CoinDenomination& denom)
+bool CzUNIGRIDWallet::SetMintSeen(const CBigNum& bnValue, const int& nHeight, const uint256& txid, const CoinDenomination& denom)
 {
     if (!mintPool.Has(bnValue))
         return error("%s: value not in pool", __func__);
@@ -293,7 +293,7 @@ bool CzHUZUWallet::SetMintSeen(const CBigNum& bnValue, const int& nHeight, const
     CBigNum bnSerial;
     CBigNum bnRandomness;
     CKey key;
-    SeedToZHUZU(seedZerocoin, bnValueGen, bnSerial, bnRandomness, key);
+    SeedToZUNIGRID(seedZerocoin, bnValueGen, bnSerial, bnRandomness, key);
 
     //Sanity check
     if (bnValueGen != bnValue)
@@ -334,7 +334,7 @@ bool CzHUZUWallet::SetMintSeen(const CBigNum& bnValue, const int& nHeight, const
     if (nCountLastUsed < pMint.second) {
         CWalletDB walletdb(strWalletFile);
         nCountLastUsed = pMint.second;
-        walletdb.WriteZHUZUCount(nCountLastUsed);
+        walletdb.WriteZUNIGRIDCount(nCountLastUsed);
     }
 
     //remove from the pool
@@ -351,7 +351,7 @@ bool IsValidCoinValue(const CBigNum& bnValue)
     bnValue.isPrime();
 }
 
-void CzHUZUWallet::SeedToZHUZU(const uint512& seedZerocoin, CBigNum& bnValue, CBigNum& bnSerial, CBigNum& bnRandomness, CKey& key)
+void CzUNIGRIDWallet::SeedToZUNIGRID(const uint512& seedZerocoin, CBigNum& bnValue, CBigNum& bnSerial, CBigNum& bnRandomness, CKey& key)
 {
     ZerocoinParams* params = Params().Zerocoin_Params(false);
 
@@ -400,7 +400,7 @@ void CzHUZUWallet::SeedToZHUZU(const uint512& seedZerocoin, CBigNum& bnValue, CB
     }
 }
 
-uint512 CzHUZUWallet::GetZerocoinSeed(uint32_t n)
+uint512 CzUNIGRIDWallet::GetZerocoinSeed(uint32_t n)
 {
     CDataStream ss(SER_GETHASH, 0);
     ss << seedMaster << n;
@@ -408,14 +408,14 @@ uint512 CzHUZUWallet::GetZerocoinSeed(uint32_t n)
     return zerocoinSeed;
 }
 
-void CzHUZUWallet::UpdateCount()
+void CzUNIGRIDWallet::UpdateCount()
 {
     nCountLastUsed++;
     CWalletDB walletdb(strWalletFile);
-    walletdb.WriteZHUZUCount(nCountLastUsed);
+    walletdb.WriteZUNIGRIDCount(nCountLastUsed);
 }
 
-void CzHUZUWallet::GenerateDeterministicZHUZU(CoinDenomination denom, PrivateCoin& coin, CDeterministicMint& dMint, bool fGenerateOnly)
+void CzUNIGRIDWallet::GenerateDeterministicZUNIGRID(CoinDenomination denom, PrivateCoin& coin, CDeterministicMint& dMint, bool fGenerateOnly)
 {
     GenerateMint(nCountLastUsed + 1, denom, coin, dMint);
     if (fGenerateOnly)
@@ -425,14 +425,14 @@ void CzHUZUWallet::GenerateDeterministicZHUZU(CoinDenomination denom, PrivateCoi
     //LogPrintf("%s : Generated new deterministic mint. Count=%d pubcoin=%s seed=%s\n", __func__, nCount, coin.getPublicCoin().getValue().GetHex().substr(0,6), seedZerocoin.GetHex().substr(0, 4));
 }
 
-void CzHUZUWallet::GenerateMint(const uint32_t& nCount, const CoinDenomination denom, PrivateCoin& coin, CDeterministicMint& dMint)
+void CzUNIGRIDWallet::GenerateMint(const uint32_t& nCount, const CoinDenomination denom, PrivateCoin& coin, CDeterministicMint& dMint)
 {
     uint512 seedZerocoin = GetZerocoinSeed(nCount);
     CBigNum bnValue;
     CBigNum bnSerial;
     CBigNum bnRandomness;
     CKey key;
-    SeedToZHUZU(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
+    SeedToZUNIGRID(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
     coin = PrivateCoin(Params().Zerocoin_Params(false), denom, bnSerial, bnRandomness);
     coin.setPrivKey(key.GetPrivKey());
     coin.setVersion(PrivateCoin::CURRENT_VERSION);
@@ -446,7 +446,7 @@ void CzHUZUWallet::GenerateMint(const uint32_t& nCount, const CoinDenomination d
     dMint.SetDenomination(denom);
 }
 
-bool CzHUZUWallet::RegenerateMint(const CDeterministicMint& dMint, CZerocoinMint& mint)
+bool CzUNIGRIDWallet::RegenerateMint(const CDeterministicMint& dMint, CZerocoinMint& mint)
 {
     //Check that the seed is correct    todo:handling of incorrect, or multiple seeds
     uint256 hashSeed = Hash(seedMaster.begin(), seedMaster.end());

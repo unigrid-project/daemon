@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +14,7 @@ static const int MODEL_UPDATE_DELAY = 1000;
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
 
-/* Huzu GUI -- Size of icons in status bar */
+/* Unigrid GUI -- Size of icons in status bar */
 static const int STATUSBAR_ICONSIZE = 16;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
@@ -51,9 +51,9 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 35
 
-#define QAPP_ORG_NAME "HUZU"
-#define QAPP_ORG_DOMAIN "huzu.org"
-#define QAPP_APP_NAME_DEFAULT "HUZU-Qt"
-#define QAPP_APP_NAME_TESTNET "HUZU-Qt-testnet"
+#define QAPP_ORG_NAME "UNIGRID"
+#define QAPP_ORG_DOMAIN "unigrid.org"
+#define QAPP_APP_NAME_DEFAULT "UNIGRID-Qt"
+#define QAPP_APP_NAME_TESTNET "UNIGRID-Qt-testnet"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

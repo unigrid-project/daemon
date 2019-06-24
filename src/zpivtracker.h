@@ -1,17 +1,17 @@
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_ZHUZUTRACKER_H
-#define HUZU_ZHUZUTRACKER_H
+#ifndef UNIGRID_ZUNIGRIDTRACKER_H
+#define UNIGRID_ZUNIGRIDTRACKER_H
 
 #include "primitives/zerocoin.h"
 #include <list>
 
 class CDeterministicMint;
 
-class CzHUZUTracker
+class CzUNIGRIDTracker
 {
 private:
     bool fInitialized;
@@ -20,8 +20,8 @@ private:
     std::map<uint256, uint256> mapPendingSpends; //serialhash, txid of spend
     bool UpdateStatusInternal(const std::set<uint256>& setMempool, CMintMeta& mint);
 public:
-    CzHUZUTracker(std::string strWalletFile);
-    ~CzHUZUTracker();
+    CzUNIGRIDTracker(std::string strWalletFile);
+    ~CzUNIGRIDTracker();
     void Add(const CDeterministicMint& dMint, bool isNew = false, bool isArchived = false);
     void Add(const CZerocoinMint& mint, bool isNew = false, bool isArchived = false);
     bool Archive(CMintMeta& meta);
@@ -49,4 +49,4 @@ public:
     void Clear();
 };
 
-#endif //HUZU_ZHUZUTRACKER_H
+#endif //UNIGRID_ZUNIGRIDTRACKER_H

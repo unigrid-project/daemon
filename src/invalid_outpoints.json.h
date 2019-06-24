@@ -1,10 +1,10 @@
-// Copyright (c) 2018 The HUZUX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRIDX developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_INVALID_OUTPOINTS_JSON_H
-#define HUZU_INVALID_OUTPOINTS_JSON_H
+#ifndef UNIGRID_INVALID_OUTPOINTS_JSON_H
+#define UNIGRID_INVALID_OUTPOINTS_JSON_H
 #include <string>
 
 std::string LoadInvalidOutPoints()
@@ -6794,4 +6794,4 @@ std::string LoadInvalidOutPoints()
     return str;
 }
 
-#endif //HUZU_INVALID_OUTPOINTS_JSON_H
+#endif //UNIGRID_INVALID_OUTPOINTS_JSON_H

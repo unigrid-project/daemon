@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -120,15 +120,15 @@ public:
         pchMessageStart[3] = 0xe9;
         vAlertPubKey = ParseHex("04a6e236e07f7a5eb0f60bc46c256e5c0a2b31bd86dd9471465b01190807ab46a085806fb8639ea27375a20b88303a6989d3f05b1e0e5f59d988c60dd415d355df");
         nDefaultPort = 51992;
-        bnProofOfWorkLimit = ~uint256(0) >> 20; // HUZU starting difficulty is 1 / 2^12
+        bnProofOfWorkLimit = ~uint256(0) >> 20; // UNIGRID starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 259000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 750;
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 60; // HUZU: 1 day
-        nTargetSpacing = 1 * 60;  // HUZU: 1 minute
+        nTargetTimespan = 1 * 60; // UNIGRID: 1 day
+        nTargetSpacing = 1 * 60;  // UNIGRID: 1 minute
         nMaturity = 30;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 25000000 * COIN;
@@ -161,7 +161,7 @@ public:
          *     CTxOut(nValue=50.00000000, scriptPubKey=0xA9037BAC7050C479B121CF)
          *   vMerkleTree: e0028e
          */
-        const char* pszTimestamp = "HUZU Genesis Block: 2018/09/05 12:00:00";
+        const char* pszTimestamp = "UNIGRID Genesis Block: 2018/09/05 12:00:00";
         CMutableTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -181,18 +181,18 @@ public:
         assert(hashGenesisBlock == uint256("0x00000416490cfdea94f5f78bc14285e48c78c42ea8ec9c8a623050d0175cf2d2"));
         assert(genesis.hashMerkleRoot == uint256("0x8b46deafa2b172c976e98add7e8d031e154a01210bc79a1b5955c8b19fcd85ea"));
 
-        // vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "huzu.seed.fuzzbawls.pw"));     // Primary DNS Seeder from Fuzzbawls
-        // vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "huzu.seed2.fuzzbawls.pw"));    // Secondary DNS Seeder from Fuzzbawls
+        // vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "unigrid.seed.fuzzbawls.pw"));     // Primary DNS Seeder from Fuzzbawls
+        // vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "unigrid.seed2.fuzzbawls.pw"));    // Secondary DNS Seeder from Fuzzbawls
         // vSeeds.push_back(CDNSSeedData("coin-server.com", "coin-server.com"));         // Single node address
         // vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net")); // Single node address
         // vSeeds.push_back(CDNSSeedData("178.254.23.111", "178.254.23.111"));           // Single node address
 
-        vSeeds.push_back(CDNSSeedData("seed1.huzu.io", "dnsseed1.huzu.io"));
-        vSeeds.push_back(CDNSSeedData("seed2.huzu.io", "dnsseed2.huzu.io"));
-        vSeeds.push_back(CDNSSeedData("seed3.huzu.io", "dnsseed3.huzu.io"));
-        vSeeds.push_back(CDNSSeedData("seed4.huzu.io", "dnsseed4.huzu.io"));
-        vSeeds.push_back(CDNSSeedData("seed5.huzu.io", "dnsseed5.huzu.io"));
-        vSeeds.push_back(CDNSSeedData("seed6.huzu.io", "dnsseed6.huzu.io"));
+        vSeeds.push_back(CDNSSeedData("seed1.unigrid.io", "dnsseed1.unigrid.io"));
+        vSeeds.push_back(CDNSSeedData("seed2.unigrid.io", "dnsseed2.unigrid.io"));
+        vSeeds.push_back(CDNSSeedData("seed3.unigrid.io", "dnsseed3.unigrid.io"));
+        vSeeds.push_back(CDNSSeedData("seed4.unigrid.io", "dnsseed4.unigrid.io"));
+        vSeeds.push_back(CDNSSeedData("seed5.unigrid.io", "dnsseed5.unigrid.io"));
+        vSeeds.push_back(CDNSSeedData("seed6.unigrid.io", "dnsseed6.unigrid.io"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 40);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 100);
@@ -264,8 +264,8 @@ public:
         nRejectBlockOutdatedMajority = 75;
         nToCheckBlockUpgradeMajority = 100;
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 60; // HUZU: 1 day
-        nTargetSpacing = 1 * 60;  // HUZU: 1 minute
+        nTargetTimespan = 1 * 60; // UNIGRID: 1 day
+        nTargetSpacing = 1 * 60;  // UNIGRID: 1 minute
         nLastPOWBlock = 200;
         nMaturity = 15;
         nMasternodeCountDrift = 4;
@@ -296,19 +296,19 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "huzu-testnet.seed.fuzzbawls.pw"));
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "huzu-testnet.seed2.fuzzbawls.pw"));
+        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "unigrid-testnet.seed.fuzzbawls.pw"));
+        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "unigrid-testnet.seed2.fuzzbawls.pw"));
         vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net"));
         vSeeds.push_back(CDNSSeedData("88.198.192.110", "88.198.192.110"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet huzu addresses start with 'x' or 'y'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet huzu script addresses start with '8' or '9'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet unigrid addresses start with 'x' or 'y'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet unigrid script addresses start with '8' or '9'
         base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 239);     // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
-        // Testnet huzu BIP32 pubkeys start with 'DRKV'
+        // Testnet unigrid BIP32 pubkeys start with 'DRKV'
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x3a)(0x80)(0x61)(0xa0).convert_to_container<std::vector<unsigned char> >();
-        // Testnet huzu BIP32 prvkeys start with 'DRKP'
+        // Testnet unigrid BIP32 prvkeys start with 'DRKP'
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x3a)(0x80)(0x58)(0x37).convert_to_container<std::vector<unsigned char> >();
-        // Testnet huzu BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet unigrid BIP44 coin type is '1' (All coin's testnet default)
         base58Prefixes[EXT_COIN_TYPE] = boost::assign::list_of(0x80)(0x00)(0x00)(0x01).convert_to_container<std::vector<unsigned char> >();
 
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
@@ -355,8 +355,8 @@ public:
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 1;
-        nTargetTimespan = 24 * 60 * 60; // HUZU: 1 day
-        nTargetSpacing = 1 * 60;        // HUZU: 1 minutes
+        nTargetTimespan = 24 * 60 * 60; // UNIGRID: 1 day
+        nTargetSpacing = 1 * 60;        // UNIGRID: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         genesis.nTime = 1536062402;
         genesis.nBits = 0x207fffff;

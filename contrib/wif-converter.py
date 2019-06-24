@@ -1,11 +1,11 @@
 #!/usr/bin/python
 #
-# WIF converter from private ECDSA keys and vice versa, tailored for HUZU
+# WIF converter from private ECDSA keys and vice versa, tailored for UNIGRID
 # Some code and ideas taken from https://github.com/crcarlo/btcwif
 #
 # Copyright (c) 2017 Carlo Cervellin
 # Copyright (c) 2017-2018 The Swipp developers
-# Copyright (c) 2018 The HUZU developers
+# Copyright (c) 2018-2019 The UNIGRID organisation
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 

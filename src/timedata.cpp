@@ -1,6 +1,6 @@
 // Copyright (c) 2014-2017 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -91,7 +91,7 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
 
                 if (!fMatch) {
                     fDone = true;
-                    string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong HUZU Core will not work properly.");
+                    string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong UNIGRID Core will not work properly.");
                     strMiscWarning = strMessage;
                     LogPrintf("*** %s\n", strMessage);
                     uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_WARNING);

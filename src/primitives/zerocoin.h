@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_ZEROCOIN_H
-#define HUZU_ZEROCOIN_H
+#ifndef UNIGRID_ZEROCOIN_H
+#define UNIGRID_ZEROCOIN_H
 
 #include <amount.h>
 #include <limits.h>
@@ -248,4 +248,4 @@ public:
     int GetNeededSpends();
 };
 
-#endif //HUZU_ZEROCOIN_H
+#endif //UNIGRID_ZEROCOIN_H

@@ -1,28 +1,28 @@
-HUZU Core
+UNIGRID Core
 =====================
 
 Setup
 ---------------------
-[HUZU Core](http://huzu.org/wallet) is the original HUZU client and it builds the backbone of the network. However, it downloads and stores the entire history of HUZU transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
+[UNIGRID Core](http://unigrid.org/wallet) is the original UNIGRID client and it builds the backbone of the network. However, it downloads and stores the entire history of UNIGRID transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
 
 Running
 ---------------------
-The following are some helpful notes on how to run HUZU on your native platform.
+The following are some helpful notes on how to run UNIGRID on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- bin/32/huzu-qt (GUI, 32-bit) or bin/32/huzud (headless, 32-bit)
-- bin/64/huzu-qt (GUI, 64-bit) or bin/64/huzud (headless, 64-bit)
+- bin/32/unigrid-qt (GUI, 32-bit) or bin/32/unigridd (headless, 32-bit)
+- bin/64/unigrid-qt (GUI, 64-bit) or bin/64/unigridd (headless, 64-bit)
 
 ### Windows
 
-Unpack the files into a directory, and then run huzu-qt.exe.
+Unpack the files into a directory, and then run unigrid-qt.exe.
 
 ### OSX
 
-Drag HUZU-Qt to your applications folder, and then run HUZU-Qt.
+Drag UNIGRID-Qt to your applications folder, and then run UNIGRID-Qt.
 
 ### Need Help?
 
@@ -32,7 +32,7 @@ for help and more information.
 
 Building
 ---------------------
-The following are developer notes on how to build HUZU on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build UNIGRID on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OSX Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -40,7 +40,7 @@ The following are developer notes on how to build HUZU on your native platform. 
 
 Development
 ---------------------
-The Huzu repo's [root README](https://github.com/HUZU-Project/HUZU/blob/master/README.md) contains relevant information on the development process and automated testing.
+The Unigrid repo's [root README](https://github.com/UNIGRID-Project/UNIGRID/blob/master/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)

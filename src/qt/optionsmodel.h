@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -49,7 +49,7 @@ public:
         ZeromintPercentage,  // int
         ZeromintPrefDenom,   // int
         HideZeroBalances,    // bool
-        AnonymizeHuzuAmount, //int
+        AnonymizeUnigridAmount, //int
         ShowMasternodesTab,  // bool
         Listen,              // bool
         StakeSplitThreshold, // int
@@ -101,7 +101,7 @@ signals:
     void zeromintEnableChanged(bool);
     void zeromintPercentageChanged(int);
     void preferredDenomChanged(int);
-    void anonymizeHuzuAmountChanged(int);
+    void anonymizeUnigridAmountChanged(int);
     void coinControlFeaturesChanged(bool);
     void hideZeroBalancesChanged(bool);
 };

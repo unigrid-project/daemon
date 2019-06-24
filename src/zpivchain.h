@@ -1,10 +1,10 @@
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef HUZU_ZHUZUCHAIN_H
-#define HUZU_ZHUZUCHAIN_H
+#ifndef UNIGRID_ZUNIGRIDCHAIN_H
+#define UNIGRID_ZUNIGRIDCHAIN_H
 
 #include "libzerocoin/Coin.h"
 #include "libzerocoin/Denominations.h"
@@ -40,4 +40,4 @@ bool TxOutToPublicCoin(const CTxOut& txout, libzerocoin::PublicCoin& pubCoin, CV
 std::list<libzerocoin::CoinDenomination> ZerocoinSpendListFromBlock(const CBlock& block, bool fFilterInvalid);
 
 
-#endif //HUZU_ZHUZUCHAIN_H
+#endif //UNIGRID_ZUNIGRIDCHAIN_H

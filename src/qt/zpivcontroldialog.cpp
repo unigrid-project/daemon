@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The HUZU developers
+// Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,12 +13,12 @@
 using namespace std;
 using namespace libzerocoin;
 
-std::set<std::string> ZHuzuControlDialog::setSelectedMints;
-std::set<CMintMeta> ZHuzuControlDialog::setMints;
+std::set<std::string> ZUnigridControlDialog::setSelectedMints;
+std::set<CMintMeta> ZUnigridControlDialog::setMints;
 
-ZHuzuControlDialog::ZHuzuControlDialog(QWidget *parent) :
+ZUnigridControlDialog::ZUnigridControlDialog(QWidget *parent) :
     QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::ZHuzuControlDialog),
+    ui(new Ui::ZUnigridControlDialog),
     model(0)
 {
     ui->setupUi(this);
@@ -32,19 +32,19 @@ ZHuzuControlDialog::ZHuzuControlDialog(QWidget *parent) :
     connect(ui->pushButtonAll, SIGNAL(clicked()), this, SLOT(ButtonAllClicked()));
 }
 
-ZHuzuControlDialog::~ZHuzuControlDialog()
+ZUnigridControlDialog::~ZUnigridControlDialog()
 {
     delete ui;
 }
 
-void ZHuzuControlDialog::setModel(WalletModel *model)
+void ZUnigridControlDialog::setModel(WalletModel *model)
 {
     this->model = model;
     updateList();
 }
 
 //Update the tree widget
-void ZHuzuControlDialog::updateList()
+void ZUnigridControlDialog::updateList()
 {
     // need to prevent the slot from being called each time something is changed
     ui->treeWidget->blockSignals(true);
@@ -129,7 +129,7 @@ void ZHuzuControlDialog::updateList()
 }
 
 // Update the list when a checkbox is clicked
-void ZHuzuControlDialog::updateSelection(QTreeWidgetItem* item, int column)
+void ZUnigridControlDialog::updateSelection(QTreeWidgetItem* item, int column)
 {
     // only want updates from non top level items that are available to spend
     if (item->parent() && column == COLUMN_CHECKBOX && !item->isDisabled()){
@@ -151,7 +151,7 @@ void ZHuzuControlDialog::updateSelection(QTreeWidgetItem* item, int column)
 }
 
 // Update the Quantity and Amount display
-void ZHuzuControlDialog::updateLabels()
+void ZUnigridControlDialog::updateLabels()
 {
     int64_t nAmount = 0;
     for (const CMintMeta& mint : setMints) {
@@ -160,14 +160,14 @@ void ZHuzuControlDialog::updateLabels()
     }
 
     //update this dialog's labels
-    ui->labelZHuzu_int->setText(QString::number(nAmount));
+    ui->labelZUnigrid_int->setText(QString::number(nAmount));
     ui->labelQuantity_int->setText(QString::number(setSelectedMints.size()));
 
     //update PrivacyDialog labels
-    privacyDialog->setZHuzuControlLabels(nAmount, setSelectedMints.size());
+    privacyDialog->setZUnigridControlLabels(nAmount, setSelectedMints.size());
 }
 
-std::vector<CMintMeta> ZHuzuControlDialog::GetSelectedMints()
+std::vector<CMintMeta> ZUnigridControlDialog::GetSelectedMints()
 {
     std::vector<CMintMeta> listReturn;
     for (const CMintMeta& mint : setMints) {
@@ -179,7 +179,7 @@ std::vector<CMintMeta> ZHuzuControlDialog::GetSelectedMints()
 }
 
 // select or deselect all of the mints
-void ZHuzuControlDialog::ButtonAllClicked()
+void ZUnigridControlDialog::ButtonAllClicked()
 {
     ui->treeWidget->blockSignals(true);
     Qt::CheckState state = Qt::Checked;
