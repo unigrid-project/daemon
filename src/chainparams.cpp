@@ -187,12 +187,12 @@ public:
         // vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net")); // Single node address
         // vSeeds.push_back(CDNSSeedData("178.254.23.111", "178.254.23.111"));           // Single node address
 
-        vSeeds.push_back(CDNSSeedData("seed1.unigrid.org", "dnsseed1.unigrid.org"));
-        vSeeds.push_back(CDNSSeedData("seed2.unigrid.org", "dnsseed2.unigrid.org"));
-        vSeeds.push_back(CDNSSeedData("seed3.unigrid.org", "dnsseed3.unigrid.org"));
-        vSeeds.push_back(CDNSSeedData("seed4.unigrid.org", "dnsseed4.unigrid.org"));
-        vSeeds.push_back(CDNSSeedData("seed5.unigrid.org", "dnsseed5.unigrid.org"));
-        vSeeds.push_back(CDNSSeedData("seed6.unigrid.org", "dnsseed6.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed1.unigrid.org", "seed1.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed2.unigrid.org", "seed2.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed3.unigrid.org", "seed3.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed4.unigrid.org", "seed4.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed5.unigrid.org", "seed5.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed6.unigrid.org", "seed6.unigrid.org"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 40);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 100);
