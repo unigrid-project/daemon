@@ -2984,6 +2984,12 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         uint256 hashProofOfStake = 0;
         nTxNewTime = GetAdjustedTime();
 
+        if (IsSporkActive (SPORK_19_BLOCK_REWARDS_V2)) {
+            block.nVersion = CBlockHeader::CURRENT_VERSION;
+        } else {
+            block.nVersion = 4;
+        }
+
         //iterates each utxo inside of CheckStakeKernelHash()
         if (Stake(stakeInput.get(), nBits, block.GetBlockTime(), nTxNewTime, hashProofOfStake)) {
             LOCK(cs_main);
@@ -2999,7 +3005,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
             // Calculate reward
             CAmount nReward;
-            nReward = GetBlockValue(chainActive.Height() + 1);
+            nReward = GetBlockValue(block.nVersion, chainActive.Height() + 1);
             nCredit += nReward;
 
             // Create the output transaction(s)

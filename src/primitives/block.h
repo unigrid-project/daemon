@@ -28,7 +28,7 @@ class CBlockHeader
 {
 public:
     // header
-    static const int32_t CURRENT_VERSION=4;
+    static const int32_t CURRENT_VERSION=5;
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
@@ -59,16 +59,7 @@ public:
             READWRITE(nAccumulatorCheckpoint);
     }
 
-    void SetNull()
-    {
-        nVersion = CBlockHeader::CURRENT_VERSION;
-        hashPrevBlock.SetNull();
-        hashMerkleRoot.SetNull();
-        nTime = 0;
-        nBits = 0;
-        nNonce = 0;
-        nAccumulatorCheckpoint = 0;
-    }
+    void SetNull();
 
     bool IsNull() const
     {

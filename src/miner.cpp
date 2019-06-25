@@ -114,12 +114,11 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     if (Params().MineBlocksOnDemand())
         pblock->nVersion = GetArg("-blockversion", pblock->nVersion);
 
-    // Make sure to create the correct block version after zerocoin is enabled
-    bool fZerocoinActive = GetAdjustedTime() >= Params().Zerocoin_StartTime();
-    if (fZerocoinActive)
+    if (IsSporkActive (SPORK_19_BLOCK_REWARDS_V2)) {
+        pblock->nVersion = 5;
+    } else {
         pblock->nVersion = 4;
-    else
-        pblock->nVersion = 3;
+    }
 
     // Create coinbase tx
     CMutableTransaction txNew;
@@ -433,10 +432,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             } else {
                 txNew.vout.resize(2);
                 txNew.vout[1].scriptPubKey = CScript() << ParseHex(Params().ActiveDevPubKey().c_str()) << OP_CHECKSIG;
-                txNew.vout[1].nValue = GetDevFundPayment(pindexPrev->nHeight, GetBlockValue(nHeight));
+                txNew.vout[1].nValue = GetDevFundPayment(pindexPrev->nHeight, GetBlockValue(pblock->nVersion, nHeight));
 
-                txNew.vout[0].nValue = GetBlockValue(nHeight) + nFees - GetDevFundPayment(
-                    pindexPrev->nHeight, GetBlockValue(nHeight));
+                txNew.vout[0].nValue = GetBlockValue(pblock->nVersion, nHeight) + nFees - GetDevFundPayment(
+                    pindexPrev->nHeight, GetBlockValue(pblock->nVersion, nHeight));
             }
         }
 
@@ -468,7 +467,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                 pCheckpointCache.second.second = pindexPrev->nAccumulatorCheckpoint;
                 if (pindexPrev->nHeight + 1 >= Params().Zerocoin_Block_V2_Start()) {
                     AccumulatorMap mapAccumulators(Params().Zerocoin_Params(false));
-                    if (fZerocoinActive && !CalculateAccumulatorCheckpoint(nHeight, nCheckpoint, mapAccumulators)) {
+                    if (!CalculateAccumulatorCheckpoint(nHeight, nCheckpoint, mapAccumulators)) {
                         LogPrintf("%s: failed to get accumulator checkpoint\n", __func__);
                     } else {
                         // the next time the accumulator checkpoint should be recalculated ( the next height that is multiple of 10)

@@ -6,6 +6,7 @@
 
 #include "masternode-payments.h"
 #include "addrman.h"
+#include "primitives/block.h"
 #include "masternode-budget.h"
 #include "masternode-sync.h"
 #include "masternodeman.h"
@@ -268,7 +269,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight) {
 	// In all cases a masternode will get the payment for this block
 
 	//check for masternode payee
-	if (masternodePayments.IsTransactionValid(txNew, nBlockHeight))
+	if (masternodePayments.IsTransactionValid(block.nVersion, txNew, nBlockHeight))
 		return true;
 	LogPrint("masternode", "Invalid mn payment detected %s\n",
 			txNew.ToString().c_str());
@@ -327,7 +328,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew,
 		}
 	}
 
-	CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
+	CAmount blockValue = GetBlockValue(pindexPrev->nVersion, pindexPrev->nHeight);
 	CAmount masternodePayment = GetMasternodePayment(pindexPrev->nHeight,
 			blockValue, 0, fZUNIGRIDStake);
 	CAmount devFund = GetDevFundPayment(pindexPrev->nHeight, blockValue);
@@ -569,7 +570,7 @@ bool CMasternodePayments::AddWinningMasternode(
 	return true;
 }
 
-bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew) {
+bool CMasternodeBlockPayees::IsTransactionValid(int blockVersion, const CTransaction& txNew) {
 	LOCK(cs_vecPayments);
 
 	int nMaxSignatures = 0;
@@ -577,7 +578,7 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew) {
 
 	std::string strPayeesPossible = "";
 
-	CAmount nReward = GetBlockValue(nBlockHeight);
+	CAmount nReward = GetBlockValue(blockVersion, nBlockHeight);
 
 	if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
 		// Get a stable number of masternodes by ignoring newly activated (< 8000 sec old) masternodes
@@ -673,12 +674,12 @@ std::string CMasternodePayments::GetRequiredPaymentsString(int nBlockHeight) {
 	return "Unknown";
 }
 
-bool CMasternodePayments::IsTransactionValid(const CTransaction& txNew,
+bool CMasternodePayments::IsTransactionValid(int blockVersion, const CTransaction& txNew,
 		int nBlockHeight) {
 	LOCK(cs_mapMasternodeBlocks);
 
 	if (mapMasternodeBlocks.count(nBlockHeight)) {
-		return mapMasternodeBlocks[nBlockHeight].IsTransactionValid(txNew);
+		return mapMasternodeBlocks[nBlockHeight].IsTransactionValid(blockVersion, txNew);
 	}
 
 	return true;

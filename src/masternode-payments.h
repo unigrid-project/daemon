@@ -146,7 +146,7 @@ public:
         return false;
     }
 
-    bool IsTransactionValid(const CTransaction& txNew);
+    bool IsTransactionValid(int blockVersion, const CTransaction& txNew);
     std::string GetRequiredPaymentsString();
 
     ADD_SERIALIZE_METHODS;
@@ -263,7 +263,7 @@ public:
     int LastPayment(CMasternode& mn);
 
     bool GetBlockPayee(int nBlockHeight, CScript& payee);
-    bool IsTransactionValid(const CTransaction& txNew, int nBlockHeight);
+    bool IsTransactionValid(int blockVersion, const CTransaction& txNew, int nBlockHeight);
     bool IsScheduled(CMasternode& mn, int nNotBlockHeight);
 
     bool CanVote(COutPoint outMasternode, int nBlockHeight)

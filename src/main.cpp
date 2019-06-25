@@ -899,6 +899,12 @@ bool GetCoinAge(const CTransaction& tx, const unsigned int nTxTime, uint64_t& nC
         // Read block header
         CBlockHeader prevblock = pindex->GetBlockHeader();
 
+        if (IsSporkActive (SPORK_19_BLOCK_REWARDS_V2)) {
+            prevblock.nVersion = CBlockHeader::CURRENT_VERSION;
+        } else {
+            prevblock.nVersion = 4;
+        }
+
         if (prevblock.nTime + nStakeMinAge > nTxTime)
             continue; // only count coins meeting min age requirement
 
@@ -1677,7 +1683,15 @@ bool GetTransaction(const uint256& hash, CTransaction& txOut, uint256& hashBlock
                 CAutoFile file(OpenBlockFile(postx, true), SER_DISK, CLIENT_VERSION);
                 if (file.IsNull())
                     return error("%s: OpenBlockFile failed", __func__);
-                CBlockHeader header;
+
+		CBlockHeader header;
+
+                if (IsSporkActive (SPORK_19_BLOCK_REWARDS_V2)) {
+                    header.nVersion = CBlockHeader::CURRENT_VERSION;
+                } else {
+                    header.nVersion = 4;
+                }
+
                 try {
                     file >> header;
                     fseek(file.Get(), postx.nTxOffset, SEEK_CUR);
@@ -1807,37 +1821,49 @@ double ConvertBitsToDouble(unsigned int nBits)
     return dDiff;
 }
 
-int64_t GetBlockValue(int nHeight)
+int64_t GetBlockValue(int blockVersion, int nHeight)
 {
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200 && nHeight > 0)
             return 2500 * COIN;
     }
 
-    int64_t nSubsidy = 0;
-    if (nHeight == 1) {
-        nSubsidy = 1200000 * COIN;
-    } else if (nHeight < Params().LAST_POW_BLOCK() && nHeight > 1) {
-        nSubsidy = 1 * COIN;
-    } else if (nHeight >= Params().LAST_POW_BLOCK() && nHeight < 5000)
-        nSubsidy = 1 * COIN;
-    else if (nHeight >= 5000 && nHeight < 1050000)
-        nSubsidy = 8 * COIN;
-    else if (nHeight >= 1050000 && nHeight < 2100000)
-        nSubsidy = 6 * COIN;
-    else if (nHeight >= 2100000 && nHeight < 3150000)
-        nSubsidy = 4 * COIN;
-    else if (nHeight >= 3150000 && nHeight < 4200000)
-        nSubsidy = 2 * COIN;
-    else if (nHeight >= 4200000 && nHeight < 12600000)
-        nSubsidy = 1 * COIN;
-    else
-        nSubsidy = 1 * COIN;
+    int64_t nSubsidy = 1 * COIN;
 
-    int nBehalf = (nHeight - 12600000) / Params().SubsidyHalvingInterval(); // 12months after, the reward decrease as behalf
+    if (blockVersion >= 5) {
+        if (nHeight < 475000) {
+            nSubsidy = 8 * COIN;
+        } else if (nHeight < 600000) {
+            nSubsidy = 6 * COIN;
+        } else if (nHeight < 800000) {
+            nSubsidy = 4 * COIN;
+        } else if (nHeight < 1000000) {
+            nSubsidy = 2 * COIN;
+        }
+    } else {
+        if (nHeight == 1) {
+            nSubsidy = 1200000 * COIN;
+        } else if (nHeight < Params().LAST_POW_BLOCK() && nHeight > 1) {
+            nSubsidy = 1 * COIN;
+        } else if (nHeight >= Params().LAST_POW_BLOCK() && nHeight < 5000) {
+            nSubsidy = 1 * COIN;
+        } else if (nHeight >= 5000 && nHeight < 1050000) {
+            nSubsidy = 8 * COIN;
+        } else if (nHeight >= 1050000 && nHeight < 2100000) {
+            nSubsidy = 6 * COIN;
+        } else if (nHeight >= 2100000 && nHeight < 3150000) {
+            nSubsidy = 4 * COIN;
+        } else if (nHeight >= 3150000 && nHeight < 4200000) {
+            nSubsidy = 2 * COIN;
+        } else if (nHeight >= 4200000 && nHeight < 12600000) {
+            nSubsidy = 1 * COIN;
+        }
+    }
+
+    int nBehalf = (nHeight - 1000000) / Params().SubsidyHalvingInterval();
 
     for (int i = 0; i < nBehalf; i++) {
-        nSubsidy = nSubsidy * 90 / 100;
+        nSubsidy = nSubsidy * 99 / 100;
     }
 
     return nSubsidy;
@@ -3085,7 +3111,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs]\n", (unsigned)block.vtx.size(), 0.001 * (nTime1 - nTimeStart), 0.001 * (nTime1 - nTimeStart) / block.vtx.size(), nInputs <= 1 ? 0 : 0.001 * (nTime1 - nTimeStart) / (nInputs - 1), nTimeConnect * 0.000001);
 
     //PoW phase redistributed fees to miner. PoS stage destroys fees.
-    CAmount nExpectedMint = GetBlockValue(pindex->pprev->nHeight);
+    CAmount nExpectedMint = GetBlockValue(block.nVersion, pindex->pprev->nHeight);
     if (block.IsProofOfWork())
         nExpectedMint += nFees;
 
@@ -4109,8 +4135,9 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             nHeight = pindexPrev->nHeight + 1;
         } else { //out of order
             BlockMap::iterator mi = mapBlockIndex.find(block.hashPrevBlock);
-            if (mi != mapBlockIndex.end() && (*mi).second)
+            if (mi != mapBlockIndex.end() && (*mi).second) {
                 nHeight = (*mi).second->nHeight + 1;
+            }
         }
 
         // UNIGRID
@@ -4134,7 +4161,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             CTransaction tx = block.vtx[1];
             if (!tx.vout[1].IsZerocoinMint()) {
                 int nIndex = tx.vout.size() - 2;
-                CAmount nBlockValue = GetBlockValue(nHeight - 1);
+                CAmount nBlockValue = GetBlockValue(block.nVersion, nHeight - 1);
                 CAmount nDevFundValue = GetDevFundPayment(nHeight - 1, nBlockValue);
                 CAmount nMasternodeValue = GetMasternodePayment(nHeight - 1, nBlockValue, 0, false);
 

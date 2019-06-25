@@ -13,6 +13,7 @@
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 #include "util.h"
+#include "spork.h"
 
 uint256 CBlockHeader::GetHash() const
 {
@@ -20,6 +21,17 @@ uint256 CBlockHeader::GetHash() const
         return HashQuark(BEGIN(nVersion), END(nNonce));
 
     return Hash(BEGIN(nVersion), END(nAccumulatorCheckpoint));
+}
+
+void CBlockHeader::SetNull()
+{
+    nVersion = CURRENT_VERSION;
+    hashPrevBlock.SetNull();
+    hashMerkleRoot.SetNull();
+    nTime = 0;
+    nBits = 0;
+    nNonce = 0;
+    nAccumulatorCheckpoint = 0;
 }
 
 uint256 CBlock::BuildMerkleTree(bool* fMutated) const

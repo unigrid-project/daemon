@@ -121,7 +121,7 @@ public:
         vAlertPubKey = ParseHex("04a6e236e07f7a5eb0f60bc46c256e5c0a2b31bd86dd9471465b01190807ab46a085806fb8639ea27375a20b88303a6989d3f05b1e0e5f59d988c60dd415d355df");
         nDefaultPort = 51992;
         bnProofOfWorkLimit = ~uint256(0) >> 20; // UNIGRID starting difficulty is 1 / 2^12
-        nSubsidyHalvingInterval = 259000;
+        nSubsidyHalvingInterval = 50000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 750;
         nRejectBlockOutdatedMajority = 950;
