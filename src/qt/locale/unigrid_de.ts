@@ -4240,7 +4240,7 @@ Präge entweder höhere Stückelungen (damit weniger Eingaben benötigt werdenn)
         <translation>Die PIVX Core Entwickler</translation>
     </message>
     <message>
-        <source>The UNIGRID Core developers</source>
+        <source>The UNIGRID organisation</source>
         <translation>Die UNIGRID Core Entwickler</translation>
     </message>
     <message>
@@ -5265,8 +5265,8 @@ Präge entweder höhere Stückelungen (damit weniger Eingaben benötigt werdenn)
         <translation>Copyright (C) 2015-%i The PIVX Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID Core Developers</source>
-        <translation>Copyright (C) %i The UNIGRID Core Developers</translation>
+        <source>Copyright (C) %i The UNIGRID organisation</source>
+        <translation>Copyright (C) %i The UNIGRID organisation</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

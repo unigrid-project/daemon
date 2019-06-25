@@ -4249,7 +4249,7 @@ O mint las denominaciones más altas (por lo tanto, se necesitan menos datos) o 
         <translation>Los desarrolladores de PIVX Core</translation>
     </message>
     <message>
-        <source>The UNIGRID Core developers</source>
+        <source>The UNIGRID organisation</source>
         <translation>Los desarrolladores de UNIGRID Core</translation>
     </message>
     <message>
@@ -5274,8 +5274,8 @@ O mint las denominaciones más altas (por lo tanto, se necesitan menos datos) o 
         <translation>Copyright (C) 2015-%i The PIVX Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID Core Developers</source>
-        <translation>Copyright (C) %i The UNIGRID Core Developers</translation>
+        <source>Copyright (C) %i The UNIGRID organisation</source>
+        <translation>Copyright (C) %i The UNIGRID organisation</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

@@ -3920,8 +3920,8 @@ Ya daha yüksek mezhepleri daraltın (daha az girdi gereklidir) veya harcama mik
         <translation>The PIVX Core developers</translation>
     </message>
     <message>
-        <source>The UNIGRID Core developers</source>
-        <translation>The UNIGRID Core developers</translation>
+        <source>The UNIGRID organisation</source>
+        <translation>The UNIGRID organisation</translation>
     </message>
     <message>
         <source>[testnet]</source>

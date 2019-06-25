@@ -3131,7 +3131,7 @@ https://www.transifex.com/unigrid-project/unigrid-project-translations</translat
         <translation>Os desenvolvedores do PIVX Core</translation>
     </message>
     <message>
-        <source>The UNIGRID Core developers</source>
+        <source>The UNIGRID organisation</source>
         <translation>Os desenvolvedores do UNIGRID Core</translation>
     </message>
     <message>
@@ -3800,7 +3800,7 @@ https://www.transifex.com/unigrid-project/unigrid-project-translations</translat
         <translation>Todos os direitos reservados (C) 2015-%i aos Desenvolvedores do PIVX Core</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID Core Developers</source>
+        <source>Copyright (C) %i The UNIGRID organisation</source>
         <translation>Todos os direitos reservados (C) %i aos Desenvolvedores do UNIGRID Core</translation>
     </message>
     <message>

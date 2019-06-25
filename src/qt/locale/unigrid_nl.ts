@@ -4249,7 +4249,7 @@ Ofwel het munten van hogere denominaties (dus minder invoer nodig) of het te bes
         <translation>De PIVX Kernontwikkelaars</translation>
     </message>
     <message>
-        <source>The UNIGRID Core developers</source>
+        <source>The UNIGRID organisation</source>
         <translation>De UNIGRID Kernontwikkelaars</translation>
     </message>
     <message>
@@ -5274,7 +5274,7 @@ Ofwel het munten van hogere denominaties (dus minder invoer nodig) of het te bes
         <translation>Copyright (C) 2015-%i The PIVX Kernontwikkelaars</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID Core Developers</source>
+        <source>Copyright (C) %i The UNIGRID organisation</source>
         <translation>Copyright (C) %i The UNIGRID Kernontwikkelaars</translation>
     </message>
     <message>

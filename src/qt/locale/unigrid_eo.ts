@@ -2477,7 +2477,7 @@ Nematura: konfirmita, sed malpli ol 1 minto el la samo nomado post ĝin estis mi
         <translation>La PIVX kerno programistoj</translation>
     </message>
     <message>
-        <source>The UNIGRID Core developers</source>
+        <source>The UNIGRID organisation</source>
         <translation>La UNIGRID kerno programistoj</translation>
     </message>
     </context>

@@ -5438,7 +5438,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <location line="+1"/>
-        <source>The UNIGRID Core developers</source>
+        <source>The UNIGRID organisation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6746,7 +6746,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
     <message>
         <location line="+1"/>
-        <source>Copyright (C) %i The UNIGRID Core Developers</source>
+        <source>Copyright (C) %i The UNIGRID organisation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

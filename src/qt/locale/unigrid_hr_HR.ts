@@ -4249,7 +4249,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>PIVX Core programeri</translation>
     </message>
     <message>
-        <source>The UNIGRID Core developers</source>
+        <source>The UNIGRID organisation</source>
         <translation>UNIGRID Core programeri</translation>
     </message>
     <message>
@@ -5275,8 +5275,8 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Autorska prava (C) 2015-%i The PIVX Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID Core Developers</source>
-        <translation>Autorska prava (C) %i The UNIGRID Core Developers</translation>
+        <source>Copyright (C) %i The UNIGRID organisation</source>
+        <translation>Autorska prava (C) %i The UNIGRID organisation</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

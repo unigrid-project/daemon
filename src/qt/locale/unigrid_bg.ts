@@ -4237,7 +4237,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>PIVX Core разработчици</translation>
     </message>
     <message>
-        <source>The UNIGRID Core developers</source>
+        <source>The UNIGRID organisation</source>
         <translation>UNIGRID Core разработчици</translation>
     </message>
     <message>
@@ -5258,7 +5258,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
         <translation>Всички права запазени (c) 2015-%i PIVX Core разработчици</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID Core Developers</source>
+        <source>Copyright (C) %i The UNIGRID organisation</source>
         <translation>Всички права запазени (c) %i UNIGRID Core разработчици</translation>
     </message>
     <message>

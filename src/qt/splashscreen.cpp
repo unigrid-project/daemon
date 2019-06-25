@@ -39,7 +39,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle* networkStyle) 
     QString copyrightTextBtc = QChar(0xA9) + QString(" 2009-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The Bitcoin Core developers"));
     QString copyrightTextDash = QChar(0xA9) + QString(" 2014-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The Dash Core developers"));
     QString copyrightTextPIVX = QChar(0xA9) + QString(" 2015-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The PIVX Core developers"));
-    QString copyrightTextUNIGRID = QChar(0xA9) + QString(" %1 ").arg(COPYRIGHT_YEAR) + QString(tr("The UNIGRID Core developers"));
+    QString copyrightTextUNIGRID = QChar(0xA9) + QString(" 2018-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The UNIGRID organisation"));
     QString titleAddText = networkStyle->getTitleAddText();
 
     QString font = QApplication::font().toString();
@@ -120,7 +120,7 @@ static void InitMessage(SplashScreen* splash, const std::string& message)
 
 static void ShowProgress(SplashScreen* splash, const std::string& title, int nProgress)
 {
-    InitMessage(splash, title + strprintf("%d", nProgress) + "%");
+    InitMessage(splash, strprintf("%d", nProgress) + "%");
 }
 
 #ifdef ENABLE_WALLET
