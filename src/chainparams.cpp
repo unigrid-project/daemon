@@ -187,19 +187,19 @@ public:
         // vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net")); // Single node address
         // vSeeds.push_back(CDNSSeedData("178.254.23.111", "178.254.23.111"));           // Single node address
 
-        vSeeds.push_back(CDNSSeedData("seed1.unigrid.io", "dnsseed1.unigrid.io"));
-        vSeeds.push_back(CDNSSeedData("seed2.unigrid.io", "dnsseed2.unigrid.io"));
-        vSeeds.push_back(CDNSSeedData("seed3.unigrid.io", "dnsseed3.unigrid.io"));
-        vSeeds.push_back(CDNSSeedData("seed4.unigrid.io", "dnsseed4.unigrid.io"));
-        vSeeds.push_back(CDNSSeedData("seed5.unigrid.io", "dnsseed5.unigrid.io"));
-        vSeeds.push_back(CDNSSeedData("seed6.unigrid.io", "dnsseed6.unigrid.io"));
+        vSeeds.push_back(CDNSSeedData("seed1.unigrid.org", "dnsseed1.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed2.unigrid.org", "dnsseed2.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed3.unigrid.org", "dnsseed3.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed4.unigrid.org", "dnsseed4.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed5.unigrid.org", "dnsseed5.unigrid.org"));
+        vSeeds.push_back(CDNSSeedData("seed6.unigrid.org", "dnsseed6.unigrid.org"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 40);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 100);
         base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 153);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x02)(0x2D)(0x25)(0x33).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x02)(0x21)(0x31)(0x2B).convert_to_container<std::vector<unsigned char> >();
-        // 	BIP44 coin type is from https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+        // BIP44 coin type is from https://github.com/satoshilabs/slips/blob/master/slip-0044.md
         base58Prefixes[EXT_COIN_TYPE] = boost::assign::list_of(0x80)(0x00)(0x00)(0x77).convert_to_container<std::vector<unsigned char> >();
 
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
