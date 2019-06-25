@@ -1179,7 +1179,7 @@ void ThreadMapPort()
                     LogPrintf("UPnP Port Mapping successful.\n");
                 ;
 
-                MilliSleep(20 * 60 * 1000); // Refresh every 20 minutes
+                MilliSleep(10 * 60 * 1000); // Refresh every 10 minutes
             }
         } catch (boost::thread_interrupted) {
             r = UPNP_DeletePortMapping(urls.controlURL, data.first.servicetype, port.c_str(), "TCP", 0);
@@ -1416,7 +1416,7 @@ void ThreadOpenAddedConnections()
                 OpenNetworkConnection(addr, &grant, strAddNode.c_str());
                 MilliSleep(500);
             }
-            MilliSleep(120000); // Retry every 2 minutes
+            MilliSleep(60000); // Retry every minutes
         }
     }
 
@@ -1458,7 +1458,7 @@ void ThreadOpenAddedConnections()
             OpenNetworkConnection(CAddress(vserv[i % vserv.size()]), &grant);
             MilliSleep(500);
         }
-        MilliSleep(120000); // Retry every 2 minutes
+        MilliSleep(60000); // Retry every minute
     }
 }
 
