@@ -535,8 +535,8 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
             strHeader += rpc_user;
             strHeader += "\nrpcpassword=";
             strHeader += rpc_passwd;
-            strHeader += "\naddnode=dnsseed1.unigrid.io\naddnode=dnsseed2.unigrid.io\naddnode=dnsseed3.unigrid.io\naddnode=dnsseed4.unigrid.io\naddnode=dnsseed5.unigrid.io\naddnode=dnsseed6.unigrid.io\n";
-            strHeader += "txindex=1\nunigridstake=1\n";
+            strHeader += "\naddnode=dnsseed1.unigrid.org\naddnode=dnsseed2.unigrid.org\naddnode=dnsseed3.unigrid.org\naddnode=dnsseed4.unigrid.org\naddnode=dnsseed5.unigrid.org\naddnode=dnsseed6.unigrid.org\n";
+            strHeader += "txindex=1\nunigridstake=1\nmaxconnections=250";
             fwrite(strHeader.c_str(), std::strlen(strHeader.c_str()), 1, configFile);
             fclose(configFile);
         }
