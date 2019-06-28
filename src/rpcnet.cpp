@@ -1,12 +1,14 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2017-2019 The Swipp developers
 // Copyright (c) 2018-2019 The UNIGRID organisation
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpcserver.h"
 
+#include "alert.h"
 #include "clientversion.h"
 #include "main.h"
 #include "net.h"
@@ -579,3 +581,73 @@ UniValue clearbanned(const UniValue& params, bool fHelp)
 
     return NullUniValue;
 }
+
+UniValue sendalert(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() < 6) {
+        throw runtime_error(
+            "sendalert \"message\" \"privatekey\" minver maxver priority id (cancelupto)\n"
+            "\nSend alert.\n"
+
+            "\nArguments:\n"
+            "1. \"message\"    (string, required) The alert text message.\n"
+            "2. \"privatekey\" (string, required) Hex string of alert master private key.\n"
+            "3. \"minver\"     (numeric, required) The minimum applicable internal client version.\n"
+            "4. \"maxver\"     (numeric, required) The maximum applicable internal client version.\n"
+            "5. \"priority\"   (numeric, required) Alert priority.\n"
+            "6. \"id\"         (numeric, required) The alert id.\n"
+            "7. \"cancelupto\" (numeric, optional) Cancels all alert id's up to this number.\n"
+
+            "\nResult:\n"
+            "(boolean) Returns true or false depending on command success.\n");
+    }
+
+    CAlert alert;
+    CKey key;
+
+    alert.strStatusBar = params[0].get_str();
+    alert.nMinVer = params[2].get_int();
+    alert.nMaxVer = params[3].get_int();
+    alert.nPriority = params[4].get_int();
+    alert.nID = params[5].get_int();
+
+    if (params.size() > 6)
+        alert.nCancel = params[6].get_int();
+
+    alert.nVersion = PROTOCOL_VERSION;
+    alert.nRelayUntil = GetAdjustedTime() + 365 * 24 * 60 * 60;
+    alert.nExpiration = GetAdjustedTime() + 365 * 24 * 60 * 60;
+
+    CDataStream sMsg(SER_NETWORK, PROTOCOL_VERSION);
+    sMsg << (CUnsignedAlert) alert;
+    alert.vchMsg = vector<unsigned char>(sMsg.begin(), sMsg.end());
+    vector<unsigned char> vchPrivKey = ParseHex(params[1].get_str());
+    key.SetPrivKey(CPrivKey(vchPrivKey.begin(), vchPrivKey.end()), false); // if key is not correct openssl may crash
+
+    if (!key.Sign(Hash(alert.vchMsg.begin(), alert.vchMsg.end()), alert.vchSig))
+        throw runtime_error("Unable to sign alert, check private key?\n");
+
+    if(!alert.ProcessAlert())
+        throw runtime_error("Failed to process alert.\n");
+
+    // Relay alert
+    {
+        LOCK(cs_vNodes);
+        BOOST_FOREACH(CNode* pnode, vNodes)
+            alert.RelayTo(pnode);
+    }
+
+    UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("strStatusBar", alert.strStatusBar));
+    result.push_back(Pair("nVersion", alert.nVersion));
+    result.push_back(Pair("nMinVer", alert.nMinVer));
+    result.push_back(Pair("nMaxVer", alert.nMaxVer));
+    result.push_back(Pair("nPriority", alert.nPriority));
+    result.push_back(Pair("nID", alert.nID));
+
+    if (alert.nCancel > 0)
+        result.push_back(Pair("nCancel", alert.nCancel));
+
+    return result;
+}
+
