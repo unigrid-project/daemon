@@ -99,10 +99,10 @@ public:
     std::string DevPubKey() const { return strDevpubkey; }
     std::string OldDevPubKey() const { return strOldDevpubkey; }
     std::string ActiveDevPubKey() const {
-        if (IsSporkActive(SPORK_17_NEW_DEVFUND_ENFORCEMENT))
+        if (!IsSporkActive(SPORK_17_OLD_DEVFUND_ENFORCEMENT))
             return DevPubKey();
 
-       return OldDevPubKey();
+        return OldDevPubKey();
     }
 
     /** Spork key and Masternode Handling **/
