@@ -155,8 +155,8 @@ public:
         nBlockEnforceInvalidUTXO = 1999999999; //Start enforcing the invalid UTXO's
         nInvalidAmountFiltered = 268200*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
         nBlockZerocoinV2 = 25000; //!> The block that zerocoin v2 becomes active - roughly Tuesday, May 8, 2018 4:00:00 AM GMT
-        nEnforceNewSporkKey = 1542079146; //!> Sporks signed after GMT: Tuesday 13 November 2018 03:19:06 must use the new spork key
-        nRejectOldSporkKey = 1542326400; //!> Reject old spork key after GMT:  Friday 16 November 2018 00:00:00
+        nEnforceNewSporkKey = 1561939200; //!> Sporks signed after GMT: Monday, July 1, 2019 12:00:00 AM must use the new spork key
+        nRejectOldSporkKey = 1564617599; //!> Reject old spork key after GMT:  Wednesday, July 31, 2019 11:59:59 PM
 
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
@@ -287,8 +287,8 @@ public:
         nBlockEnforceInvalidUTXO = 9902850; //Start enforcing the invalid UTXO's
         nInvalidAmountFiltered = 0; //Amount of invalid coins filtered through exchanges, that should be considered valid
         nBlockZerocoinV2 = 444020; //!> The block that zerocoin v2 becomes active
-        nEnforceNewSporkKey = 1542079146; //!> Sporks signed after GMT: Tuesday 13 November 2018 03:19:06 must use the new spork key
-        nRejectOldSporkKey = 1542326400; //!> Reject old spork key after GMT:  Friday 16 November 2018 00:00:00
+        nEnforceNewSporkKey = 1561939200; //!> Sporks signed after GMT: Monday, July 1, 2019 12:00:00 AM must use the new spork key
+        nRejectOldSporkKey = 1564617599; //!> Reject old spork key after GMT:  Wednesday, July 31, 2019 11:59:59 PM
         nMNCollateral = 3000 * COIN;
         strDevpubkey = "02e5c7215bac4d6ed03645bab3c77410cd6662c5373800e688cf5927d397498f1f";
         strOldDevpubkey = "02a631da396e4a45047968f138555e8ed2acae449acde7d751f9f4979f3fd0eaf7";
