@@ -15,7 +15,7 @@ osx=true
 
 # Other Basic variables
 SIGNER="the-unigrid-developers"
-VERSION=1.0.0.5
+VERSION=2.0.0.0
 commit=false
 url=https://github.com/unigrid-project/unigrid.git
 proc=6
