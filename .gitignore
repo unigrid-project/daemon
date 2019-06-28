@@ -12,6 +12,7 @@ src/unigrid-cli
 src/unigrid-tx
 src/test/test_unigrid
 src/qt/test/test_unigrid-qt
+src/qt/unigrid-qt
 
 # autoreconf
 Makefile.in

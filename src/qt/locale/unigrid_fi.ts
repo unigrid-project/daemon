@@ -2219,7 +2219,7 @@ Please check the address and try again.</source>
         <translation>PIVX core kehittäjät</translation>
     </message>
     <message>
-        <source>The UNIGRID organisation</source>
+        <source>The UNIGRID organization</source>
         <translation>UNIGRID core kehittäjät</translation>
     </message>
     <message>

@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2019 The PIVX developers
-// Copyright (c) 2018-2019 The UNIGRID organisation
+// Copyright (c) 2018-2019 The UNIGRID organization
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -3585,7 +3585,7 @@ bool DisconnectBlockAndInputs(CValidationState& state, CTransaction txLock)
             return state.Abort(_("Failed to read block"));
 
         // Queue memory transactions to resurrect.
-        // We only do this for blocks after the last checkpoint (reorganisation before that
+        // We only do this for blocks after the last checkpoint (reorganization before that
         // point should only happen with -reindex/-loadblock, or a misbehaving peer.
         BOOST_FOREACH (const CTransaction& tx, block.vtx) {
             if (!tx.IsCoinBase()) {

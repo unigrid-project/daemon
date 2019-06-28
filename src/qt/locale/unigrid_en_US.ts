@@ -3296,8 +3296,8 @@ https://www.transifex.com/unigrid-project/unigrid-project-translations</translat
         <translation>The PIVX Core developers</translation>
     </message>
     <message>
-        <source>The UNIGRID organisation</source>
-        <translation>The UNIGRID organisation</translation>
+        <source>The UNIGRID organization</source>
+        <translation>The UNIGRID organization</translation>
     </message>
     <message>
         <source>[testnet]</source>
@@ -4290,8 +4290,8 @@ for example: alertnotify=echo %%s | mail -s "UNIGRID Alert" admin@foo.com
         <translation>Copyright (C) 2015-%i The PIVX Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID organisation</source>
-        <translation>Copyright (C) %i The UNIGRID organisation</translation>
+        <source>Copyright (C) %i The UNIGRID organization</source>
+        <translation>Copyright (C) %i The UNIGRID organization</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

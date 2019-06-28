@@ -4165,7 +4165,7 @@ Minta antingen högre valörer (så att färre inputs behövs) eller spendera mi
         <translation>PIVX Core utvecklarna</translation>
     </message>
     <message>
-        <source>The UNIGRID organisation</source>
+        <source>The UNIGRID organization</source>
         <translation>UNIGRID Core utvecklarna</translation>
     </message>
     <message>
@@ -5190,8 +5190,8 @@ Minta antingen högre valörer (så att färre inputs behövs) eller spendera mi
         <translation>Copyright (C) 2015-%i The PIVX Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID organisation</source>
-        <translation>Copyright (C) %i The UNIGRID organisation</translation>
+        <source>Copyright (C) %i The UNIGRID organization</source>
+        <translation>Copyright (C) %i The UNIGRID organization</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

@@ -4793,7 +4793,7 @@ Soit monnayer des dénominations plus élevées (moins d'intrants sont nécessai
     </message>
     <message>
         <source>Set the Maximum reorg depth (default: %u)</source>
-        <translation>Définir la profondeur de réorganisation maximale (par défaut: %u)</translation>
+        <translation>Définir la profondeur de réorganization maximale (par défaut: %u)</translation>
     </message>
     <message>
         <source>Set the masternode private key</source>
@@ -5017,7 +5017,7 @@ Soit monnayer des dénominations plus élevées (moins d'intrants sont nécessai
     </message>
     <message>
         <source>Use a custom max chain reorganization depth (default: %u)</source>
-        <translation>Utiliser une profondeur de réorganisation de chaîne maximale personnalisée (par défaut: %u)</translation>
+        <translation>Utiliser une profondeur de réorganization de chaîne maximale personnalisée (par défaut: %u)</translation>
     </message>
     <message>
         <source>Use the test network</source>

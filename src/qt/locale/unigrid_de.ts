@@ -4240,7 +4240,7 @@ Präge entweder höhere Stückelungen (damit weniger Eingaben benötigt werdenn)
         <translation>Die PIVX Core Entwickler</translation>
     </message>
     <message>
-        <source>The UNIGRID organisation</source>
+        <source>The UNIGRID organization</source>
         <translation>Die UNIGRID Core Entwickler</translation>
     </message>
     <message>
@@ -5265,8 +5265,8 @@ Präge entweder höhere Stückelungen (damit weniger Eingaben benötigt werdenn)
         <translation>Copyright (C) 2015-%i The PIVX Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) %i The UNIGRID organisation</source>
-        <translation>Copyright (C) %i The UNIGRID organisation</translation>
+        <source>Copyright (C) %i The UNIGRID organization</source>
+        <translation>Copyright (C) %i The UNIGRID organization</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>
@@ -5998,7 +5998,7 @@ Präge entweder höhere Stückelungen (damit weniger Eingaben benötigt werdenn)
     </message>
     <message>
         <source>Set the Maximum reorg depth (default: %u)</source>
-        <translation>Legen Sie die maximale Reorganisationstiefe fest (Standard: %u)</translation>
+        <translation>Legen Sie die maximale Reorganizationstiefe fest (Standard: %u)</translation>
     </message>
     <message>
         <source>Set the masternode private key</source>
@@ -6254,7 +6254,7 @@ Präge entweder höhere Stückelungen (damit weniger Eingaben benötigt werdenn)
     </message>
     <message>
         <source>Use a custom max chain reorganization depth (default: %u)</source>
-        <translation>Verwenden Sie eine benutzerdefinierte Max-Reorganisation der Kette (Standard: %u)</translation>
+        <translation>Verwenden Sie eine benutzerdefinierte Max-Reorganization der Kette (Standard: %u)</translation>
     </message>
     <message>
         <source>Use the test network</source>
