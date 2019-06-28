@@ -125,7 +125,7 @@ public:
         pchMessageStart[1] = 0xc4;
         pchMessageStart[2] = 0xfd;
         pchMessageStart[3] = 0xe9;
-        vAlertPubKey = ParseHex("04a6e236e07f7a5eb0f60bc46c256e5c0a2b31bd86dd9471465b01190807ab46a085806fb8639ea27375a20b88303a6989d3f05b1e0e5f59d988c60dd415d355df");
+        vAlertPubKey = ParseHex("041e4a1e7d015d3d9a5d060aca539d870a6a732b3f6163d770cf0bb3ee12b3ee0256fce9f98cb8fa2d4c10f51fab84f65fee20449f6d28de61aadbfffc672ae275");
         nDefaultPort = 51992;
         bnProofOfWorkLimit = ~uint256(0) >> 20; // UNIGRID starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 50000;
@@ -181,9 +181,7 @@ public:
         genesis.nVersion = 1;
         genesis.nTime = 1536062400;
         genesis.nBits = 0x1e0fffff;
-
         genesis.nNonce = 280211;
-
         hashGenesisBlock = genesis.GetHash();
         assert(hashGenesisBlock == uint256("0x00000416490cfdea94f5f78bc14285e48c78c42ea8ec9c8a623050d0175cf2d2"));
         assert(genesis.hashMerkleRoot == uint256("0x8b46deafa2b172c976e98add7e8d031e154a01210bc79a1b5955c8b19fcd85ea"));
@@ -221,8 +219,10 @@ public:
         fHeadersFirstSyncingActive = false;
 
         nPoolMaxTransactions = 3;
-        strSporkKey = "04f393cef0f43dbd9b647b2014c21249d9a710461a6ea640a2121b8a4a3ee0040599f945643982d820d228540a2e7a2c0e5ae0149ce841368e4f2b587ea1d690d1";
-        strSporkKeyOld = "0404f577bf0f27840383286ed9ccb6de0331f434fc1367752e6b13a7d7ba53fb233aba934b70da91c71a5439d14c7362040a95f4d85da759def35b4dc24eaabcda";
+
+        // oldest: 0404f577bf0f27840383286ed9ccb6de0331f434fc1367752e6b13a7d7ba53fb233aba934b70da91c71a5439d14c7362040a95f4d85da759def35b4dc24eaabcda
+        strSporkKey = "04efb4f4430c76279cd1a5c421f1d71733495f2deda4b4d88695a4e029b64a481b141b3fc9f97c550775536603bb57c72a118a57e9b262c4a5e4db29430c981744";
+        strSporkKeyOld = "04f393cef0f43dbd9b647b2014c21249d9a710461a6ea640a2121b8a4a3ee0040599f945643982d820d228540a2e7a2c0e5ae0149ce841368e4f2b587ea1d690d1";
         strObfuscationPoolDummyAddress = "D87q2gC9j6nNrnzCsg4aY6bHMLsT9nUhEw";
         nStartMasternodePayments = 1403728576; //Wed, 25 Jun 2014 20:36:16 GMT
 
@@ -265,7 +265,7 @@ public:
         pchMessageStart[1] = 0x76;
         pchMessageStart[2] = 0x65;
         pchMessageStart[3] = 0xba;
-        vAlertPubKey = ParseHex("04a6e236e07f7a5eb0f60bc46c256e5c0a2b31bd86dd9471465b01190807ab46a085806fb8639ea27375a20b88303a6989d3f05b1e0e5f59d988c60dd415d355df");
+        vAlertPubKey = ParseHex("04380f1235ed47d26dab95cf28183aea47a10c68d8d47cfe4391b02fcc1af582ed591bf14f8e290770cb33e80250d59309e64c4f18755ff6a0a710b02b296027b4");
         nDefaultPort = 51996;
         nEnforceBlockUpgradeMajority = 51;
         nRejectBlockOutdatedMajority = 75;
@@ -295,7 +295,6 @@ public:
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1536062401;
-
         genesis.nNonce = 3932913;
 
         hashGenesisBlock = genesis.GetHash();
@@ -324,8 +323,10 @@ public:
         fTestnetToBeDeprecatedFieldRPC = true;
 
         nPoolMaxTransactions = 2;
-        strSporkKey = "0458d06208c9ebeaacaec91ebb6818f1fc6bceba3f32ae4a827f99edea38295a21e9600b9a7e344e7703e9dc20d5fe6a8cb3ea20fbb20fa24460f47c38ac0c879e";
-        strSporkKeyOld = "04A8B319388C0F8588D238B9941DC26B26D3F9465266B368A051C5C100F79306A557780101FE2192FE170D7E6DEFDCBEE4C8D533396389C0DAFFDBC842B002243C";
+
+        // oldest: 04A8B319388C0F8588D238B9941DC26B26D3F9465266B368A051C5C100F79306A557780101FE2192FE170D7E6DEFDCBEE4C8D533396389C0DAFFDBC842B002243C
+        strSporkKey = "0498ab66bf8dc2d8a7458587cf4bf6c3aa0f92df3c336542e0f36bf65dc20394891d18b19f1ebf0950c509356106eab8556211cb24dac4e1665d4ea00f0142747d";
+        strSporkKeyOld = "0458d06208c9ebeaacaec91ebb6818f1fc6bceba3f32ae4a827f99edea38295a21e9600b9a7e344e7703e9dc20d5fe6a8cb3ea20fbb20fa24460f47c38ac0c879e";
         strObfuscationPoolDummyAddress = "y57cqfGRkekRyDRNeJiLtYVEbvhXrNbmox";
         nStartMasternodePayments = 1420837558; //Fri, 09 Jan 2015 21:05:58 GMT
         nBudget_Fee_Confirmations = 3; // Number of confirmations for the finalization fee. We have to make this very short
