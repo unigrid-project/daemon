@@ -587,7 +587,9 @@ UniValue sendalert(const UniValue& params, bool fHelp)
     if (fHelp || params.size() < 6) {
         throw runtime_error(
             "sendalert \"message\" \"privatekey\" minver maxver priority id (cancelupto)\n"
-            "\nSend alert.\n"
+            "\nSend alert."
+            "\nAlerts can be sent on the test network using the following key:"
+            "\n99ebe1eda365d117cc327b7343aedbbc39a6effd70b663a88547b1c23a829e49901c2b2422\n"
 
             "\nArguments:\n"
             "1. \"message\"    (string, required) The alert text message.\n"
