@@ -357,7 +357,7 @@ void OnRPCPreCommand(const CRPCCommand& cmd)
 
 static void ImportLegacyFile(std::vector<std::string> fromFileNames, std::string toFileName, std::string status)
 {
-    /* Should we try to import a wallet.dat from the old legacy HUZU chain? */
+    /* Should we try to import from the old legacy HUZU wallet? */
     boost::filesystem::path to = GetDataDir() / toFileName;
 
     if (!filesystem::exists(to)) {
@@ -370,7 +370,7 @@ static void ImportLegacyFile(std::vector<std::string> fromFileNames, std::string
             }
         }
 
-        /* Did we find a wallet to import ? */
+        /* Did we find something to import ? */
         if (!from.empty()) {
             uiInterface.InitMessage(status);
             boost::filesystem::copy_file(from, to);
@@ -1091,9 +1091,26 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     int64_t nStart;
 
+// ********************************************************* Step 4.5: Masternode configuration handling
+    std::string strMasternodeFile = GetArg("-mnconf", "masternode.conf");
+    std::string status = _("Importing masternode configuration from the old HUZU wallet...");
+    std::vector<std::string> fileNames = {strMasternodeFile, "masternode.conf"};
+    ImportLegacyFile(fileNames, strMasternodeFile, status);
+
+    // parse masternode.conf
+    std::string strErr;
+    if (!masternodeConfig.read(strErr)) {
+        return InitError(strprintf(_("Error reading masternode configuration file: %s"), strErr.c_str()));
+        return false;
+    }
+
 // ********************************************************* Step 5: Backup wallet and verify wallet database integrity
 #ifdef ENABLE_WALLET
     if (!fDisableWallet) {
+        std::string status = _("Importing wallet data file from the old HUZU wallet...");
+        std::vector<std::string> fileNames = {strWalletFile, "wallet.dat"};
+        ImportLegacyFile(fileNames, strWalletFile, status);
+
         filesystem::path backupDir = GetDataDir() / "backups";
         if (!filesystem::exists(backupDir)) {
             // Always create backup folder to not confuse the operating system's file browser
@@ -1574,11 +1591,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         mempool.ReadFeeEstimates(est_filein);
     fFeeEstimatesInitialized = true;
 
-    std::string strMasternodeFile = GetArg("-mnconf", "masternode.conf");
-    std::string status = _("Importing masternode configuration from the old HUZU wallet...");
-    std::vector<std::string> fileNames = {strMasternodeFile, "masternode.conf"};
-    ImportLegacyFile(fileNames, strMasternodeFile, status);
-
 // ********************************************************* Step 8: load wallet
 #ifdef ENABLE_WALLET
     if (fDisableWallet) {
@@ -1605,10 +1617,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
         uiInterface.InitMessage(_("Loading wallet..."));
         fVerifyingBlocks = true;
-
-        std::string status = _("Importing wallet data file from the old HUZU wallet...");
-        std::vector<std::string> fileNames = {strWalletFile, "wallet.dat"};
-        ImportLegacyFile(fileNames, strWalletFile, status);
 
         nStart = GetTimeMillis();
         bool fFirstRun = true;
