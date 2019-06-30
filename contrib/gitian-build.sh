@@ -188,7 +188,7 @@ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # Check for OSX SDK
-if [[ ! -e "gitian-builder/inputs/MacOSX10.14.sdk.tar.xz" && $osx == true ]]
+if [[ ! -e "gitian-builder/inputs/MacOSX10.11.sdk.tar.xz" && $osx == true ]]
 then
     echo "Cannot build for OSX, SDK does not exist. Will build for other OSes"
     osx=false
