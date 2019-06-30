@@ -22,6 +22,7 @@
 
 #include <stdarg.h>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
@@ -424,16 +425,17 @@ void PrintExceptionContinue(std::exception* pex, const char* pszThread)
     strMiscWarning = message;
 }
 
-boost::filesystem::path GetDefaultDataDir()
+boost::filesystem::path GetDefaultDataDir(std::string name)
 {
     namespace fs = boost::filesystem;
-// Windows < Vista: C:\Documents and Settings\Username\Application Data\UNIGRID
-// Windows >= Vista: C:\Users\Username\AppData\Roaming\UNIGRID
-// Mac: ~/Library/Application Support/UNIGRID
-// Unix: ~/.unigrid
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\UNIGRID
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\UNIGRID
+    // Mac: ~/Library/Application Support/UNIGRID
+    // Unix: ~/.unigrid
+
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "UNIGRID";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / name;
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -445,10 +447,10 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     TryCreateDirectory(pathRet);
-    return pathRet / "UNIGRID";
+    return pathRet / name;
 #else
     // Unix
-    return pathRet / ".unigrid";
+    return pathRet / ("." + boost::algorithm::to_lower_copy(name));
 #endif
 #endif
 }

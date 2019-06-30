@@ -54,6 +54,7 @@
 #include <fstream>
 #include <stdint.h>
 #include <stdio.h>
+#include <vector>
 
 #ifndef WIN32
 #include <signal.h>
@@ -352,6 +353,29 @@ void OnRPCPreCommand(const CRPCCommand& cmd)
     if (strWarning != "" && !GetBoolArg("-disablesafemode", false) &&
         !cmd.okSafeMode)
         throw JSONRPCError(RPC_FORBIDDEN_BY_SAFE_MODE, string("Safe mode: ") + strWarning);
+}
+
+static void ImportLegacyFile(std::vector<std::string> fromFileNames, std::string toFileName, std::string status)
+{
+    /* Should we try to import a wallet.dat from the old legacy HUZU chain? */
+    boost::filesystem::path to = GetDataDir() / toFileName;
+
+    if (!filesystem::exists(to)) {
+        boost::filesystem::path from;
+
+        for (std::string fn : fromFileNames) {
+            if (filesystem::exists(GetDefaultDataDir("HUZU") / fn)) {
+                from = GetDefaultDataDir("HUZU") / fn;
+                break;
+            }
+        }
+
+        /* Did we find a wallet to import ? */
+        if (!from.empty()) {
+            uiInterface.InitMessage(status);
+            boost::filesystem::copy_file(from, to);
+        }
+    }
 }
 
 std::string HelpMessage(HelpMessageMode mode)
@@ -1550,6 +1574,11 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         mempool.ReadFeeEstimates(est_filein);
     fFeeEstimatesInitialized = true;
 
+    std::string strMasternodeFile = GetArg("-mnconf", "masternode.conf");
+    std::string status = _("Importing masternode configuration from the old HUZU wallet...");
+    std::vector<std::string> fileNames = {strMasternodeFile, "masternode.conf"};
+    ImportLegacyFile(fileNames, strMasternodeFile, status);
+
 // ********************************************************* Step 8: load wallet
 #ifdef ENABLE_WALLET
     if (fDisableWallet) {
@@ -1576,6 +1605,10 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
         uiInterface.InitMessage(_("Loading wallet..."));
         fVerifyingBlocks = true;
+
+        std::string status = _("Importing wallet data file from the old HUZU wallet...");
+        std::vector<std::string> fileNames = {strWalletFile, "wallet.dat"};
+        ImportLegacyFile(fileNames, strWalletFile, status);
 
         nStart = GetTimeMillis();
         bool fFirstRun = true;
