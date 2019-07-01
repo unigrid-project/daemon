@@ -221,7 +221,7 @@ fi
 # Add a "v" if no -c
 if [[ $commit = false ]]
 then
-	COMMIT="UNIGRID-Core_${VERSION}"
+        COMMIT="${VERSION}"
 fi
 echo ${COMMIT}
 
