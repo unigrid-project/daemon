@@ -19,10 +19,10 @@ TIME=""
 
 if [ -e "$(which git 2>/dev/null)" -a "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
     # clean 'dirty' status of touched files that haven't been modified
-    git diff >/dev/null 2>/dev/null 
+    git diff >/dev/null 2>/dev/null
 
     # get a string like "v0.6.0-66-g59887e8-dirty"
-    DESC="$(git describe --tags --abbrev=5 2>/dev/null)"
+    DESC="$(git describe --tags --long --abbrev=5 2>/dev/null)"
     DESC=${DESC%???????}
     DESC=$(echo $DESC | tr - .)
 
