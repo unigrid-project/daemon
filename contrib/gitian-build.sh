@@ -227,7 +227,7 @@ then
     git clone https://github.com/devrandom/gitian-builder.git
     pushd ./gitian-builder
     sudo apt-get install lxc
-    bin/make-base-vm --suite trusty --arch amd64 --lxc
+    bin/make-base-vm --suite bionic --arch amd64 --lxc
     popd
 fi
 
