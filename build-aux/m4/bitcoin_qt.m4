@@ -12,7 +12,6 @@ AC_DEFUN([BITCOIN_QT_FAIL],[
       AC_MSG_WARN([$1; unigrid-qt frontend will not be built])
     fi
     bitcoin_enable_qt=no
-    bitcoin_enable_qt_test=no
   else
     AC_MSG_ERROR([$1])
   fi
@@ -87,7 +86,7 @@ dnl Inputs: $2: If $1 is "yes" and --with-gui=auto, which qt version should be
 dnl         tried first.
 dnl Outputs: See _BITCOIN_QT_FIND_LIBS_*
 dnl Outputs: Sets variables for all qt-related tools.
-dnl Outputs: bitcoin_enable_qt, bitcoin_enable_qt_dbus, bitcoin_enable_qt_test
+dnl Outputs: bitcoin_enable_qt, bitcoin_enable_qt_dbus
 AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   use_pkgconfig=$1
 
@@ -231,10 +230,6 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   AC_MSG_CHECKING(whether to build ]AC_PACKAGE_NAME[ GUI)
   BITCOIN_QT_CHECK([
     bitcoin_enable_qt=yes
-    bitcoin_enable_qt_test=yes
-    if test "x$have_qt_test" = xno; then
-      bitcoin_enable_qt_test=no
-    fi
     bitcoin_enable_qt_dbus=no
     if test "x$use_dbus" != xno && test "x$have_qt_dbus" = xyes; then
       bitcoin_enable_qt_dbus=yes
@@ -256,8 +251,6 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   AC_SUBST(QT_LDFLAGS)
   AC_SUBST(QT_DBUS_INCLUDES)
   AC_SUBST(QT_DBUS_LIBS)
-  AC_SUBST(QT_TEST_INCLUDES)
-  AC_SUBST(QT_TEST_LIBS)
   AC_SUBST(QT_SELECT, qt5)
   AC_SUBST(MOC_DEFS)
 ])
@@ -426,7 +419,6 @@ dnl         first.
 dnl Inputs: $1: If bitcoin_qt_want_version is "auto", check for this version
 dnl         first.
 dnl Outputs: All necessary QT_* variables are set.
-dnl Outputs: have_qt_test and have_qt_dbus are set (if applicable) to yes|no.
 AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITH_PKGCONFIG],[
   m4_ifdef([PKG_CHECK_MODULES],[
     QT_LIB_PREFIX=Qt5
@@ -440,7 +432,6 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITH_PKGCONFIG],[
       fi
     ])
     BITCOIN_QT_CHECK([
-      PKG_CHECK_MODULES([QT_TEST], [${QT_LIB_PREFIX}Test], [QT_TEST_INCLUDES="$QT_TEST_CFLAGS"; have_qt_test=yes], [have_qt_test=no])
       if test "x$use_dbus" != xno; then
         PKG_CHECK_MODULES([QT_DBUS], [${QT_LIB_PREFIX}DBus], [QT_DBUS_INCLUDES="$QT_DBUS_CFLAGS"; have_qt_dbus=yes], [have_qt_dbus=no])
       fi
@@ -454,7 +445,6 @@ dnl from the discovered headers.
 dnl Inputs: bitcoin_qt_want_version (from --with-gui=). The version to use.
 dnl         If "auto", the version will be discovered by _BITCOIN_QT_CHECK_QT5.
 dnl Outputs: All necessary QT_* variables are set.
-dnl Outputs: have_qt_test and have_qt_dbus are set (if applicable) to yes|no.
 AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   TEMP_CPPFLAGS="$CPPFLAGS"
   TEMP_CXXFLAGS="$CXXFLAGS"
@@ -512,9 +502,6 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
     if test "x$qt_lib_path" != x; then
       LIBS="-L$qt_lib_path"
     fi
-    AC_CHECK_LIB([${QT_LIB_PREFIX}Test],      [main],, have_qt_test=no)
-    AC_CHECK_HEADER([QTest],, have_qt_test=no)
-    QT_TEST_LIBS="$LIBS"
     if test "x$use_dbus" != xno; then
       LIBS=
       if test "x$qt_lib_path" != x; then
