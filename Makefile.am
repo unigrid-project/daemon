@@ -54,7 +54,7 @@ WINDOWS_PACKAGING = $(top_srcdir)/share/pixmaps/bitcoin.ico \
   $(top_srcdir)/share/pixmaps/nsis-wizard.bmp \
   $(top_srcdir)/doc/README_windows.txt
 
-LINUX_PACKAGING = $(top_srcdir)/share/pixmaps/unigrid16.xpm \
+LINUX_PACKAGING = $(top_srcdir)/share/pixmaps/bitcoin16.xpm \
   $(top_srcdir)/share/pixmaps/bitcoin32.xpm \
   $(top_srcdir)/share/pixmaps/bitcoin128.png
 
