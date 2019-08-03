@@ -104,8 +104,13 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("protocolversion", PROTOCOL_VERSION));
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
+        CAmount balance = pwalletMain->GetBalance();
+        CAmount lockedBalance = pwalletMain->GetLockedCoins();
+
         obj.push_back(Pair("walletversion", pwalletMain->GetVersion()));
-        obj.push_back(Pair("balance", ValueFromAmount(pwalletMain->GetBalance())));
+        obj.push_back(Pair("balance", ValueFromAmount(balance)));
+        obj.push_back(Pair("lockedbalance", ValueFromAmount(lockedBalance)));
+        obj.push_back(Pair("totalbalance", ValueFromAmount(balance + lockedBalance)));
         obj.push_back(Pair("zerocoinbalance", ValueFromAmount(pwalletMain->GetZerocoinBalance(true))));
     }
 #endif
