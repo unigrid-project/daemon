@@ -256,29 +256,34 @@ int64_t CMasternode::SecondsSincePayment()
 int64_t CMasternode::GetLastPaid()
 {
     CBlockIndex* pindexPrev = chainActive.Tip();
-    if (pindexPrev == NULL) return false;
+
+    if (pindexPrev == NULL) {
+        return false;
+    }
 
     CScript mnpayee;
     mnpayee = GetScriptForDestination(pubKeyCollateralAddress.GetID());
-
     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
     ss << vin;
     ss << sigTime;
     uint256 hash = ss.GetHash();
 
-    // use a deterministic offset to break a tie -- 2.5 minutes
+    // Use a deterministic offset to break a tie -- 2.5 minutes
     int64_t nOffset = hash.GetCompact(false) % 150;
-
-    if (chainActive.Tip() == NULL) return false;
-
     const CBlockIndex* BlockReading = chainActive.Tip();
+
+    if (BlockReading == NULL) {
+        return false;
+    }
 
     int nMnCount = mnodeman.CountEnabled() * 1.25;
     int n = 0;
+
     for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++) {
         if (n >= nMnCount) {
             return 0;
         }
+
         n++;
 
         if (masternodePayments.mapMasternodeBlocks.count(BlockReading->nHeight)) {
@@ -295,6 +300,7 @@ int64_t CMasternode::GetLastPaid()
             assert(BlockReading);
             break;
         }
+
         BlockReading = BlockReading->pprev;
     }
 
@@ -464,17 +470,18 @@ bool CMasternodeBroadcast::Create(CTxIn txin, CService service, CKey keyCollater
 
 bool CMasternodeBroadcast::CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext)
 {
+    /*
     CService service = CService(strService);
     int nDefaultPort = Params().GetDefaultPort();
 
-    // if (service.GetPort() != nDefaultPort) {
-    //     strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.",
-    //                                     service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
-    //     LogPrint("masternode", "%s - %s\n", strContext, strErrorRet);
-    //     return false;
-    // }
-
-    return true;
+    if (service.GetPort() != nDefaultPort) {
+        strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.",
+                                service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
+        LogPrint("masternode", "%s - %s\n", strContext, strErrorRet);
+        return false;
+    }
+    */
+    return true; //TODO: We will require a specific port in the future
 }
 
 bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
@@ -593,6 +600,7 @@ bool CMasternodeBroadcast::CheckInputsAndAdd(int& nDoS)
 
     {
         TRY_LOCK(cs_main, lockMain);
+
         if (!lockMain) {
             // not mnb fault, let it to be checked again later
             mnodeman.mapSeenMasternodeBroadcast.erase(GetHash());
@@ -623,6 +631,7 @@ bool CMasternodeBroadcast::CheckInputsAndAdd(int& nDoS)
     CTransaction tx2;
     GetTransaction(vin.prevout.hash, tx2, hashBlock, true);
     BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
+
     if (mi != mapBlockIndex.end() && (*mi).second) {
         CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 1000 UNIGRID tx -> 1 confirmation
         CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + MASTERNODE_MIN_CONFIRMATIONS - 1]; // block where tx got MASTERNODE_MIN_CONFIRMATIONS
@@ -723,7 +732,6 @@ CMasternodePing::CMasternodePing(CTxIn& newVin)
     sigTime = GetAdjustedTime();
     vchSig = std::vector<unsigned char>();
 }
-
 
 bool CMasternodePing::Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode)
 {
@@ -829,8 +837,8 @@ bool CMasternodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool fChec
         //nDos = 1; //disable, this is happening frequently and causing banned peers
         return false;
     }
-    LogPrint("masternode", "CMasternodePing::CheckAndUpdate - Couldn't find compatible Masternode entry, vin: %s\n", vin.prevout.hash.ToString());
 
+    LogPrint("masternode", "CMasternodePing::CheckAndUpdate - Couldn't find compatible Masternode entry, vin: %s\n", vin.prevout.hash.ToString());
     return false;
 }
 
