@@ -182,7 +182,7 @@ public:
     //! zerocoin specific fields
     std::map<libzerocoin::CoinDenomination, int64_t> mapZerocoinSupply;
     std::vector<libzerocoin::CoinDenomination> vMintDenominationsInBlock;
-    
+
     void SetNull()
     {
         phashBlock = NULL;
@@ -443,24 +443,31 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
     {
-        if (!(nType & SER_GETHASH))
+        if (!(nType & SER_GETHASH)) {
             READWRITE(VARINT(nVersion));
+        }
 
         READWRITE(VARINT(nHeight));
         READWRITE(VARINT(nStatus));
         READWRITE(VARINT(nTx));
-        if (nStatus & (BLOCK_HAVE_DATA | BLOCK_HAVE_UNDO))
-            READWRITE(VARINT(nFile));
-        if (nStatus & BLOCK_HAVE_DATA)
-            READWRITE(VARINT(nDataPos));
-        if (nStatus & BLOCK_HAVE_UNDO)
-            READWRITE(VARINT(nUndoPos));
 
+        if (nStatus & (BLOCK_HAVE_DATA | BLOCK_HAVE_UNDO)) {
+            READWRITE(VARINT(nFile));
+        }
+
+        if (nStatus & BLOCK_HAVE_DATA) {
+            READWRITE(VARINT(nDataPos));
+        }
+
+        if (nStatus & BLOCK_HAVE_UNDO) {
+            READWRITE(VARINT(nUndoPos));
+        }
 
         READWRITE(nMint);
         READWRITE(nMoneySupply);
         READWRITE(nFlags);
         READWRITE(nStakeModifier);
+
         if (IsProofOfStake()) {
             READWRITE(prevoutStake);
             READWRITE(nStakeTime);
@@ -478,6 +485,7 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nNonce);
+
         if(this->nVersion > 3) {
             READWRITE(nAccumulatorCheckpoint);
             READWRITE(mapZerocoinSupply);
@@ -505,8 +513,7 @@ public:
         std::string str = "CDiskBlockIndex(";
         str += CBlockIndex::ToString();
         str += strprintf("\n                hashBlock=%s, hashPrev=%s)",
-            GetBlockHash().ToString(),
-            hashPrev.ToString());
+                         GetBlockHash().ToString(), hashPrev.ToString());
         return str;
     }
 };

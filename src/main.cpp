@@ -4663,7 +4663,6 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
 
     int nHeight = pindex->nHeight;
 
-
     if (isPoS) {
         LOCK(cs_main);
 
@@ -4676,10 +4675,10 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             CBlock bl;
             // Go backwards on the forked chain up to the split
             do {
-                if(!ReadBlockFromDisk(bl, prev))
+                if(!ReadBlockFromDisk(bl, prev)) {
                     // Previous block not on disk
                     return error("%s: previous block %s not on disk", __func__, prev->GetBlockHash().GetHex());
-
+                }
 
                 // Loop through every input from said block
                 for (CTransaction t : bl.vtx) {
@@ -4689,8 +4688,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                             // if it's already spent
                             if (stakeIn.prevout == in.prevout) {
                                 // reject the block
-                                return state.DoS(100,
-                                                 error("%s: input already spent on a previous block", __func__));
+                                return state.DoS(100, error("%s: input already spent on a previous block", __func__));
                             }
                         }
                     }
