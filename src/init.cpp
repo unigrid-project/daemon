@@ -17,6 +17,7 @@
 #include "activemasternode.h"
 #include "addrman.h"
 #include "amount.h"
+#include "blacklistcache.h"
 #include "checkpoints.h"
 #include "compat/sanity.h"
 #include "httpserver.h"
@@ -106,6 +107,7 @@ enum BindFlags {
 
 static const char* FEE_ESTIMATES_FILENAME = "fee_estimates.dat";
 CClientUIInterface uiInterface;
+BlacklistCache blacklistCache;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -937,7 +939,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         nScriptCheckThreads = MAX_SCRIPTCHECK_THREADS;
 
     fServer = GetBoolArg("-server", false);
-    setvbuf(stdout, NULL, _IOLBF, 0); /// ***TODO*** do we still need this after -printtoconsole is gone?
+    setvbuf(stdout, NULL, _IOLBF, 0); // TODO: do we still need this after -printtoconsole is gone?
 
     // Staking needs a CWallet instance, so make sure wallet is enabled
 #ifdef ENABLE_WALLET
@@ -1590,6 +1592,33 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (!est_filein.IsNull())
         mempool.ReadFeeEstimates(est_filein);
     fFeeEstimatesInitialized = true;
+
+// ********************************************************* Step 7.5: load blacklist cache
+
+    {
+        uiInterface.InitMessage(_("Loading blacklist cache..."));
+        blacklistCache.Initialize();
+        BlacklistCache::ReadResult readResult = blacklistCache.Read();
+
+        if (readResult == BlacklistCache::FileError) {
+            LogPrintf("Missing blacklist cache file - blacklistcache.dat, should we recreate it?\n");
+            if (blacklistCache.HasReferenceList()) {
+                LogPrintf("... yes, the reference block specified by the blacklist spork is synced up.\n");
+                blacklistCache.SumBlacklistedAmounts();
+                blacklistCache.Write();
+            } else {
+                LogPrintf("... not yet, we do not yet have the reference block specified by the blacklist spork.\n");
+            }
+        } else if (readResult != BlacklistCache::Ok) {
+            LogPrintf("Error reading blacklistcache.dat: ");
+
+            if (readResult == BlacklistCache::IncorrectFormat) {
+                LogPrintf("magic number is ok but data has invalid format\n");
+            } else {
+                LogPrintf("file format is unknown or invalid, please fix it manually\n");
+            }
+        }
+	}
 
 // ********************************************************* Step 8: load wallet
 #ifdef ENABLE_WALLET

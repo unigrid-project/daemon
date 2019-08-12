@@ -1,4 +1,5 @@
 # Copyright (c) 2013-2016 The Bitcoin Core developers
+# Copyright (c) 2018-2019 The UNIGRID organization
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -88,6 +89,7 @@ BITCOIN_CORE_H = \
   base58.h \
   bip38.h \
   bloom.h \
+  blacklistcache.h \
   blocksignature.h \
   chain.h \
   chainparams.h \
@@ -200,6 +202,7 @@ libbitcoin_server_a_SOURCES = \
   addrman.cpp \
   alert.cpp \
   bloom.cpp \
+  blacklistcache.cpp \
   blocksignature.cpp \
   chain.cpp \
   checkpoints.cpp \

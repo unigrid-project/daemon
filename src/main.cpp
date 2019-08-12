@@ -12,6 +12,7 @@
 #include "accumulators.h"
 #include "addrman.h"
 #include "alert.h"
+#include "blacklistcache.h"
 #include "blocksignature.h"
 #include "chainparams.h"
 #include "checkpoints.h"
@@ -4715,6 +4716,35 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             return error("AcceptBlock() : ReceivedBlockTransactions failed");
     } catch (std::runtime_error& e) {
         return state.Abort(std::string("System error: ") + e.what());
+    }
+
+    // Update blacklist cache
+    if (blacklistCache.HasReferenceList()) {
+        if (blacklistCache.IsDirty()) {
+            LogPrintf("Detected dirty blacklist cache. Refreshing...\n");
+            blacklistCache.RefreshReferenceList();
+            blacklistCache.SumBlacklistedAmounts();
+            LogPrintf("Blacklist cache updated.\n");
+        } else {
+            CAmount sum = blacklistCache.GetSum();
+            blacklistCache.Add(blacklistCache.SumBlacklistedAmounts(block));
+
+            if (sum != blacklistCache.GetSum()) {
+                LogPrintf("Detected new blacklist cache sum. Refreshing file...\n");
+                blacklistCache.Write();
+            }
+        }
+    } else if (IsSporkActive(SPORK_18_BLACKLIST_BLOCK_REFERENCE)) {
+        uint64_t sporkBlockValue = (GetSporkValue(SPORK_18_BLACKLIST_BLOCK_REFERENCE) >> 16) & 0xffffffffffff; // 48-bit
+
+        // This means we just got the reference block!
+        if (chainActive[sporkBlockValue]) {
+            LogPrintf("Reference blacklist block received. Refreshing cache...\n");
+            blacklistCache.RefreshReferenceList();
+            blacklistCache.SumBlacklistedAmounts();
+            blacklistCache.Write();
+            LogPrintf("Blacklist cache created.\n");
+        }
     }
 
     return true;

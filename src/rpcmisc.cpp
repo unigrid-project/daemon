@@ -23,28 +23,13 @@
 #endif
 
 #include <stdint.h>
-
 #include <boost/assign/list_of.hpp>
-
 #include <univalue.h>
 
 using namespace boost;
 using namespace boost::assign;
 using namespace std;
 
-/**
- * @note Do not add or change anything in the information returned by this
- * method. `getinfo` exists for backwards-compatibility only. It combines
- * information from wildly different sources in the program, which is a mess,
- * and is thus planned to be deprecated eventually.
- *
- * Based on the source of the information, new information should be added to:
- * - `getblockchaininfo`,
- * - `getnetworkinfo` or
- * - `getwalletinfo`
- *
- * Or alternatively, create a specific query method for the information.
- **/
 UniValue getinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
@@ -127,11 +112,19 @@ UniValue getinfo(const UniValue& params, bool fHelp)
         return obj;
     }
 
-    obj.push_back(Pair("moneysupply",ValueFromAmount(chainActive.Tip()->nMoneySupply)));
+    CAmount moneySupply = chainActive.Tip()->nMoneySupply;
+    CAmount blacklistedSum = blacklistCache.GetSum();
+
+    obj.push_back(Pair("moneysupply",ValueFromAmount(moneySupply)));
+    obj.push_back(Pair("blacklisted",ValueFromAmount(blacklistedSum)));
+    obj.push_back(Pair("circulatingsupply",ValueFromAmount(moneySupply - blacklistedSum)));
+
     UniValue zpivObj(UniValue::VOBJ);
+
     for (auto denom : libzerocoin::zerocoinDenomList) {
         zpivObj.push_back(Pair(to_string(denom), ValueFromAmount(chainActive.Tip()->mapZerocoinSupply.at(denom) * (denom*COIN))));
     }
+
     zpivObj.push_back(Pair("total", ValueFromAmount(chainActive.Tip()->GetZerocoinSupply())));
     obj.push_back(Pair("zUNIGRIDsupply", zpivObj));
 
