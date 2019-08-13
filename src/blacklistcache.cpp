@@ -112,8 +112,8 @@ void BlacklistCache::SumBlacklistedAmounts()
         RefreshReferenceList();
         CBlock block;
 
-        for (BlockMap::iterator it = mapBlockIndex.begin(); it != mapBlockIndex.end(); it++) {
-            ReadBlockFromDisk(block, it->second);
+        for (int i = 1; i < chainActive.Height(); i++) {
+            ReadBlockFromDisk(block, chainActive[i]);
             {
                 LOCK(cs_blacklistcache);
                 sum += SumBlacklistedAmounts(block);
