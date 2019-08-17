@@ -28,12 +28,12 @@ bool BlacklistCache::IsInitialized()
 
 bool BlacklistCache::HasReferenceList()
 {
-    return !bannedPubkeys.empty();
+    return !bannedAddresses.empty();
 }
 
 void BlacklistCache::RefreshReferenceList()
 {
-    bannedPubkeys.clear();
+    bannedAddresses.clear();
 
     if (IsSporkActive(SPORK_18_BLACKLIST_BLOCK_REFERENCE)) {
         CBlock referenceBlock;
@@ -53,7 +53,9 @@ void BlacklistCache::RefreshReferenceList()
                         CScript devScriptPubKey = CScript() << ParseHex(Params().ActiveDevPubKey().c_str()) << OP_CHECKSIG;
 
                         if (referenceBlock.vtx[i].vout[j].nValue > 0 && devScriptPubKey != referenceBlock.vtx[i].vout[j].scriptPubKey) {
-                            bannedPubkeys.insert(referenceBlock.vtx[i].vout[j].scriptPubKey);
+                            CTxDestination address;
+                            ExtractDestination(referenceBlock.vtx[i].vout[j].scriptPubKey, address);
+                            bannedAddresses.insert(CBitcoinAddress(address));
                         }
                     }
                 }
@@ -80,8 +82,11 @@ CAmount BlacklistCache::SumBlacklistedAmounts(CBlock& block)
     for (unsigned int i = 0; i < block.vtx.size(); i++) {
         /* receving addresses */
         for (unsigned int j = 0; j < block.vtx[i].vout.size(); j++) {
-            if (bannedPubkeys.find(block.vtx[i].vout[j].scriptPubKey) != bannedPubkeys.end()) {
-                amount += block.vtx[i].vout[j].nValue;
+            CTxDestination address;
+            ExtractDestination(block.vtx[i].vout[j].scriptPubKey, address);
+
+            if (bannedAddresses.count(address) == 1) {
+                    amount += block.vtx[i].vout[j].nValue;
             }
         }
 
@@ -91,8 +96,11 @@ CAmount BlacklistCache::SumBlacklistedAmounts(CBlock& block)
             uint256 prevoutHashBlock;
 
             if (GetTransaction(block.vtx[i].vin[j].prevout.hash, prevoutTx, prevoutHashBlock)) {
-                if (bannedPubkeys.find(prevoutTx.vout[block.vtx[i].vin[j].prevout.n].scriptPubKey) != bannedPubkeys.end()) {
-               	    amount -= prevoutTx.vout[block.vtx[i].vin[j].prevout.n].nValue;
+                CTxDestination address;
+                ExtractDestination(prevoutTx.vout[block.vtx[i].vin[j].prevout.n].scriptPubKey, address);
+
+                if (bannedAddresses.count(address) == 1) {
+                    amount -= prevoutTx.vout[block.vtx[i].vin[j].prevout.n].nValue;
                 }
             }
         }

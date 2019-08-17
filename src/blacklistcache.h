@@ -7,12 +7,13 @@
 
 #include <boost/filesystem.hpp>
 #include "amount.h"
+#include "base58.h"
 #include "primitives/block.h"
 
 class BlacklistCache
 {
 private:
-    std::set<CScript> bannedPubkeys;
+    std::set<CBitcoinAddress> bannedAddresses;
     boost::filesystem::path pathDB;
     std::string strMagicMessage;
     CAmount sum;
