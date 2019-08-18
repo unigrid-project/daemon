@@ -113,11 +113,13 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     }
 
     CAmount moneySupply = chainActive.Tip()->nMoneySupply;
-    CAmount blacklistedSum = blacklistCache.GetSum();
+    CAmount blacklistedSum = supplyCache.GetBlackListedSum();
+    CAmount governanceSum = supplyCache.GetGovernanceSum();
 
     obj.push_back(Pair("moneysupply",ValueFromAmount(moneySupply)));
     obj.push_back(Pair("blacklisted",ValueFromAmount(blacklistedSum)));
-    obj.push_back(Pair("circulatingsupply",ValueFromAmount(moneySupply - blacklistedSum)));
+    obj.push_back(Pair("governance",ValueFromAmount(governanceSum)));
+    obj.push_back(Pair("circulatingsupply",ValueFromAmount(moneySupply - blacklistedSum - governanceSum)));
 
     UniValue zpivObj(UniValue::VOBJ);
 

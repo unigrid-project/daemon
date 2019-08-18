@@ -12,7 +12,6 @@
 #include "accumulators.h"
 #include "addrman.h"
 #include "alert.h"
-#include "blacklistcache.h"
 #include "blocksignature.h"
 #include "chainparams.h"
 #include "checkpoints.h"
@@ -28,6 +27,7 @@
 #include "pow.h"
 #include "spork.h"
 #include "sporkdb.h"
+#include "supplycache.h"
 #include "swifttx.h"
 #include "txdb.h"
 #include "txmempool.h"
@@ -4718,32 +4718,32 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
         return state.Abort(std::string("System error: ") + e.what());
     }
 
-    // Update blacklist cache
-    if (blacklistCache.HasReferenceList()) {
-        if (blacklistCache.IsDirty()) {
-            LogPrintf("Detected dirty blacklist cache. Refreshing...\n");
-            blacklistCache.RefreshReferenceList();
-            blacklistCache.SumBlacklistedAmounts();
-            LogPrintf("Blacklist cache updated.\n");
+    // Update supply cache
+    if (supplyCache.HasReferenceList()) {
+        if (supplyCache.IsDirty()) {
+            LogPrintf("Detected dirty supply cache. Refreshing...\n");
+            supplyCache.RefreshReferenceBlackList();
+            supplyCache.SumNonCirculatingAmounts();
+            LogPrintf("Supply cache updated.\n");
         } else {
-            CAmount sum = blacklistCache.GetSum();
-            blacklistCache.Add(blacklistCache.SumBlacklistedAmounts(block));
+            CAmount blackListedAmount = 0;
+            CAmount governanceAmount = 0;
 
-            if (sum != blacklistCache.GetSum()) {
-                LogPrintf("Detected new blacklist cache sum. Refreshing file...\n");
-                blacklistCache.Write();
-            }
+            supplyCache.SumNonCirculatingAmounts(block, blackListedAmount, governanceAmount);
+
+            supplyCache.AddBlackListed(blackListedAmount);
+            supplyCache.AddGovernance(governanceAmount);
+            supplyCache.Write();
         }
     } else if (IsSporkActive(SPORK_18_BLACKLIST_BLOCK_REFERENCE)) {
         uint64_t sporkBlockValue = (GetSporkValue(SPORK_18_BLACKLIST_BLOCK_REFERENCE) >> 16) & 0xffffffffffff; // 48-bit
 
         // This means we just got the reference block!
         if (chainActive[sporkBlockValue]) {
-            LogPrintf("Reference blacklist block received. Refreshing cache...\n");
-            blacklistCache.RefreshReferenceList();
-            blacklistCache.SumBlacklistedAmounts();
-            blacklistCache.Write();
-            LogPrintf("Blacklist cache created.\n");
+            LogPrintf("Reference blacklist block received. Refreshing supply cache...\n");
+            supplyCache.SumNonCirculatingAmounts();
+            supplyCache.Write();
+            LogPrintf("Supply cache created or refreshed\n");
         }
     }
 

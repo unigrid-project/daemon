@@ -17,7 +17,6 @@
 #include "activemasternode.h"
 #include "addrman.h"
 #include "amount.h"
-#include "blacklistcache.h"
 #include "checkpoints.h"
 #include "compat/sanity.h"
 #include "httpserver.h"
@@ -36,6 +35,7 @@
 #include "scheduler.h"
 #include "spork.h"
 #include "sporkdb.h"
+#include "supplycache.h"
 #include "txdb.h"
 #include "torcontrol.h"
 #include "ui_interface.h"
@@ -107,7 +107,7 @@ enum BindFlags {
 
 static const char* FEE_ESTIMATES_FILENAME = "fee_estimates.dat";
 CClientUIInterface uiInterface;
-BlacklistCache blacklistCache;
+SupplyCache supplyCache;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1593,26 +1593,21 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         mempool.ReadFeeEstimates(est_filein);
     fFeeEstimatesInitialized = true;
 
-// ********************************************************* Step 7.5: load blacklist cache
+// ********************************************************* Step 7.5: load supply cache
 
     {
-        uiInterface.InitMessage(_("Loading blacklist cache..."));
-        blacklistCache.Initialize();
-        BlacklistCache::ReadResult readResult = blacklistCache.Read();
+        uiInterface.InitMessage(_("Loading supply cache..."));
+        supplyCache.Initialize();
+        SupplyCache::ReadResult readResult = supplyCache.Read();
 
-        if (readResult == BlacklistCache::FileError) {
-            LogPrintf("Missing blacklist cache file - blacklistcache.dat, should we recreate it?\n");
-            if (blacklistCache.HasReferenceList()) {
-                LogPrintf("... yes, the reference block specified by the blacklist spork is synced up.\n");
-                blacklistCache.SumBlacklistedAmounts();
-                blacklistCache.Write();
-            } else {
-                LogPrintf("... not yet, we do not yet have the reference block specified by the blacklist spork.\n");
-            }
-        } else if (readResult != BlacklistCache::Ok) {
-            LogPrintf("Error reading blacklistcache.dat: ");
+        if (readResult == SupplyCache::FileError) {
+            LogPrintf("Missing supply cache file - supplycache.dat, will try to recreate it\n");
+            supplyCache.SumNonCirculatingAmounts();
+            supplyCache.Write();
+        } else if (readResult != SupplyCache::Ok) {
+            LogPrintf("Error reading supplycache.dat: ");
 
-            if (readResult == BlacklistCache::IncorrectFormat) {
+            if (readResult == SupplyCache::IncorrectFormat) {
                 LogPrintf("magic number is ok but data has invalid format\n");
             } else {
                 LogPrintf("file format is unknown or invalid, please fix it manually\n");

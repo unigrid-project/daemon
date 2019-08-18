@@ -8,7 +8,7 @@
 #ifndef BITCOIN_INIT_H
 #define BITCOIN_INIT_H
 
-#include "blacklistcache.h"
+#include "supplycache.h"
 #include <string>
 #include <vector>
 
@@ -23,7 +23,7 @@ class thread_group;
 
 extern CWallet* pwalletMain;
 extern CzUNIGRIDWallet* zwalletMain;
-extern BlacklistCache blacklistCache;
+extern SupplyCache supplyCache;
 
 void StartShutdown();
 bool ShutdownRequested();

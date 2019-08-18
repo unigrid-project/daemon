@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "blacklistcache.h"
+#include "supplycache.h"
 #include "primitives/block.h"
 #include "clientversion.h"
 #include "hash.h"
@@ -11,29 +11,41 @@
 #include "util.h"
 #include "uint256.h"
 
-CCriticalSection cs_blacklistcache;
+CCriticalSection cs_supplycache;
 
-void BlacklistCache::Initialize()
+void SupplyCache::Initialize()
 {
-	LOCK(cs_blacklistcache);
-    pathDB = GetDataDir() / "blacklistcache.dat";
-    strMagicMessage = "BlacklistCache";
-    RefreshReferenceList();
+	LOCK(cs_supplycache);
+    pathDB = GetDataDir() / "supplycache.dat";
+    strMagicMessage = "SupplyCache";
+    RefreshReferenceBlackList();
+
+    CTxDestination oldDevAddress;
+    ExtractDestination(CScript() << ParseHex(Params().OldDevPubKey().c_str()) << OP_CHECKSIG, oldDevAddress);
+
+    CTxDestination devAddress;
+    ExtractDestination(CScript() << ParseHex(Params().DevPubKey().c_str()) << OP_CHECKSIG, devAddress);
+
+    governanceAddresses.insert(CBitcoinAddress(oldDevAddress));
+    governanceAddresses.insert(CBitcoinAddress(devAddress));
+
+    // Extra
+    governanceAddresses.insert(CBitcoinAddress("H7bEB2nv8PADro1iLmdrCBRH7GwP4anUXi"));
 }
 
-bool BlacklistCache::IsInitialized()
+bool SupplyCache::IsInitialized()
 {
     return !pathDB.empty();
 }
 
-bool BlacklistCache::HasReferenceList()
+bool SupplyCache::HasReferenceList()
 {
-    return !bannedAddresses.empty();
+    return !blacklistedAddresses.empty();
 }
 
-void BlacklistCache::RefreshReferenceList()
+void SupplyCache::RefreshReferenceBlackList()
 {
-    bannedAddresses.clear();
+    blacklistedAddresses.clear();
 
     if (IsSporkActive(SPORK_18_BLACKLIST_BLOCK_REFERENCE)) {
         CBlock referenceBlock;
@@ -55,7 +67,7 @@ void BlacklistCache::RefreshReferenceList()
                         if (referenceBlock.vtx[i].vout[j].nValue > 0 && devScriptPubKey != referenceBlock.vtx[i].vout[j].scriptPubKey) {
                             CTxDestination address;
                             ExtractDestination(referenceBlock.vtx[i].vout[j].scriptPubKey, address);
-                            bannedAddresses.insert(CBitcoinAddress(address));
+                            blacklistedAddresses.insert(CBitcoinAddress(address));
                         }
                     }
                 }
@@ -64,29 +76,41 @@ void BlacklistCache::RefreshReferenceList()
     }
 }
 
-void BlacklistCache::Add(CAmount amount)
+void SupplyCache::AddBlackListed(CAmount amount)
 {
-	LOCK(cs_blacklistcache);
-	sum += amount;
+	LOCK(cs_supplycache);
+	blackListedSum += amount;
 }
 
-CAmount BlacklistCache::GetSum()
+CAmount SupplyCache::GetBlackListedSum()
 {
-    return sum;
+    return blackListedSum;
 }
 
-CAmount BlacklistCache::SumBlacklistedAmounts(CBlock& block)
+void SupplyCache::AddGovernance(CAmount amount)
 {
-    CAmount amount = 0;
+	LOCK(cs_supplycache);
+	governanceSum += amount;
+}
 
+CAmount SupplyCache::GetGovernanceSum()
+{
+    return governanceSum;
+}
+
+void SupplyCache::SumNonCirculatingAmounts(CBlock& block, CAmount& blackListedAmount, CAmount& governanceAmount)
+{
     for (unsigned int i = 0; i < block.vtx.size(); i++) {
         /* receving addresses */
         for (unsigned int j = 0; j < block.vtx[i].vout.size(); j++) {
             CTxDestination address;
             ExtractDestination(block.vtx[i].vout[j].scriptPubKey, address);
 
-            if (bannedAddresses.count(address) == 1) {
-                    amount += block.vtx[i].vout[j].nValue;
+            if (IsSporkActive(SPORK_18_BLACKLIST_BLOCK_REFERENCE) &&
+                blacklistedAddresses.count(address) == 1) {
+                blackListedAmount += block.vtx[i].vout[j].nValue;
+            } else if (governanceAddresses.count(address) == 1) {
+                governanceAmount += block.vtx[i].vout[j].nValue;
             }
         }
 
@@ -99,38 +123,38 @@ CAmount BlacklistCache::SumBlacklistedAmounts(CBlock& block)
                 CTxDestination address;
                 ExtractDestination(prevoutTx.vout[block.vtx[i].vin[j].prevout.n].scriptPubKey, address);
 
-                if (bannedAddresses.count(address) == 1) {
-                    amount -= prevoutTx.vout[block.vtx[i].vin[j].prevout.n].nValue;
+                if (IsSporkActive(SPORK_18_BLACKLIST_BLOCK_REFERENCE) &&
+                    blacklistedAddresses.count(address) == 1) {
+                    blackListedAmount -= prevoutTx.vout[block.vtx[i].vin[j].prevout.n].nValue;
+                } else if (governanceAddresses.count(address) == 1) {
+                    governanceAmount -= prevoutTx.vout[block.vtx[i].vin[j].prevout.n].nValue;
                 }
             }
         }
     }
-
-    return amount;
 }
 
-void BlacklistCache::SumBlacklistedAmounts()
+void SupplyCache::SumNonCirculatingAmounts()
 {
     {
-        LOCK(cs_blacklistcache);
-        sum = 0;
+        LOCK(cs_supplycache);
+        blackListedSum = 0;
+        governanceSum = 0;
     }
 
-    if (IsSporkActive(SPORK_18_BLACKLIST_BLOCK_REFERENCE)) {
-        RefreshReferenceList();
-        CBlock block;
+    RefreshReferenceBlackList();
+    CBlock block;
 
-        for (int i = 1; i < chainActive.Height(); i++) {
-            ReadBlockFromDisk(block, chainActive[i]);
-            {
-                LOCK(cs_blacklistcache);
-                sum += SumBlacklistedAmounts(block);
-            }
+    for (int i = 1; i < chainActive.Height(); i++) {
+        ReadBlockFromDisk(block, chainActive[i]);
+        {
+            LOCK(cs_supplycache);
+            SumNonCirculatingAmounts(block, blackListedSum, governanceSum);
         }
-	}
+    }
 }
 
-bool BlacklistCache::IsDirty()
+bool SupplyCache::IsDirty()
 {
 	uint64_t v = 0;
 
@@ -141,15 +165,16 @@ bool BlacklistCache::IsDirty()
 	return v != sporkValue;
 }
 
-bool BlacklistCache::Write()
+bool SupplyCache::Write()
 {
-	LOCK(cs_blacklistcache);
+	LOCK(cs_supplycache);
     int64_t nStart = GetTimeMillis();
 
     // serialize, checksum data up to that point, then append checksum
     CDataStream ssObj(SER_DISK, CLIENT_VERSION);
     ssObj << strMagicMessage;
-    ssObj << sum;
+    ssObj << blackListedSum;
+    ssObj << governanceSum;
     ssObj << sporkValue;
 
     uint256 hash = Hash(ssObj.begin(), ssObj.end());
@@ -170,11 +195,11 @@ bool BlacklistCache::Write()
     }
 
     fileout.fclose();
-    LogPrint("blacklistcache", "written info to blacklistcache.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrint("supplycache", "written info to supplycache.dat  %dms\n", GetTimeMillis() - nStart);
     return true;
 }
 
-BlacklistCache::ReadResult BlacklistCache::Read(CAmount& sum, uint64_t& sporkValue)
+SupplyCache::ReadResult SupplyCache::Read(CAmount& blackListedSum, CAmount& governanceSum, uint64_t& sporkValue)
 {
     int64_t nStart = GetTimeMillis();
 
@@ -225,25 +250,28 @@ BlacklistCache::ReadResult BlacklistCache::Read(CAmount& sum, uint64_t& sporkVal
 
         // verify the message matches predefined one
         if (strMagicMessage != strMagicMessageTmp) {
-            error("%s : invalid blacklist cache magic message", __func__);
+            error("%s : invalid supply cache magic message", __func__);
             return IncorrectMagicMessage;
         }
 
-        ssObj >> sum;
+        ssObj >> blackListedSum;
+        ssObj >> governanceSum;
         ssObj >> sporkValue;
     } catch (std::exception& e) {
         error("%s : deserialize or I/O error - %s", __func__, e.what());
         return IncorrectFormat;
     }
 
-    LogPrint("blacklistcache","Loaded info from blacklistcache.dat  %dms\n", GetTimeMillis() - nStart);
-    LogPrint("blacklistcache","  %ld\n", sum);
+    LogPrint("supplycache","Loaded info from supplycache.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrint("supplycache (blacklisted): ","  %ld\n", blackListedSum);
+    LogPrint("supplycache (governance): ","  %ld\n", governanceSum);
+
     return Ok;
 }
 
-BlacklistCache::ReadResult BlacklistCache::Read()
+SupplyCache::ReadResult SupplyCache::Read()
 {
-	LOCK(cs_blacklistcache);
-	return Read(sum, sporkValue);
+	LOCK(cs_supplycache);
+	return Read(blackListedSum, governanceSum, sporkValue);
 }
 

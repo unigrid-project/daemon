@@ -89,7 +89,7 @@ BITCOIN_CORE_H = \
   base58.h \
   bip38.h \
   bloom.h \
-  blacklistcache.h \
+  supplycache.h \
   blocksignature.h \
   chain.h \
   chainparams.h \
@@ -202,7 +202,7 @@ libbitcoin_server_a_SOURCES = \
   addrman.cpp \
   alert.cpp \
   bloom.cpp \
-  blacklistcache.cpp \
+  supplycache.cpp \
   blocksignature.cpp \
   chain.cpp \
   checkpoints.cpp \
