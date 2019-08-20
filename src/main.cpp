@@ -1951,7 +1951,7 @@ int64_t GetBlockValue(int blockVersion, int nHeight)
     return nSubsidy;
 }
 
-int64_t GetDevFundPayment(int nHeight, int64_t blockValue)
+int64_t GetDevFundPayment(int64_t blockValue)
 {
     int64_t ret_val = 0;
     ret_val = blockValue * 7 / 100; //7% of the reward while POS
@@ -4244,7 +4244,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             if (!tx.vout[1].IsZerocoinMint()) {
                 int nIndex = tx.vout.size() - 2;
                 CAmount nBlockValue = GetBlockValue(block.nVersion, nHeight - 1);
-                CAmount nDevFundValue = GetDevFundPayment(nHeight - 1, nBlockValue);
+                CAmount nDevFundValue = GetDevFundPayment(nBlockValue);
                 CAmount nMasternodeValue = GetMasternodePayment(nHeight - 1, nBlockValue, 0, false);
 
                 if (tx.vout[nIndex].nValue != nMasternodeValue) {

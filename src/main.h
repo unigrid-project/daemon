@@ -251,7 +251,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 
 bool ActivateBestChain(CValidationState& state, CBlock* pblock = NULL, bool fAlreadyChecked = false);
 CAmount GetBlockValue(int blockVersion, int nHeight);
-int64_t GetDevFundPayment(int nHeight, int64_t blockValue);
+int64_t GetDevFundPayment(int64_t blockValue);
 
 /** Create a new block index entry for a given block hash */
 CBlockIndex* InsertBlockIndex(uint256 hash);

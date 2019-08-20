@@ -331,7 +331,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew,
 	CAmount blockValue = GetBlockValue(pindexPrev->nVersion, pindexPrev->nHeight);
 	CAmount masternodePayment = GetMasternodePayment(pindexPrev->nHeight,
 			blockValue, 0, fZUNIGRIDStake);
-	CAmount devFund = GetDevFundPayment(pindexPrev->nHeight, blockValue);
+	CAmount devFund = GetDevFundPayment(blockValue);
 
 	if (hasPayment) {
 		if (fProofOfStake) {
@@ -357,7 +357,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew,
 			txNew.vout[1].scriptPubKey = payee;
 			txNew.vout[1].nValue = masternodePayment;
 			txNew.vout[2].scriptPubKey = CScript() << ParseHex(Params().ActiveDevPubKey().c_str()) << OP_CHECKSIG;
-			txNew.vout[2].nValue = GetDevFundPayment(pindexPrev->nHeight, blockValue);
+			txNew.vout[2].nValue = devFund;
 			txNew.vout[0].nValue = blockValue - masternodePayment - devFund;
 		}
 

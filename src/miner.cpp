@@ -432,10 +432,12 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             } else {
                 txNew.vout.resize(2);
                 txNew.vout[1].scriptPubKey = CScript() << ParseHex(Params().ActiveDevPubKey().c_str()) << OP_CHECKSIG;
-                txNew.vout[1].nValue = GetDevFundPayment(pindexPrev->nHeight, GetBlockValue(pblock->nVersion, nHeight));
 
-                txNew.vout[0].nValue = GetBlockValue(pblock->nVersion, nHeight) + nFees - GetDevFundPayment(
-                    pindexPrev->nHeight, GetBlockValue(pblock->nVersion, nHeight));
+                CAmount nBlockValue = GetBlockValue(pblock->nVersion, nHeight);
+                CAmount nDevFundValue = GetDevFundPayment(nBlockValue);
+
+                txNew.vout[1].nValue = nDevFundValue;
+                txNew.vout[0].nValue = nBlockValue + nFees - nDevFundValue;
             }
         }
 
