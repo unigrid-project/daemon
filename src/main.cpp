@@ -4243,9 +4243,20 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             CTransaction tx = block.vtx[1];
             if (!tx.vout[1].IsZerocoinMint()) {
                 int nIndex = tx.vout.size() - 2;
-                CAmount nBlockValue = GetBlockValue(block.nVersion, nHeight - 1);
-                CAmount nDevFundValue = GetDevFundPayment(nBlockValue);
-                CAmount nMasternodeValue = GetMasternodePayment(nHeight - 1, nBlockValue, 0, false);
+
+                CAmount nBlockValue;
+                CAmount nDevFundValue;
+                CAmount nMasternodeValue;
+
+                if (nHeight >= 600000) {
+                    nBlockValue = GetBlockValue(block.nVersion, nHeight);
+                    nDevFundValue = GetDevFundPayment(nBlockValue);
+                    nMasternodeValue = GetMasternodePayment(nHeight, nBlockValue, 0, false);
+                } else {
+                    nBlockValue = GetBlockValue(block.nVersion, nHeight - 1);
+                    nDevFundValue = GetDevFundPayment(nBlockValue);
+                    nMasternodeValue = GetMasternodePayment(nHeight - 1, nBlockValue, 0, false);
+                }
 
                 if (tx.vout[nIndex].nValue != nMasternodeValue) {
                     return state.DoS(100, error("%s : rejected by check masternode lock-in at %d", __func__, nHeight),

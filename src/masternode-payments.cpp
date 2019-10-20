@@ -328,10 +328,18 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew,
 		}
 	}
 
-	CAmount blockValue = GetBlockValue(pindexPrev->nVersion, pindexPrev->nHeight);
-	CAmount masternodePayment = GetMasternodePayment(pindexPrev->nHeight,
-			blockValue, 0, fZUNIGRIDStake);
-	CAmount devFund = GetDevFundPayment(blockValue);
+    CAmount blockValue;
+    CAmount masternodePayment;
+
+    if (pindexPrev->nHeight >= 599999) {
+        CAmount blockValue = GetBlockValue(pindexPrev->nVersion, pindexPrev->nHeight + 1);
+        CAmount masternodePayment = GetMasternodePayment(pindexPrev->nHeight + 1, blockValue, 0, fZUNIGRIDStake);
+    } else  {
+        CAmount blockValue = GetBlockValue(pindexPrev->nVersion, pindexPrev->nHeight);
+        CAmount masternodePayment = GetMasternodePayment(pindexPrev->nHeight, blockValue, 0, fZUNIGRIDStake);
+    }
+
+    CAmount devFund = GetDevFundPayment(blockValue);
 
 	if (hasPayment) {
 		if (fProofOfStake) {
