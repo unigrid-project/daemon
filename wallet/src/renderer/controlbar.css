@@ -1,0 +1,88 @@
+div.controlbar {
+	display: flex;
+	align-items: center;
+	padding: 10px 6px 6px 12px;
+	background-color: #171717;
+	color: #eee;
+	-webkit-app-region: drag;
+}
+
+div.controlbar > div:last-child {
+	padding-left: 30px;
+	-webkit-app-region: no-drag;
+}
+
+div.controlbar img.piclet {
+	width: 32px;
+	heiht: auto;
+	padding-right: 10px;
+	vertical-align: middle;
+}
+
+div.controlbar > div:first-child {
+	font-size: 12pt;
+	font-weight: 400;
+}
+
+div.controlbar > div > div {
+	display: inline-block;
+}
+
+div.controlbar.nobg {
+	background-color: black;
+}
+
+div.controlbar > div:first-child {
+	flex-grow: 1;
+}
+
+div.controlbar svg {
+	color: #eee;
+}
+
+div.controlbar svg.close {
+	color: #d55;
+}
+
+div.controlbar svg {
+	transition: transform .2s ease-in-out;
+	cursor: pointer;
+	transform: scale(1.15);
+}
+
+div.controlbar svg:hover {
+	transform: scale(1.35);
+}
+
+div.controlbar svg:active {
+	transform: scale(1.15);
+	color: #fff;
+}
+
+div.controlbar svg.extra {
+	transform: scale(1);
+}
+
+div.controlbar svg.extra:hover {
+	transform: scale(1.2);
+}
+
+div.controlbar svg.extra:active {
+	transform: scale(1);
+}
+
+div.controlbar svg.close:active {
+	color: #f77;
+}
+
+div.controlbar svg.spinner {
+	color: #eee;
+}
+
+div.controlbar svg {
+	margin-right: 10px;
+}
+
+div.controlbar > div > svg:last-child {
+	margin-right: 6px;
+}

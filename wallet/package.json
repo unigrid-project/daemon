@@ -1,0 +1,51 @@
+{
+  "name": "swipp-wallet",
+  "version": "2.1.7",
+  "license": "LGPL-3.0-or-later",
+  "scripts": {
+    "dev": "electron-webpack dev",
+    "compile": "electron-webpack",
+    "dist": "yarn compile && electron-builder",
+    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
+  },
+  "dependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.17",
+    "@fortawesome/free-solid-svg-icons": "^5.8.1",
+    "@fortawesome/react-fontawesome": "^0.1.4",
+    "electron-store": "^3.2.0",
+    "empty-promise": "^1.2.0",
+    "javascript-terminal": "^1.0.2",
+    "jquery": "^3.3.1",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
+    "node-json-rpc2": "^1.1.0",
+    "portscanner": "^2.2.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-helmet": "^5.2.1",
+    "react-highlight": "^0.12.0",
+    "react-select": "^2.4.3",
+    "react-terminal-component": "^1.4.0",
+    "roboto-fontface": "^0.10.0",
+    "source-map-support": "^0.5.10",
+    "tcp-port-used": "^1.0.1"
+  },
+  "devDependencies": {
+    "electron": "4.2.4",
+    "electron-builder": "20.43.0",
+    "electron-webpack": "2.6.2",
+    "electron-webpack-eslint": "4.0.2",
+    "webpack": "4.33.0"
+  },
+  "resolutions": {
+    "upath": "^1.0.5"
+  },
+  "build": {
+    "extraFiles": {
+      "from": "../daemon/swippd",
+      "to": "swippd"
+    }
+  }
+}

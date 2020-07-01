@@ -1,0 +1,118 @@
+/*
+ * This file is part of The Swipp Wallet
+ * Copyright (C) 2019 The Swipp developers <info@swippcoin.com>
+ *
+ * The Swipp Wallet is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * The Swipp Wallet is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with The Swipp Wallet. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+p {
+	font-size: 9pt;
+	margin-block-end: 0;
+}
+
+img.logo {
+	width: 120px;
+	height: auto;
+	padding-right: 30px;
+}
+
+html {
+	background-color: black;
+	color: #3a9;
+}
+
+div#app {
+	border-radius: 5px;
+}
+
+div.splash {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: center;
+	height: 154px;
+}
+
+div.splash > div {
+	width: 400px;
+}
+
+div.splash > div > div.error {
+	margin-block-start: 0.83em;
+	font-size: 9pt;
+	width: 100%;
+	align-self: flex-end;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+	color: #d55;
+}
+
+h1 {
+	color: #3dc;
+	font-size: 16pt;
+	margin-block-start: 0;
+	margin-block-end: 0.1em;
+	font-weight: 400;
+}
+
+h2 {
+	font-size: 12pt;
+	color: #3dc;
+	margin-block-start: 0em;
+	font-weight: 400;
+}
+
+div:empty, p:empty {
+	display: none !important;
+}
+
+progress {
+	display: flex;
+	width: 100%;
+	height: 5px;
+	margin: 10px 0 0px 0;
+	vertical-align: 0;
+	border-radius: 2px;
+	-webkit-appearance: none;
+}
+
+progress[value]::-webkit-progress-bar {
+	background-color: #171717;
+	border-radius: 2px;
+}
+
+progress::-webkit-progress-value {
+	background-image: -webkit-linear-gradient(left, #3a9, #3dc);
+	border-radius: 2px;
+}
+
+@keyframes cycle {
+	0% {
+		background-position: 0 0;
+	} 100% {
+		background-position: 5000000px 0px;
+	}
+}
+
+progress:indeterminate {
+	width: 100%;
+	background: -webkit-linear-gradient(left, #171717, #4cb, #371717, #171717);
+	animation: cycle 20000s linear infinite;
+}
+
+progress:indeterminate::-webkit-progress-bar {
+	display: none;
+}
