@@ -4247,6 +4247,14 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 CAmount nDevFundValue;
                 CAmount nMasternodeValue;
 
+                bool skipMasternodePaymentValueCheck = false;
+                int changePoints[4];
+                GetBlockValueChangePoints(changePoints, block.nVersion);
+                for (int block : changePoints) {
+                    if (block == nHeight)
+                        skipMasternodePaymentValueCheck = true;
+                }
+
                 if (nHeight >= 600000) {
                     nBlockValue = GetBlockValue(block.nVersion, nHeight);
                     nDevFundValue = GetDevFundPayment(nBlockValue);
@@ -4257,11 +4265,11 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                     nMasternodeValue = GetMasternodePayment(nHeight - 1, nBlockValue, 0, false);
                 }
 
-                if (tx.vout[nIndex].nValue != nMasternodeValue) {
+                if (!skipMasternodePaymentValueCheck && tx.vout[nIndex].nValue != nMasternodeValue) {
                     return state.DoS(100, error("%s : rejected by check masternode lock-in with %ld/%ld at %d", __func__, tx.vout[nIndex].nValue, nMasternodeValue, nHeight), REJECT_INVALID, "check masternode mismatch");
                 }
 
-                if (tx.vout[nIndex + 1].nValue != nDevFundValue) {
+                if (!skipMasternodePaymentValueCheck && tx.vout[nIndex + 1].nValue != nDevFundValue) {
                     return state.DoS(100, error("%s : rejected by check devfund value lock-in at %d", __func__, nHeight),
                         REJECT_INVALID, "check devfund mismatch");
                 }
@@ -4279,6 +4287,8 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             }
         }
     }
+
+   
 
     // Check transactions
     bool fZerocoinActive = block.GetBlockTime() > Params().Zerocoin_StartTime();
@@ -4318,6 +4328,18 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             REJECT_INVALID, "bad-blk-sigops", true);
 
     return true;
+}
+
+// Return each change point in changePoints
+void GetBlockValueChangePoints(int *changePoints, int blockVersion)
+{
+    if (blockVersion >= 5)
+    {
+        changePoints[0] = {475000};
+        changePoints[1] = {600000};
+        changePoints[2] = {800000};
+        changePoints[3] = {1000000};
+    } 
 }
 
 // Checks for blacklisted addresses, the blacklisted addresses are fetched from the block and transaction indexes referenced by
