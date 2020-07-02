@@ -9,6 +9,7 @@
 #ifndef BITCOIN_VERSION_H
 #define BITCOIN_VERSION_H
 
+#include <sstream>
 /**
  * network protocol versioning
  */
