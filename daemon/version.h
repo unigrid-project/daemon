@@ -11,8 +11,7 @@
 
 #include "clientversion.h"
 #include <string>
-
-static const int PROTOCOL_VERSION = 70931;
+#include <sstream>
 
 static const int PROTOCOL_VERSION = 70931;
 
