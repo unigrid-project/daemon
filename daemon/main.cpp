@@ -5294,6 +5294,7 @@ void removeBootstrapFiles()
 
 double bootstrappingProgress = 0.0;
 std::string bootstrappingStatus = "inactive";
+std::string walletStatus = "none";
 
 bool LoadExternalBlockFile(boost::filesystem::path path, CDiskBlockPos* dbp)
 {
