@@ -4243,6 +4243,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             if (!tx.vout[1].IsZerocoinMint()) {
                 int nIndex = tx.vout.size() - 2;
 
+<<<<<<< HEAD:daemon/main.cpp
                 CAmount nBlockValue;
                 CAmount nDevFundValue;
                 CAmount nMasternodeValue;
@@ -4274,6 +4275,8 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                         REJECT_INVALID, "check devfund mismatch");
                 }
 
+=======
+>>>>>>> 9554aca68f3a02b54f4b764e2cda4aacb77d383d:src/main.cpp
                 if (nHeight != 0 && !IsInitialBlockDownload()) {
                     CScript devScriptPubKey = CScript() << ParseHex(Params().ActiveDevPubKey().c_str()) << OP_CHECKSIG;
 
