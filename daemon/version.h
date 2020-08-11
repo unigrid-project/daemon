@@ -13,7 +13,7 @@
 #include <string>
 #include <sstream>
 
-static const int PROTOCOL_VERSION = 70931;
+static const int PROTOCOL_VERSION = 70930;
 
 //! initial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
