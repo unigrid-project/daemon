@@ -1,22 +1,9 @@
-*.sublime-project
-*.sublime-workspace
-todo.txt
-reset-files.bash
-
-*.tar.gz
-
 *.exe
 daemon/unigrid
 daemon/unigridd
 daemon/unigrid-cli
 daemon/unigrid-tx
 daemon/test/test_unigrid
-
-# electron
-wallet/node_modules
-wallet/yarn.lock
-wallet/yarn-err0r.log
-wallet/dist
 
 # autoreconf
 Makefile.in
