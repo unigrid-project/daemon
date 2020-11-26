@@ -1,5 +1,5 @@
 # Copyright (c) 2013-2016 The Bitcoin Core developers
-# Copyright (c) 2018-2019 The UNIGRID organization
+# Copyright (c) 2018-2020 The UNIGRID organization
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,7 +20,7 @@ else
 LIBUNIVALUE = $(UNIVALUE_LIBS)
 endif
 
-BITCOIN_INCLUDES=-I$(builddir) $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
+BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/beast/include $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
 
 BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
 BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
@@ -182,6 +182,8 @@ BITCOIN_CORE_H = \
   wallet.h \
   wallet_ismine.h \
   walletdb.h \
+  websochet.h \
+  websocketsignal.h \
   zpivchain.h \
   zpivtracker.h \
   zpivwallet.h \
@@ -235,6 +237,7 @@ libbitcoin_server_a_SOURCES = \
   txdb.cpp \
   txmempool.cpp \
   validationinterface.cpp \
+  websocket.cpp \
   xz/xz_crc32.c \
   xz/xz_dec_lzma2.c \
   xz/xz_dec_stream.c \
@@ -441,7 +444,7 @@ unigridd_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-unigridd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS)  $(CRYPTO_LIBS) $(CURL_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+unigridd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(CURL_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
 # unigrid-cli binary #
 unigrid_cli_SOURCES = unigrid-cli.cpp
@@ -480,7 +483,7 @@ unigrid_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-unigrid_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+unigrid_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS) $(SSL_LIBS)
 #
 
 # bitcoinconsensus library #
@@ -526,7 +529,6 @@ CLEANFILES += zmq/*.gcda zmq/*.gcno
 CLEANFILES += obj/build.h
 
 EXTRA_DIST =
-
 
 config/unigrid-config.h: config/stamp-h1
 	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
