@@ -1,6 +1,6 @@
 // Copyright (c) 2014 The Bitcoin developers
 // Copyright (c) 2017 The PIVX developers
-// Copyright (c) 2018-2019 The UNIGRID organization
+// Copyright (c) 2018-2020 The UNIGRID organization
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,10 +10,6 @@
 #include <string>
 #include <vector>
 
-/**
- * CBaseChainParams defines the base parameters (shared between unigrid-cli and unigridd)
- * of a given instance of the Unigrid system.
- */
 class CBaseChainParams
 {
 public:
@@ -28,11 +24,14 @@ public:
 
     const std::string& DataDir() const { return strDataDir; }
     int RPCPort() const { return nRPCPort; }
+    int WebSocketPort() const { return nWebSocketPort; }
 
 protected:
     CBaseChainParams() {}
 
     int nRPCPort;
+    int nWebSocketPort;
+
     std::string strDataDir;
     Network networkID;
 };
