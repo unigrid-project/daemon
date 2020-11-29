@@ -44,6 +44,7 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include "validationinterface.h"
+#include "websocket.h"
 #include "zpivchain.h"
 
 #ifdef ENABLE_WALLET
@@ -87,6 +88,7 @@ int nWalletBackups = 10;
 volatile bool fFeeEstimatesInitialized = false;
 volatile bool fRestartRequested = false; // true: restart false: shutdown
 extern std::list<uint256> listAccCheckpointsNoDB;
+CWebSocket wss;
 
 #if ENABLE_ZMQ
 static CZMQNotificationInterface* pzmqNotificationInterface = NULL;
@@ -1139,6 +1141,11 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     int64_t nStart;
 
+    /* Initialize the web socket server. IP address can change*/
+    /* so this might be something we add to a config later. */
+    /* This would allow for remote connections to a hosted node. */
+    boost::asio::ip::address ip_address = boost::asio::ip::make_address("127.0.0.1");
+    wss.initialize(ip_address, 52993);
     // ********************************************************* Step 4.5: Masternode configuration handling
     std::string strMasternodeFile = GetArg("-mnconf", "masternode.conf");
     std::string status = _("Importing masternode configuration from the old HUZU wallet...");
