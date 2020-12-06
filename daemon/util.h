@@ -121,6 +121,8 @@ boost::filesystem::path GetDefaultDataDir(const std::string name = "UNIGRID");
 const boost::filesystem::path& GetDataDir(bool fNetSpecific = true);
 boost::filesystem::path GetConfigFile();
 boost::filesystem::path GetMasternodeConfigFile();
+boost::filesystem::path GetSslCert();
+boost::filesystem::path GetSslKey();
 #ifndef WIN32
 boost::filesystem::path GetPidFile();
 void CreatePidFile(const boost::filesystem::path& path, pid_t pid);
