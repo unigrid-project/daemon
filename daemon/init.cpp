@@ -21,6 +21,7 @@
 #include "checkpoints.h"
 #include "compat/sanity.h"
 #include "downloader.h"
+#include "generatecert.h"
 #include "httprpc.h"
 #include "httpserver.h"
 #include "invalid.h"
@@ -88,6 +89,7 @@ int nWalletBackups = 10;
 volatile bool fFeeEstimatesInitialized = false;
 volatile bool fRestartRequested = false; // true: restart false: shutdown
 extern std::list<uint256> listAccCheckpointsNoDB;
+GenerateCert genCert;
 CWebSocket wss;
 
 #if ENABLE_ZMQ
@@ -1141,11 +1143,13 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     int64_t nStart;
 
+    /* Check for certificates before intializing the websocket */
+    genCert.setup();
     /* Initialize the web socket server. IP address can change*/
     /* so this might be something we add to a config later. */
     /* This would allow for remote connections to a hosted node. */
-    boost::asio::ip::address ip_address = boost::asio::ip::make_address("127.0.0.1");
-    wss.initialize(ip_address, 52993);
+    //boost::asio::ip::address ip_address = boost::asio::ip::make_address("127.0.0.1");
+    //wss.initialize(ip_address, 52993);
     // ********************************************************* Step 4.5: Masternode configuration handling
     std::string strMasternodeFile = GetArg("-mnconf", "masternode.conf");
     std::string status = _("Importing masternode configuration from the old HUZU wallet...");
