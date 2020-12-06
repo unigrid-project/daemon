@@ -211,6 +211,7 @@ libbitcoin_server_a_SOURCES = \
   chain.cpp \
   checkpoints.cpp \
   downloader.cpp \
+  generatecert.cpp \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
