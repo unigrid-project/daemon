@@ -4,6 +4,3 @@
 [submodule "daemon/beast"]
 	path = daemon/beast
 	url = https://github.com/boostorg/beast
-[submodule "daemon/ssl-cert-generator-lib"]
-	path = daemon/ssl-cert-generator-lib
-	url = https://github.com/bertrandmartel/ssl-cert-generator-lib.git
