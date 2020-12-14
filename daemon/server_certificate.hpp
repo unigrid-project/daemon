@@ -24,8 +24,7 @@
     depending on your environment Please see the documentation
     accompanying the Beast certificate for more details.
 */
-inline
-void
+inline void
 load_server_certificate(boost::asio::ssl::context& ctx)
 {
     /*
@@ -90,18 +89,17 @@ load_server_certificate(boost::asio::ssl::context& ctx)
 
     std::string const dh =
         "-----BEGIN DH PARAMETERS-----\n"
-        "MIIBCAKCAQEArzQc5mpm0Fs8yahDeySj31JZlwEphUdZ9StM2D8+Fo7TMduGtSi+\n"
-        "/HRWVwHcTFAgrxVdm+dl474mOUqqaz4MpzIb6+6OVfWHbQJmXPepZKyu4LgUPvY/\n"
-        "4q3/iDMjIS0fLOu/bLuObwU5ccZmDgfhmz1GanRlTQOiYRty3FiOATWZBRh6uv4u\n"
-        "tff4A9Bm3V9tLx9S6djq31w31Gl7OQhryodW28kc16t9TvO1BzcV3HjRPwpe701X\n"
-        "oEEZdnZWANkkpR/m/pfgdmGPU66S2sXMHgsliViQWpDCYeehrvFRHEdR9NV+XJfC\n"
-        "QMUk26jPTIVTLfXmmwU0u8vUkpR7LQKkwwIBAg==\n"
+        "MIIBCAKCAQEAiHKPNG8y0GbeobAUrfPOHBYt57lUpsE+w6dwjrbngxLvhK5jMqtK\n"
+        "1Pa99KYPZyV5SeB2FZFtFoiE7v1OJOWiVmfiJC8y7U+Fpf6nanQ+hsEaGkmjsbhL\n"
+        "qXRZF4tFudLCA1+H+cIZCpxM4HrnfSl/pIWDSSWVDlA1dDgkP/BPGtbj85iP49w0\n"
+        "bN2MhIVWiN+qvtx17vj1q8F/uM5UwqPvJD2NgjQ2vDLLY3eJjnWrqcNDS9pAXN+p\n"
+        "Zwt9NvOaJ8jBuwrtFctb8HFJr/vTAh2TTwaJEZYP9u02nXJFpM8xB8mHAI45WH+6\n"
+        "kybXSv5v2fVnnR4lXRhzLO455+fILVriGwIBAg==\n"
         "-----END DH PARAMETERS-----\n";
-    
+
     ctx.set_password_callback(
         [](std::size_t,
-            boost::asio::ssl::context_base::password_purpose)
-        {
+            boost::asio::ssl::context_base::password_purpose) {
             return "test";
         });
 
