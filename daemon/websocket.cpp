@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <functional>
+#include <iostream>
 #include <queue>
 
 #include <boost/asio.hpp>
@@ -13,6 +14,7 @@
 
 #include "chainparamsbase.h"
 #include "websocket.h"
+#include "server_certificate.hpp"
 
 /*
 	boost::asio::ip::make_address("127.0.0.1")
@@ -26,7 +28,7 @@ void CWebSocket::initialize(boost::asio::ip::address& address, unsigned short po
 	boost::asio::ssl::context ctx{boost::asio::ssl::context::tlsv12};
 
 	// Self-sign certificate
-	// load_server_certificate(ctx); //TODO: Enable me!
+	load_server_certificate(ctx); //TODO: Enable me!
 
 	// Run the I/O service on the requested number of threads
 	std::vector<std::thread> v;

@@ -10,6 +10,7 @@
 #include <boost/asio/spawn.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/beast.hpp>
+#include <iostream>
 #include <queue>
 
 #include "sync.h"

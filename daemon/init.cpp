@@ -1148,8 +1148,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     /* Initialize the web socket server. IP address can change*/
     /* so this might be something we add to a config later. */
     /* This would allow for remote connections to a hosted node. */
-    //boost::asio::ip::address ip_address = boost::asio::ip::make_address("127.0.0.1");
-    //wss.initialize(ip_address, 52993);
+    boost::asio::ip::address ip_address = boost::asio::ip::make_address("127.0.0.1");
+    wss.initialize(ip_address, 52993);
     // ********************************************************* Step 4.5: Masternode configuration handling
     std::string strMasternodeFile = GetArg("-mnconf", "masternode.conf");
     std::string status = _("Importing masternode configuration from the old HUZU wallet...");
