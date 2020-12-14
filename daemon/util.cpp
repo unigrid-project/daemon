@@ -513,14 +513,14 @@ boost::filesystem::path GetMasternodeConfigFile()
 
 boost::filesystem::path GetSslCert()
 {
-    boost::filesystem::path pathConfigFile(GetArg("-cert", "certificates/key.crt"));
+    boost::filesystem::path pathConfigFile(GetArg("-cert", "certificates/cert.pem"));
     if (!pathConfigFile.is_complete()) pathConfigFile = GetDataDir() / pathConfigFile;
     return pathConfigFile;
 }
 
 boost::filesystem::path GetSslKey()
 {
-    boost::filesystem::path pathConfigFile(GetArg("-key", "certificates/key.key"));
+    boost::filesystem::path pathConfigFile(GetArg("-key", "certificates/pkey.pem"));
     if (!pathConfigFile.is_complete()) pathConfigFile = GetDataDir() / pathConfigFile;
     return pathConfigFile;
 }
