@@ -1,8 +1,8 @@
 package=boost
-$(package)_version=1_66_0
-$(package)_download_path=https://dl.bintray.com/boostorg/release/1.66.0/source/
+$(package)_version=1_71_0
+$(package)_download_path=https://dl.bintray.com/boostorg/release/1.71.0/source/
 $(package)_file_name=$(package)_$($(package)_version).tar.bz2
-$(package)_sha256_hash=5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9
+$(package)_sha256_hash=d73a8da01e8bf8c7eda40b4c84915071a8c8a0df4a6734537ddde4a8580524ee
 
 define $(package)_set_vars
 $(package)_config_opts_release=variant=release
@@ -19,7 +19,7 @@ $(package)_toolset_$(host_os)=gcc
 $(package)_archiver_$(host_os)=$($(package)_ar)
 $(package)_toolset_darwin=darwin
 $(package)_archiver_darwin=$($(package)_libtool)
-$(package)_config_libraries=system,filesystem,program_options,thread,test,chrono,context,coroutine
+$(package)_config_libraries=system,filesystem,program_options,thread,test,chrono,coroutine,context
 $(package)_cxxflags=-std=c++11 -fvisibility=hidden
 $(package)_cxxflags_linux=-fPIC
 endef
